@@ -1,0 +1,37 @@
+1. Change sequence from int to float in template table
+2. Add Partner roles.   INSERT INTO `user_role` (`role`, `user_id`, `site_id`) VALUES ('ROLE_SITE_PARTNER_ADMIN', 65, 47); -> testing all partner sites
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.  Add Relation Type
+2.  global.email in global_setting
+3.  main.site.url in global_setting
+4.  Update product table for new fields
+9.  Add exclude.uri.copy=news/index.html,/site/partner/partner.html,/site/modules.html,page/gallery.html
+10. Add promotion data
+11. Add PaymentMethod
+8.  Add template for partner
+5.  Add partner page
+
+
+7.  Product Service -> Add a default record for each site. (write a sql script to do that)
+
+6.  Add modules page
+
+
+<i class="fa fa-shopping-cart module-icon"></i>
+<i class="fa fa-phone-square module-icon"></i>
