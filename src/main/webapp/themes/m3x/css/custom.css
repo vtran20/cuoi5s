@@ -1,0 +1,182 @@
+/* Add here all your css styles (customizations) */
+/*Global form*/
+.form-group.has-error em.invalid {
+    display: block;
+    margin-top: 6px;
+    padding: 0 1px;
+    font-style: normal;
+    /*font-size: 11px;*/
+    line-height: 15px;
+    color: #a94442;
+}
+
+/*body global*/
+.content {
+    padding-top: 10px;
+    padding-bottom: 40px;
+}
+
+.margin-top-30 {
+    margin-top: 30px;
+}
+
+/*View page*/
+.posts .dl-horizontal dt img {
+    width: 120px;
+    height: 68px;
+    /*padding: 2px;*/
+    /*margin-top: 2px;*/
+    /*border: solid 1px #ddd;*/
+}
+
+.posts .dl-horizontal dt {
+    width: 120px;
+    float: left;
+}
+.posts .dl-horizontal dd {
+    margin-left: 128px;
+}
+
+
+/*list video*/
+div.thumbnail-style {
+    margin-bottom: 0;
+}
+div.thumbnail-style p {
+    /*height: 40px;*/
+    /*line-height: 20px;*/
+    overflow: hidden;
+    /*font-size: 12px;*/
+}
+div.thumbnail-style div.duration {
+    right: 25px;
+    bottom: 90px;
+    position: absolute;
+    color: white;
+    padding: 1px 5px;
+    /*font-weight: bold;*/
+    /*font-size: 13px;*/
+    background-color: #000;
+    height: 14px;
+    line-height: 14px;
+    opacity: 0.75;
+    filter: alpha(opacity=75);
+    display: -moz-inline-stack;
+    vertical-align: top;
+    zoom: 1;
+    display: inline-block;
+}
+dl.dl-horizontal dt div.duration {
+    right: 50px;
+    top: 50px;
+    position: relative;
+    color: white;
+    padding: 1px 1px 1px 3px;
+    margin-right: -4px;
+    background-color: #000;
+    height: 14px;
+    line-height: 14px;
+    opacity: 0.75;
+    filter: alpha(opacity=75);
+    display: -moz-inline-stack;
+    vertical-align: top;
+    zoom: 1;
+    display: inline-block;
+}
+
+/*right bar video*/
+div.posts .dl-horizontal dd p {
+    height: 45px;
+    line-height: 16px !important;
+    overflow: hidden;
+    font-size: 13px;
+}
+
+/*Contact Pages
+------------------------------------*/
+.map {
+    width:100%;
+    height:350px;
+    border-top:solid 1px #eee;
+    border-bottom:solid 1px #eee;
+}
+
+/* important! bootstrap sets max-width on img to 100% which conflicts with google map canvas*/
+.map img {
+    max-width: none;
+}
+
+.map-box {
+    height: 250px;
+}
+
+.map-box-space {
+    margin-top: 15px;
+}
+.map-box-space1 {
+    margin-top: 7px;
+}
+
+/*Checkout Page*/
+.shopping-cart .billing-info-inputs select {
+    min-height: 40px;
+    border-color: #eee;
+    margin-bottom: 10px;
+}
+
+.wizard > .content > .body select.invalid {
+    color: #8a1f11;
+    font-weight: 400;
+    border: 1px solid #eec5c7 !important;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+.wizard > .steps .number {
+    /*float: left;*/
+    font-size: 22px;
+    /*margin-right: 15px;*/
+}
+ul.list-inline li div.line-through {
+    text-decoration: line-through;
+    font-size:18px;
+}
+.accordion-v2 .panel-heading {
+    color: #555;
+    display: block;
+    font-size: 16px;
+    padding: 10px 15px;
+    background: #f8f8f8;
+}
+
+/*Product List on home page*/
+.pull-left {
+    height: 50px;
+}
+
+
+/**************Modules************/
+i.module-icon {
+    font-size: 7em;
+}
+
+
+/**************Change font to be bigger************/
+.info-blocks .info-blocks-in p {
+    font-size: 14px;
+}
+
+
+
+
+/*****************************************This css fix for Chrome only and can be removed after Chrome fix their issue********************************************/
+.global-clear {
+    clear: both;
+}
+
+
+/*****************************************This css fix for Chrome only and can be removed after Chrome fix their issue********************************************/
+.footer-v1 .link-list li, .breadcrumb li, .breadcrumbs-v4 .breadcrumb-v4-in > li{
+    text-rendering: geometricPrecision;
+}

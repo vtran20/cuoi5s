@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups xmlns="http://www.isdc.ro/wro"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
+
+    <group name="pink_css">
+        <css>/themes/pink/css/common-styles.css</css>
+        <css>/themes/pink/css/catalog-styles.css</css>
+        <css>/themes/pink/css/checkout-styles.css</css>
+        <css>/themes/pink/css/jquery-ui.css</css>
+        <css>/themes/pink/css/jquery.autocomplete.css</css>
+        <css>/themes/pink/css/headermenu.css</css>
+
+    </group>
+
+    <group name="pink_js">
+        <js>/themes/pink/js/jquery-1.7.1.min.js</js>
+        <!--CMS auto play of flowplayer.org-->
+        <js>/themes/pink/js/jquery.tools.min.js</js>
+
+        <!--CMS auto play of cabe-->
+        <!--<js>/themes/pink/js/lib_min.js</js>-->
+        <!--<js>/themes/pink/js/site.js</js>-->
+        <!--<js>/themes/pink/js/itemFader.js</js>-->
+
+
+        <js>/themes/pink/js/jquery.validate.min.js</js>
+        <js>/themes/pink/js/common.js</js>
+
+        <!--Refinement-->
+        <js>/themes/pink/js/refinements.js</js>
+        <js>/themes/pink/js/jScrollPane.js</js>
+        <js>/themes/pink/js/jquery-ui.min.js</js>
+
+        <!--Slice for fingurhut-->
+        <!--<js>/themes/pink/js/lib.js</js>-->
+
+        <!--Using for auto complete of search function-->
+        <js>/themes/pink/js/jquery.autocomplete.ajaxQueue.js</js>
+        <js>/themes/pink/js/jquery.autocomplete.bgiframe.min.js</js>
+        <js>/themes/pink/js/jquery.autocomplete.min.js</js>
+        <!--Using for header-->
+        <js>/themes/pink/js/headermenu.js</js>
+        <js>/themes/pink/js/jquery.popupWindow.js</js>
+        <js>/themes/pink/js/jquery.cookie.js</js>
+        <!--CMS for home page-->
+
+    </group>
+
+</groups>

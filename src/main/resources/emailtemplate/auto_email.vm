@@ -1,0 +1,159 @@
+<html>
+<head>
+    <title>Giảm giá với cungshopping.com</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body bgcolor="#FFFFFF" text="#666666">
+<img moz-do-not-send="true" nosend="1" src="http://cungshopping.com/marketing/register.html?email=${email}" width="1" height="1">
+<div align="center">Nếu không xem được hình ảnh, vui lòng <a href="http://cungshopping.com/marketing/giam-gia.html?email=${email}&emailTemplate=auto_email.vm">Xem email này ở trình duyệt</a></div>
+<table width="640" border="0" cellspacing="0" cellpadding="0" align="center">
+<tr>
+    <td width="640"><a href="http://cungshopping.com"><img moz-do-not-send="true" nosend="1" src="http://cungshopping.com/res/assets/images/cungshopping_logo.png" alt="cungshopping" border="0"></a></td>
+</tr>
+<tr>
+    <td>
+
+        <div style="visibility: visible; display: block; ">
+            <style>
+                .glo-header-tab-span {
+                    display: inline;
+                    float: left;
+                    margin: 5px 0 5px 0;
+                    color: white;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    text-decoration: none;
+                    font-size: 14px;
+                }
+
+                .glo-header-tab-span a {
+                    margin: 0px !important;
+                    font-size: 13px;
+                    color: #DF0403;
+                }
+            </style>
+
+            <span class="glo-header-tab-span for-her-img" style="border-right:1px solid #d6d6d6; padding:0 10px 0 0;"><a
+                    href="http://cungshopping.com/catalog/thoi-trang-1/index.html" title="Thời trang">Thời
+                trang</a></span>
+            <span class="glo-header-tab-span for-him-img" style="border-right:1px solid #d6d6d6; padding:0 10px 0 8px;"><a
+                    href="http://cungshopping.com/catalog/my-pham-4/index.html" title="Mỹ phẩm">Mỹ phẩm</a></span>
+            <span class="glo-header-tab-span for-him-img" style="border-right:1px solid #d6d6d6; padding:0 10px 0 8px;"><a
+                    href="http://cungshopping.com/catalog/suc-khoe-5/index.html" title="Sức khỏe">Sức khỏe</a></span>
+            <span class="glo-header-tab-span for-him-img" style="border-right:1px solid #d6d6d6; padding:0 10px 0 8px;"><a
+                    href="http://cungshopping.com/catalog/me-va-be-6/index.html" title="Mẹ và Bé">Mẹ và Bé</a></span>
+            <span class="glo-header-tab-span for-him-img" style="border-right:1px solid #d6d6d6; padding:0 10px 0 8px;"><a
+                    href="http://cungshopping.com/giam-gia.html?keyword=discount" title="Giảm giá">Giảm giá</a></span>
+            <span class="glo-header-tab-span gc-img" style="padding:0 8px 0 8px;"><a
+                    href="http://cungshopping.com/lien-he.html" title="Liên hệ">Liên hệ</a></span>
+        </div>
+
+    </td>
+
+</tr>
+<tr>
+    <td>&nbsp;</td>
+</tr>
+<tr>
+    <td><img moz-do-not-send="true" nosend="1" src="http://cungshopping.com/res/assets/images/cms/freeshipping-640.jpg" alt="Miễn phí shipping cho đơn hàng 500.000 VND (Trên toàn quốc)">
+    </td>
+</tr>
+
+#set ($size = $products.size()/3)
+
+#if ( $products.size() > 0 )
+<tr>
+    <td>
+        <table width="100%" align="left" style="border: 0 solid #B6B7AF;">
+            <tbody>
+            #foreach( $row in [1..$size]  )
+            <tr>
+                #foreach( $i in [1..3]  )
+                    #set ($index = $i+($row*3))
+                    #set ($index = $index - 4)
+
+                #set ($product = $products.get($index))
+                <td style="border: 0 solid #B6B7AF;vertical-align: top;" width="33%">
+
+                    <table align="left" style="border: 0 solid #B6B7AF;">
+                        <tbody>
+                        <tr>
+                            <td style="border: 0 solid #B6B7AF;"><a
+                                    href="http://cungshopping.com/product/${product.uri}-${product.id}/index.html"><img moz-do-not-send="true" nosend="1" style="border: 0"
+                                    alt="${product.name}" class="cat-thu-p-ima"
+                                    src="http://cungshopping.com/product.image?timestamp=&path=${product.imageUrl}&resize.width=200&resize.keepRatio=true"></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 0 solid #B6B7AF; color: black;"><a
+                                    href="http://cungshopping.com/product/${product.uri}-${product.id}/index.html"><font face="Arial,Verdanasans-serif" size="2" color="#666666">${product.name}</font></a></td>
+                        </tr>
+#set( $money = ${MoneyRange.valueOf($product.displayPrice,$site.siteParamsMap.get('CURRENCY'), $site.siteParamsMap.get('CURRENCY_FORMAT')).toString()} )
+#set( $promo = ${MoneyRange.valueOf($product.displayPricePromo,$site.siteParamsMap.get('CURRENCY'), $site.siteParamsMap.get('CURRENCY_FORMAT')).toString()} )
+ #if("$promo" != "")
+    #if ($money == $promo)
+                        <tr>
+                            <td><font face="Arial,Verdanasans-serif" size="2" color="#666666"><b>$money</b></font></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 0 solid #B6B7AF;"><font face="Arial,Verdanasans-serif" size="2" color="#DF0403">&nbsp;</font></td>
+                        </tr>
+    #else
+                        <tr>
+                            <td style="text-decoration: line-through;"><font face="Arial,Verdanasans-serif" size="2" color="#666666"><b>$money</b></font></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 0 solid #B6B7AF;"><font face="Arial,Verdanasans-serif" size="2" color="#DF0403"><b>$promo</b></font></td>
+                        </tr>
+    #end
+
+#else
+                        <tr>
+                            <td><font face="Arial,Verdanasans-serif" size="2" color="#666666"><b>$money</b></font></td>
+                        </tr>
+                        <tr>
+                            <td style="border: 0 solid #B6B7AF;"><font face="Arial,Verdanasans-serif" size="2" color="#DF0403">&nbsp;</font></td>
+                        </tr>
+#end
+
+                        </tbody>
+                    </table>
+
+                </td>
+                #end
+            </tr>
+            #end
+            </tbody>
+        </table>
+    </td>
+</tr>
+
+#end
+
+
+
+<tr>
+    <td><div style="border-top:solid 2px;border-color:red;padding: 15px 0 0 15px;"></div></td>
+</tr>
+<tr>
+    <td>
+        <table width="640" border="0" cellspacing="0" cellpadding="5">
+            <tr>
+                <td align="left" valign="top">
+                    <font color="#999999" size="1" face="Verdana, Arial, Helvetica, sans-serif">
+                        Cungshoping.com trân trọng chào quý khách. Rất xin lỗi nếu email này làm phiền quý khách. Nếu không muốn nhận thông tin khuyến mãi từ <a href="http://cungshopping.com">cungshopping.com</a> xin vui lòng nhấn vào <a href="http://cungshopping.com/marketing/unsubscribe.html?email=${email}">unsubscribe</a> <br>
+                        <br>
+                        Xin vui lòng không trả lời email này. <a
+                            href="http://cungshopping.com/lien-he.html" title="Liên hệ">Hãy liên hệ với chúng tôi</a> nếu bạn thắc mắc, hay cần tư vấn thông tin về sản phẩm.
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+</table>
+
+
+</body>
+</html>

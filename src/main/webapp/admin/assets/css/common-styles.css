@@ -1,0 +1,296 @@
+body {
+    font-family: Verdana, Arial, Helvetica, Sans-Serif;
+    font-size: 8pt;
+    font-weight: normal;
+    color: black;
+
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+}
+
+html {
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+}
+
+form {
+    padding: 0px;
+    margin: 0px;
+}
+
+h1, h2, h3, h4, h5 {
+    position: relative;
+    font-weight: bold;
+    margin: 0px;
+}
+
+h1 {
+    font-size: 24pt;
+}
+
+h2 {
+    font-size: 16pt;
+}
+
+h3 {
+    font-size: 12pt;
+}
+
+h4 {
+    font-size: 10pt;
+}
+
+h5 {
+    font-size: 8pt;
+}
+
+input, select, textarea {
+    font-size: 8pt;
+    color: #555;
+}
+
+a:link {
+    color: #653d08;
+}
+
+a:visited {
+    color: #95a415;
+}
+
+*[state="warning"] {
+    color: #d92900;
+    font-weight: bold;
+}
+
+*[state="error"] {
+    background-color: #d92900;
+    color: white;
+    font-weight: bold;
+}
+
+.common-error, .error {
+    background-color: #d92900;
+    color: white;
+    font-weight: bold;
+    margin: 5px 5px;
+    padding: 1px 7px;
+}
+
+.common-sm-tab-messages {
+    margin: 5px 0px;
+    padding: 5px; /*background-color:#EFEBD6; border: 1px solid #E4E5E0;*/
+}
+
+.common-sm-tab-messages ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.common-sm-tab-messages li {
+    list-style: square inside;
+    font-weight: bold;
+    color: #C33;
+}
+
+.common-sm-tab-messages li.cmd-message {
+    color: #339;
+}
+
+.common-sm-tab-messages li.cmd-error {
+    color: #C33;
+}
+
+.common-sm-tab-box {
+    border: 1px solid #e7e7e7;
+    padding: 5px;
+    vertical-align: top;
+}
+
+.common-sm-tab-box h5 {
+    background-color: #EFEBD6;
+    margin: -5px;
+    padding: 4px 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.common-sm-tab-box .jScrollPaneTrack {
+    background: url(/admin/assets/images/common/windows_track.gif) repeat-y;
+}
+
+.common-sm-tab-box .jScrollPaneDrag {
+    background: url(/admin/assets/images/common/windows_drag_middle.gif) no-repeat 0 100%;
+}
+
+.common-sm-tab-box .jScrollPaneDragTop {
+    background: url(/admin/assets/images/common/windows_drag_top.gif) no-repeat;
+    height: 4px;
+}
+
+.common-sm-tab-box .jScrollPaneDragBottom {
+    background: url(/admin/assets/images/common/windows_drag_bottom.gif) no-repeat;
+    height: 4px;
+}
+
+.common-sm-tab-box a.jScrollArrowUp {
+    height: 17px;
+    background: url(/admin/assets/images/common/windows_arrow_up.gif) no-repeat 0 0;
+}
+
+.common-sm-tab-box a.jScrollArrowUp:hover {
+    background-position: 0 -20px;
+}
+
+.common-sm-tab-box a.jScrollArrowDown {
+    height: 17px;
+    background: url(/admin/assets/images/common/windows_arrow_down.gif) no-repeat 0 0;
+}
+
+.common-sm-tab-box a.jScrollArrowDown:hover {
+    background-position: 0 -20px;
+}
+
+.common-sm-tab-box a.jScrollActiveArrowButton, .winXP a.jScrollActiveArrowButton:hover {
+    background-position: 0 -40px;
+}
+
+.common-sm-form-table {
+}
+
+.common-sm-form-table label {
+    white-space: nowrap;
+}
+
+div.button {
+    padding: 5px 5px 5px 0px
+}
+
+.itemTitle {
+    color: #1C94C4;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 5px 0 5px 0;
+}
+
+/*******************TREE VIEW****************/
+
+.cat-thu-row .cat-thu-product li.cat-thu-promo-text {
+    color: red;
+    font-weight: bold;
+}
+
+.cat-thu-pagnation {
+    padding: 0 25px;
+}
+
+.cat-thu-row {
+    position: relative;
+    width: 100%;
+    border-top: 0px solid #d6d6d6;
+}
+
+.cat-thu-row .cat-cat-more-colors {
+    width: 156px;
+    position: absolute;
+    bottom: 0px;
+}
+
+/*.cat-thu-row-not-all { background: url(/themes/default/images/common/bgrd/bac-cat-thu-row.gif) repeat-x 0px 260px; }*/
+.cat-thu-row .cat-thu-product-not-all {
+    width: 259px;
+}
+
+.cat-thu-row .cat-thu-product-not-all ul {
+    width: 223px;
+    margin: 0 auto;
+}
+
+.cat-thu-p-cont {
+    position: relative;
+}
+
+.cat-thu-row .cat-thu-product-not-all .cat-thu-p-ima, .cat-thu-row .cat-thu-product-not-all .cat-thu-p-cont {
+    border: 0px;
+    display: block;
+    margin: 0 auto;
+}
+
+/*.cat-thu-row-all { background: url(/themes/default/images/common/bgrd/bac-cat-thu-row.gif) repeat-x 0px 185px; }*/
+.cat-thu-row .cat-thu-product-all {
+    width: 113px;
+    padding: 0 0 10px 0
+}
+
+.cat-thu-row .cat-thu-product-all ul {
+    width: 156px;
+    margin: 0 auto;
+}
+
+.cat-thu-row .cat-thu-product-all .cat-thu-p-ima, .cat-thu-row .cat-thu-product-all .cat-thu-p-cont {
+    border: 0px;
+    display: block;
+    margin: 0 auto;
+}
+
+.cat-thu-row .cat-thu-product {
+    display: inline;
+    float: left;
+}
+
+.cat-thu-row .cat-thu-product .cat-thu-p-ima {
+    display: block;
+    margin: 0 auto;
+    border: 0px
+}
+
+.cat-thu-row .cat-thu-product li {
+    font-size: 11px;
+    color: #000;
+    display: block;
+    margin-top: 3px;
+}
+
+.cat-thu-row .cat-thu-product li.cat-thu-name {
+    margin-top: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.cat-thu-product a:link, .cat-thu-product a:visited, .cat-thu-product a:hover, .cat-thu-product a:active {
+    color: #000;
+    text-decoration: none;
+}
+
+.file_name {
+    padding: 5px 0 0 0px
+}
+
+.glo-clr {
+    display: block;
+    float: none;
+    clear: both;
+}
+
+/* Styles specific to this particular page */
+.jstree {
+    width: 100%;
+    height: 580px;
+    overflow: auto;
+}
+
+div.file {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #888888;
+}
+
+div.file img {
+    display: block;
+    margin: auto;
+    vertical-align: text-top;
+    /*margin-right: auto*/
+}
+

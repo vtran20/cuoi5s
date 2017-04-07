@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password"></property>
+
+        <!--<property name="hibernate.connection.url">jdbc:mysql://cuoi5s.cxdk077pos3m.us-east-1.rds.amazonaws.com:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8</property>-->
+        <!--<property name="hibernate.connection.username">cuoi5s</property>-->
+        <!--<property name="hibernate.connection.password">TranQuang2007</property>-->
+
+        <!--<property name="hibernate.connection.url">jdbc:mysql://192.168.2.12:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8</property>-->
+        <!--<property name="hibernate.connection.username">root</property>-->
+        <!--<property name="hibernate.connection.password">TranQuang2007</property>-->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+
+        <!--<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>-->
+        <!--<property name="hibernate.connection.url">jdbc:postgresql://localhost/ecommerce</property>-->
+        <!--<property name="hibernate.connection.username">postgres</property>-->
+        <!--<property name="hibernate.connection.password">TranQuang2007</property>-->
+        <!--<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>-->
+
+        <!--<property name="hibernate.connection.driver_class">net.sourceforge.jtds.jdbc.Driver</property>-->
+        <!--<property name="hibernate.connection.url">jdbc:jtds:sqlserver://localhost:1433/ecommerce;user=sa;password=thaivudn;sendStringParametersAsUnicode=true</property>-->
+        <!--<property name="hibernate.connection.username">sa</property>-->
+        <!--<property name="hibernate.connection.password">thaivudn</property>-->
+        <!--<property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>-->
+
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Hibernate caching: use EHCache -->
+        <!--<property name="hibernate.cache.region.factory_class">com.easysoft.ecommerce.service.impl.SpringawareEhcacheRegionFactory</property>-->
+        <!--Hibernate caching: use EHCache for HQL console-->
+        <property name="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory</property>
+        <property name="net.sf.ehcache.configurationResourceName">/spring-ehcache.xml</property>
+
+        <!-- Enable Query Cache -->
+        <property name="hibernate.cache.use_query_cache">true</property>
+
+        <!-- Enable L2 Cache -->
+        <property name="hibernate.cache.use_second_level_cache">true</property>
+
+        <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+        <property name="hibernate.c3p0.min_size">10</property>
+        <property name="hibernate.c3p0.max_size">150</property>
+        <property name="hibernate.c3p0.timeout">1800</property>
+        <property name="hibernate.c3p0.max_statements">100</property>
+        <property name="hibernate.c3p0.idle_test_periods">300</property> <!--Please keep in mind, that hibernate.c3p0.idle_test_period value must never exceed that of hibernate.c3p0.timeout. Otherwise C3P0 will never detect connections that has been closed.-->
+        <property name="hibernate.c3p0.acquire_increment">1</property>
+
+        <!-- Hibernate Search  -->
+        <property name="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider
+        </property>
+        <property name="hibernate.search.default.indexBase">/usr/local/indexes</property>
+        <!--Index will not updated when entity changed-->
+        <!--<property name="hibernate.search.indexing_strategy">manual</property>-->
+
+
+        <mapping class="com.easysoft.ecommerce.model.AbstractEntity"/>
+        <mapping class="com.easysoft.ecommerce.model.Catalog"/>
+        <mapping class="com.easysoft.ecommerce.model.Category"/>
+        <mapping class="com.easysoft.ecommerce.model.Product"/>
+        <mapping class="com.easysoft.ecommerce.model.ProductVariant"/>
+        <mapping class="com.easysoft.ecommerce.model.ProductFile"/>
+        <mapping class="com.easysoft.ecommerce.model.ProductToProduct"/>
+        <mapping class="com.easysoft.ecommerce.model.RelationType"/>
+        <mapping class="com.easysoft.ecommerce.model.Site"/>
+        <mapping class="com.easysoft.ecommerce.model.SiteParam"/>
+        <mapping class="com.easysoft.ecommerce.model.User"/>
+        <mapping class="com.easysoft.ecommerce.model.UserBalanceHistory"/>
+        <mapping class="com.easysoft.ecommerce.model.UserSession"/>
+        <mapping class="com.easysoft.ecommerce.model.CmsArea"/>
+        <mapping class="com.easysoft.ecommerce.model.CmsAreaContent"/>
+        <mapping class="com.easysoft.ecommerce.model.FileObject"/>
+        <mapping class="com.easysoft.ecommerce.model.Refinement"/>
+        <mapping class="com.easysoft.ecommerce.model.RefinementValue"/>
+        <mapping class="com.easysoft.ecommerce.model.Jobs"/>
+        <mapping class="com.easysoft.ecommerce.model.ProductAttributeGroup"/>
+        <mapping class="com.easysoft.ecommerce.model.ProductAttribute"/>
+        <mapping class="com.easysoft.ecommerce.model.ProductAttributeValue"/>
+        <mapping class="com.easysoft.ecommerce.model.Keyword"/>
+        <mapping class="com.easysoft.ecommerce.model.StringParam"/>
+        <mapping class="com.easysoft.ecommerce.model.StringParamValue"/>
+        <mapping class="com.easysoft.ecommerce.model.Promotion"/>
+        <mapping class="com.easysoft.ecommerce.model.ConditionClass"/>
+        <mapping class="com.easysoft.ecommerce.model.PromotionCondition"/>
+        <mapping class="com.easysoft.ecommerce.model.PromotionClass"/>
+        <mapping class="com.easysoft.ecommerce.model.Order"/>
+        <mapping class="com.easysoft.ecommerce.model.OrderSession"/>
+        <mapping class="com.easysoft.ecommerce.model.ShippingLocation"/>
+        <mapping class="com.easysoft.ecommerce.model.ShippingType"/>
+        <mapping class="com.easysoft.ecommerce.model.ShippingFee"/>
+        <mapping class="com.easysoft.ecommerce.model.ShippingConfig"/>
+        <mapping class="com.easysoft.ecommerce.model.ShippingSite"/>
+        <mapping class="com.easysoft.ecommerce.model.PaymentProvider"/>
+        <mapping class="com.easysoft.ecommerce.model.PaymentProviderSite"/>
+        <mapping class="com.easysoft.ecommerce.model.PaymentProviderParam"/>
+        <mapping class="com.easysoft.ecommerce.model.EmailSite"/>
+        <mapping class="com.easysoft.ecommerce.model.EmailTemplate"/>
+        <mapping class="com.easysoft.ecommerce.model.EmailPlan"/>
+        <mapping class="com.easysoft.ecommerce.model.EmailMarketing"/>
+        <mapping class="com.easysoft.ecommerce.model.EmailServer"/>
+        <mapping class="com.easysoft.ecommerce.model.UserRole"/>
+        <mapping class="com.easysoft.ecommerce.model.Role"/>
+        <mapping class="com.easysoft.ecommerce.model.ContactUs"/>
+
+        <!--start eweb-->
+        <mapping class="com.easysoft.ecommerce.model.Menu"/>
+        <mapping class="com.easysoft.ecommerce.model.Row"/>
+        <mapping class="com.easysoft.ecommerce.model.MenuTemplate"/>
+        <mapping class="com.easysoft.ecommerce.model.News"/>
+        <mapping class="com.easysoft.ecommerce.model.NewsCategory"/>
+        <mapping class="com.easysoft.ecommerce.model.Template"/>
+        <mapping class="com.easysoft.ecommerce.model.WidgetTemplate"/>
+        <mapping class="com.easysoft.ecommerce.model.SiteTemplate"/>
+        <mapping class="com.easysoft.ecommerce.model.SiteHeaderFooter"/>
+        <mapping class="com.easysoft.ecommerce.model.SiteContact"/>
+        <mapping class="com.easysoft.ecommerce.model.SiteSupport"/>
+        <mapping class="com.easysoft.ecommerce.model.SiteQuestionAnswer"/>
+        <mapping class="com.easysoft.ecommerce.model.SiteProductService"/>
+        <mapping class="com.easysoft.ecommerce.model.GlobalConfig"/>
+        <!--start cuoi5s-->
+        <mapping class="com.easysoft.ecommerce.model.Video"/>
+        <mapping class="com.easysoft.ecommerce.model.VideoImportClass"/>
+
+        <mapping class="com.easysoft.ecommerce.model.Album"/>
+        <mapping class="com.easysoft.ecommerce.model.AlbumImage"/>
+        <mapping class="com.easysoft.ecommerce.model.SiteMenuPartContent"/>
+    </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+    <TITLE>Xác nhận đơn hàng</TITLE>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</HEAD>
+
+<BODY>
+
+<div id="cg_msg_content">
+
+
+    <title>Xác nhận đơn đặt hàng</title>
+
+
+    <style type="text/css">
+        <!--
+        body {
+            margin-top:10px;margin-left:0px;}
+        .style1 {
+            font-family:Arial, Helvetica, sans-serif;font-size:9px;color:#d1d5c9;}
+        a:link {
+            text-decoration:none;}
+        a:visited {
+            text-decoration:none;}
+        a:hover {
+            text-decoration:underline;}
+        a:active {
+            text-decoration:none;}
+        -->
+    </style>
+
+
+
+    <table width="735px" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tbody><tr>
+            <td>
+                <img src="http://${site.domain}${siteParam.LOGO_IMAGE}" alt="${site.name}" border="0">
+            </td>
+        </tr>
+        </tbody></table>
+    <table width="735px" align="center" cellpadding="0" cellspacing="0" style="border:1px solid #d2d6c8;padding:15px;">
+        <tbody><tr>
+            <td valign="top" width="100%">
+                <br><p><font face="Arial" size="2" color="#000000">Xin chào ${order.firstName},</font></p>
+                <p><font face="Arial" size="2" color="#000000"><strong>Cảm ơn bạn đã đặt hàng tại ${site.name}.</strong></font></p>
+                <p style="MARGIN-BOTTOM:10px;">
+                    <font face="Arial" size="2">Đơn hàng của bạn đã được gởi đến bộ phận xử lý đơn hàng.<br>
+                    </font>
+                </p>
+                <p style="MARGIN-BOTTOM:10px;">
+                    <font face="Arial" size="2">Xin vui lòng thanh toán số tiền ${orderObject.ORDER.TOTAL_PRICE_EMAIL} trong vòng 48h. Mọi thắc mắc xin vui lòng
+                        <a href="http://${site.domain}/lien-he.html">email</a> đến chúng tôi
+                        #if ($siteParam.PHONE_CONTACT)
+                            hoặc gọi đến số ${siteParam.PHONE_CONTACT}
+                        #end
+                        . (Nếu quý khách chọn thanh toán sau (COD), chúng tôi sẽ nhận tiền khi giao hàng)<br><br>
+                    </font>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#e9eada" height="34" valign="middle"><b> <font face="arial" size="2" color="#000000"> &nbsp;Dưới đây là thông tin chi tiết về đơn hàng:</font></b></td>
+        </tr>
+        <tr>
+            <td>
+                <table width="100%">
+                    <tbody><tr>
+                        <td width="50%" height="61" valign="top">
+                            <b><font face="arial" size="2">Ngày đặt hàng</font></b>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:1px;"> <font face="arial" size="2">${order.createdDate}</font></p>
+                        </td>
+                        <td width="44%" height="61" valign="top">
+                            <b><font face="arial" size="2">Mã đơn hàng</font></b>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:1px;"> <font face="arial" size="2">${site.siteCode}${order.id}</font></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" bgcolor="#ffffff" height="61">
+                            <b><font face="Arial" size="2" color="#4d4d4d"> <font color="#000000">Thông tin khách hàng.</font></font></b>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.lastName} ${order.firstName}</font></p>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.address_1}</font></p>
+                            #if ($order.district)
+                                <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.district}</font></p>
+                            #end
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.city}</font></p>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.phone}</font></p>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.email}</font></p>
+                        </td>
+                        <td valign="top" bgcolor="#ffffff" height="61">
+                            <b><font face="Arial" size="2" color="#4d4d4d"> <font color="#000000">Địa chỉ nhận hàng.</font></font></b>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.lastNameShipping} ${order.firstNameShipping}</font></p>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.address_1Shipping}</font></p>
+                            #if ($order.districtShipping)
+                                <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.districtShipping}</font></p>
+                            #end
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.cityShipping}</font></p>
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">${order.phoneShipping}</font></p>
+                        </td>
+                    </tr>
+                    </tbody></table>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <table width="100%" style="font-family:Arial;font-size:2;color:#000000;">
+                    <tbody>
+                    <tr bgcolor="#d1d5c9">
+                        <td align="left" width="55%" valign="top" bgcolor="#d1d5c9"><font face="Arial" size="2" color="#000000">Sản phẩm</font></td>
+                        <td align="center" width="15%" valign="top" bgcolor="#d1d5c9"><font face="Arial" size="2" color="#000000">Số lượng</font></td>
+                        <td align="center" width="15%" valign="top" bgcolor="#d1d5c9"><font face="Arial" size="2" color="#000000">Giá</font></td>
+                        <td align="center" width="15%" valign="top" bgcolor="#d1d5c9"><font face="Arial" size="2" color="#000000">Thành tiền</font></td>
+                    </tr>
+                    <tr>
+                        <td width="70%" valign="top" colspan="4">
+                            <table width="100%">
+                                <tbody>
+                                    #foreach( $product in $orderObject.ORDER.ITEMS )
+                                    <tr>
+                                        <td align="left" valign="top" style="width:55%;"><font face="Arial" size="2" color="#000000">${product.NAME}</font>
+                                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">Model:${product.MODEL_NUMBER}</font></p>
+                                            #if ($product.COLOR)
+                                                <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="#000000">Color:${product.COLOR}</font></p>
+                                            #end
+                                            #if ($product.SIZE)
+                                                <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:3px;"> <font face="Arial" size="2" color="#000000">Size:${product.SIZE}</font></p>
+                                            #end
+                                        </td>
+                                        <td align="center" valign="top" style="width:15%;"><font face="arial" color="#000000" size="2">${product.QUANTITY}</font></td>
+                                        <td align="right" valign="top" style="width:15%;"><font face="arial" color="#000000" size="2">${product.FINAL_PRICE_ITEM_EMAIL}</font></td>
+                                        <td align="right" valign="top" style="height:15%;"><font face="arial" color="#000000" size="2">${product.TOTAL_PRICE_ITEM_EMAIL}</font>
+                                            #if ($product.PRICE_ITEM_PROMO_DISCOUNT_EMAIL)
+                                                <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"> <font face="Arial" size="2" color="red">-${product.PRICE_ITEM_PROMO_DISCOUNT_EMAIL}</font></p>
+                                            #end
+                                        </td>
+                                    </tr>
+                                    #end
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table width="100%">
+                    <tbody><tr>
+                        <td align="center" colspan="2"><hr style="HEIGHT:1px;" color="#d1d5c9" size="1"></td>
+                    </tr>
+                    <tr>
+                        <td align="right" style="width:80%;"><font face="arial" color="#000000" size="2">Giá thành sản phẩm:</font></td>
+                        <td align="right" style="width:20%;"><font face="arial" color="#000000" size="2">${orderObject.ORDER.SUB_TOTAL_PRICE_EMAIL}</font></td>
+                    </tr>
+                    #if ($orderObject.ORDER.SUB_TOTAL_PRICE_DISCOUNT_EMAIL != "")
+                    <tr>
+                        <td align="right" style="width:80%;color: red;"><font face="arial" size="2" color="red">Giảm giá:</font></td>
+                        <td align="right" style="width:20%;color: red;"><font face="arial" size="2" color="red">-${orderObject.ORDER.SUB_TOTAL_PRICE_DISCOUNT_EMAIL}</font></td>
+                    </tr>
+                    #end
+                    <tr>
+                        <td align="right" style="width:80%;height:18px;"><font face="arial" color="#000000" size="2">Phí vận chuyển:</font></td>
+                        <td align="right" style="width:20%;"><font color="#000000" face="arial" size="2">${orderObject.ORDER.SHIPPING_PRICE_EMAIL}</font></td>
+                    </tr>
+                    #if ($orderObject.ORDER.SHIPPING_PRICE_DISCOUNT_EMAIL != "")
+                    <tr>
+                        <td align="right" style="width:80%;height:18px;color: red;"><font face="arial" size="2" color="red">Giảm giá phí vận chuyển:</font></td>
+                        <td align="right" style="width:20%;color: red;"><font face="arial" size="2" color="red">-${orderObject.ORDER.SHIPPING_PRICE_DISCOUNT_EMAIL}</font></td>
+                    </tr>
+                    #end
+                    <tr>
+                        <td align="right" style="width:80%;"><font face="arial" color="#000000" size="2">Thuế:</font></td>
+                        #set ($tax = 0)
+                        #if ($orderObject.ORDER.TAX_PRICE_EMAIL)
+                            #set ($tax = $orderObject.ORDER.TAX_PRICE_EMAIL)
+                        #end
+                        <td align="right" style="width:20%;"><font color="#000000" face="arial" size="2">${tax}</font></td>
+                    </tr>
+                    <tr>
+                        <td align="right" style="width:80%;"><font color="#000000">&nbsp;</font></td>
+                        <td align="center" style="width:20%;"><hr align="right" width="70" size="1" color="#d1d5c9" style="HEIGHT:1px;"></td>
+                    </tr>
+                    <tr>
+                        <td align="right" style="width:80%;"><font color="#000000" size="2" face="Arial, Helvetica, sans-serif"><b>Tổng tiền:</b></font></td>
+                        <td align="right" style="width:20%;"><font color="#000000" size="2" face="Arial, Helvetica, sans-serif">${orderObject.ORDER.TOTAL_PRICE_EMAIL}</font></td>
+                    </tr>
+                    <tr>
+                        <td align="left" style="width:80%;"><font color="#000000" size="2" face="Arial, Helvetica, sans-serif"><br><br><br><b>Cảm ơn quý khách</b><br>${site.domain}</font></td>
+                        <td align="right" style="width:20%;"></td>
+                    </tr>
+                    </tbody></table>
+            </td>
+        </tr>
+        </tbody></table>
+</div>
+
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,93 @@
+.list-unstyled {
+    padding-left: 10px;
+    list-style: none;
+    width: 300px;
+    float: left;
+}
+.style-switcher li {
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    margin: 2px 5px 5px 2px;
+    display: inline-block;
+}
+ul {
+    padding: 0;
+    margin: 0 0 9px 0;
+}
+.header {
+    height: 45px;
+}
+.iframe-top-title {
+    float:left; font-weight: bold;padding-right: 5px;
+}
+ul.list-unstyled li a.active {
+    color: red;
+}
+.destop {
+    width: 100%;
+    height: 100%;
+}
+.desktop iframe#demoIframe {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    border: 0;
+}
+.tablet-stand {
+    background: rgba(0, 0, 0, 0) url("//images.webphattai.com/get/d4054ad9-f353-46e3-b3f2-918d7c8e8e41.png?op=saturation|530&op=contrast|50") repeat scroll 0 0;
+    height: 1242px;
+    margin: 20px auto;
+    width: 871px;
+}
+.tablet-stand iframe#demoIframe {
+    height: 1038px !important;
+    margin: 106px 0 0 44px;
+    width: 783px;
+    position: relative;
+    border: 0;
+}
+
+.tablet-flat {
+    background: rgba(0, 0, 0, 0) url("//images.webphattai.com/get/c7c2c743-fa5a-4880-974c-04f243f9ba29.png?op=saturation|530&op=contrast|50") repeat scroll 0 0;
+    height: 779px;
+    margin: 20px auto;
+    overflow: auto;
+    width: 1242px;
+}
+.tablet-flat iframe#demoIframe {
+    height: 689px !important;
+    margin: 44px 0 0 106px;
+    overflow-x: hidden;
+    width: 1038px;
+
+    position: relative;
+    border: 0;
+}
+.mobile-stand {
+    background: rgba(0, 0, 0, 0) url("//images.webphattai.com/get/dceae21d-580c-45a2-a8fd-f04e2c4643dc.png?op=saturation|530&op=contrast|50") repeat scroll 0 0;
+    height: 707px;
+    margin: 20px auto;
+    width: 370px;
+}
+.mobile-stand iframe#demoIframe {
+    height: 495px !important;
+    margin: 106px 0 0 20px;
+    width: 335px;
+    position: relative;
+    border: 0;
+}
+
+.mobile-flat {
+    background: rgba(0, 0, 0, 0) url("//images.webphattai.com/get/83228176-c65d-44e7-abf4-cfa3c937b480.png?op=saturation|530&op=contrast|50") repeat scroll 0 0;
+    height: 370px;
+    margin: 150px auto 20px;
+    width: 707px;
+}
+.mobile-flat iframe#demoIframe {
+    height: 335px !important;
+    margin: 20px 0 0 106px;
+    width: 495px;
+    position: relative;
+    border: 0;
+}

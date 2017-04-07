@@ -1,0 +1,40 @@
+<ehcache>
+
+    <defaultCache
+            maxElementsInMemory="1000"
+            eternal="false"
+            overflowToDisk="false"
+            timeToIdleSeconds="3600"
+            timeToLiveSeconds="3600"
+            diskPersistent="false"
+            diskExpiryThreadIntervalSeconds="3600"/>
+            
+    <diskStore path="java.io.tmpdir"/>
+    <!--120-->
+    <cache name="org.hibernate.cache.StandardQueryCache"
+        maxElementsInMemory="5"
+        eternal="false"
+        timeToIdleSeconds="60" timeToLiveSeconds="120"
+        overflowToDisk="false"/>
+    <cache name="org.hibernate.cache.UpdateTimestampsCache"
+        maxElementsInMemory="5000"
+        eternal="true"
+        overflowToDisk="false"/>
+
+    <cache name="CacheTag" eternal="false" maxElementsInMemory="1000"
+        overflowToDisk="true" diskPersistent="false" timeToIdleSeconds="1800"
+        timeToLiveSeconds="3600" memoryStoreEvictionPolicy="LRU" />
+
+    <cache name="CommonCache" eternal="false" maxElementsInMemory="1000"
+           overflowToDisk="true" diskPersistent="false" timeToIdleSeconds="1800"
+           timeToLiveSeconds="3600" memoryStoreEvictionPolicy="LRU" />
+
+    <!--<cache name="CacheTag" eternal="false" maxElementsInMemory="1000"-->
+        <!--overflowToDisk="true" diskPersistent="false" timeToIdleSeconds="3"-->
+        <!--timeToLiveSeconds="3" memoryStoreEvictionPolicy="LRU" />-->
+
+    <!--<cache name="CommonCache" eternal="false" maxElementsInMemory="1000"-->
+        <!--overflowToDisk="true" diskPersistent="false" timeToIdleSeconds="3"-->
+        <!--timeToLiveSeconds="3" memoryStoreEvictionPolicy="LRU" />-->
+
+</ehcache>

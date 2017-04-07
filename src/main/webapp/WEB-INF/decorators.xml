@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<decorators defaultdir="/">
+    <decorator name="default" page="template/default/template_main.jsp"/>
+    <decorator name="error" page="template/default/template_error.jsp"/>
+    <decorator name="no_leftnav" page="template/default/template_no_leftnav.jsp"/>
+    <decorator name="popup" page="template/default/template_popup.jsp"/>
+    <decorator name="m00" page="template/default/template_m00.jsp"/>
+    <decorator name="m01" page="template/default/template_m01.jsp"/>
+    <decorator name="m02" page="template/default/template_m02.jsp"/>
+    <decorator name="m3x" page="template/default/template_3x.jsp"/>
+    <decorator name="wpt" page="template/default/template_wpt.jsp"/>
+
+    <decorator name="admin" page="admin/template.jsp"/>
+    <decorator name="admin_new" page="admin/template_new.jsp"/>
+    <decorator name="admin_wpt" page="admin/template_wpt.jsp"/>
+    <decorator name="admin_popup" page="admin/template_popup.jsp"/>
+</decorators>

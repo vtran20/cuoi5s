@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+    <TITLE>Xác nhận đăng ký</TITLE>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</HEAD>
+<BODY>
+<div id="cg_msg_content">
+    <style type="text/css">
+        <!--
+        body {
+            margin-top: 10px;
+            margin-left: 0px;
+        }
+
+        .style1 {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 9px;
+            color: #d1d5c9;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:visited {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:active {
+            text-decoration: none;
+        }
+
+        -->
+    </style>
+    <table width="735px" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <td>
+                <img src="http://${site.domain}${siteParam.LOGO_IMAGE}" alt="${site.name}" border="0">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <table width="735px" align="center" cellpadding="0" cellspacing="0" style="border:1px solid #d2d6c8;padding:15px;">
+        <tbody>
+        <tr>
+            <td valign="top" width="100%">
+                <br>
+                <p><font face="Arial" size="2" color="#000000"><strong>Xin Chào Quý Khách.</strong></font></p>
+
+                <p style="MARGIN-BOTTOM:10px;">
+                    <font face="Arial" size="2">Chúng tôi đã nhận được đăng ký tài khoản để tạo website của quý khách.
+                        Xin vui lòng click vào link dưới đây hoặc copy vào thanh địa chỉ của bất kỳ trình duyệt web để
+                        hoàn tất việc đăng ký và kích hoạt tài khoản.<br>
+                    </font>
+                </p>
+
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#e9eada" height="34" valign="middle"><b> <font face="arial" size="2" color="#000000"><a
+                    href="http://${site.domain}/site/kich-hoat.html?code=${code}">http://${site.domain}/site/kich-hoat.html?code=${code}</a></font></b></td>
+        </tr>
+        <tr>
+            <td>
+                <table width="100%">
+                    <tbody>
+                    <tr>
+                        <td height="60" valign="top" colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td height="60" valign="top" colspan="2">
+                            <font face="arial" size="2">Cảm ơn quý khách tin tưởng và sử dụng dịch vụ của chúng tôi.</font>
+
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"><font face="Arial" size="2" color="#000000">Trân Trọng</font></p>
+
+                            <p style="MARGIN-TOP:1px;MARGIN-BOTTOM:0px;"><font face="Arial" size="2"
+                                                                               color="#000000">${site.name}</font></p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</BODY>
+</HTML>

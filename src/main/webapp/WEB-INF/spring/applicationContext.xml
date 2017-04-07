@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+
+
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+            http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+
+		    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring
+		    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd">
+
+    <!-- ========================= COMMON DEFINITIONS ========================= -->
+    <bean id="configurationService" class="com.easysoft.ecommerce.service.impl.ConfigurationServiceImpl">
+        <constructor-arg>
+            <util:properties location="WEB-INF/config.properties"/>
+        </constructor-arg>
+    </bean>
+
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+          p:configLocation="classpath:/spring-ehcache.xml"/>
+    <bean id="cacheProviderCacheManagerInjector"
+          class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+          p:staticMethod="com.easysoft.ecommerce.service.impl.SpringawareEhcacheRegionFactory.setCacheManager">
+        <property name="arguments">
+            <list>
+                <ref bean="cacheManager"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"
+          p:configLocation="classpath:hibernate.cfg.xml"
+          depends-on="cacheProviderCacheManagerInjector"/>
+    <!-- Make sure cacheManager has been injected first to be used for Hibernate caching -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+          p:sessionFactory-ref="sessionFactory"/>
+
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.gmail.com"/>
+        <property name="port" value="587"/>
+        <property name="username" value="vtran20@gmail.com"/>
+        <property name="password" value="thaivudn"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+    <!--<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">-->
+        <!--<property name="host" value="smtp.gmail.com"/>-->
+        <!--<property name="port" value="587"/>-->
+        <!--<property name="username" value="info@webphattai.com"/>-->
+        <!--<property name="password" value="thaivudn"/>-->
+        <!--<property name="defaultEncoding" value="UTF-8"/>-->
+
+        <!--<property name="javaMailProperties">-->
+            <!--<props>-->
+                <!--<prop key="mail.smtp.auth">true</prop>-->
+                <!--<prop key="mail.smtp.starttls.enable">true</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean"
+          p:resourceLoaderPath="classpath:/emailtemplate" p:preferFileSystemAccess="false"/>
+
+    <!--Encrypt and Decrypt password-->
+    <bean id="strongEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <property name="algorithm" value="PBEWithMD5AndTripleDES"/>
+        <property name="password" value="PLC"/>
+    </bean>
+    <!--
+        Instruct Spring to perform declarative transaction management
+        automatically on annotated classes.
+    -->
+    <tx:annotation-driven/>
+
+    <bean id="cacheData" class="com.easysoft.ecommerce.util.CacheData"/>
+    <bean id="cacheKeyGenerator" class="com.easysoft.ecommerce.web.cache.CacheKeyGenerator"/>
+
+    <bean id="localeResolver" class="com.easysoft.ecommerce.web.filter.NoDefaultCookieLocaleResolver"/>
+
+    <bean id="timeZoneResolver" class="com.easysoft.ecommerce.web.filter.NoDefaultCookieTimeZoneResolver"/>
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+          p:basename="#{configurationService.messageBundle}"/>
+
+    <bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource"
+          p:basenamePrefix="themes."/>
+    <bean id="themeResolver" class="com.easysoft.ecommerce.web.filter.NoDefaultCookieThemeResolver"/>
+
+    <!--
+        Activates various annotations to be detected in bean classes: Spring's
+        @Required and @Autowired, as well as JSR 250's @PostConstruct,
+        @PreDestroy and @Resource (if available) and JPA's @PersistenceContext
+        and @PersistenceUnit (if available).
+    -->
+    <context:annotation-config/>
+
+    <!--
+      Allow caching method results which are annotated with @Cacheable
+    -->
+    <ehcache:annotation-driven cache-manager="cacheManager"/>
+
+    <!--
+      Logging all method calls across bean boundary
+    -->
+    <aop:aspectj-autoproxy/>
+
+    <!--
+        PostProcessors to perform exception translation on @Repository classes (from native
+        exceptions such as JPA PersistenceExceptions to Spring's DataAccessException hierarchy).
+    -->
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
+    <!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
+
+    <!--
+      Autodetected POJOs labeled with the @Controller/@Service/@Repositoty/@Component annotation.
+    -->
+    <context:component-scan base-package="com.easysoft.ecommerce.dao, com.easysoft.ecommerce.service"/>
+
+    <!-- used by multipartFilter in web.xml, to support upload file while httpMethodFilter is used -->
+    <bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+    <task:scheduled-tasks>
+        <!-- run every 2 hours on weekdays only-->
+        <!--<task:scheduled ref="fileSystemServiceImpl" method="download" cron="* 0 */2 * * MON-FRI"/>-->
+        <!-- run every morning at 6 AM -->
+        <!--<task:scheduled ref="jobsServiceImpl" method="runPromoPriceJob" cron="0 0 6 * * ?"/>-->
+        <!--Run every 2 hours-->
+        <!--<task:scheduled ref="jobsServiceImpl" method="runPromoPriceJob" cron="8 1 */2 * * ?"/>-->
+        <!--Run at 12-15 AM every 20 minutes-->
+        <!--<task:scheduled ref="jobsServiceImpl" method="autoEmailSending" cron="0 */20 12-15 * * ?"/>-->
+        <!--Run at every 2 hours-->
+        <!--<task:scheduled ref="jobsServiceImpl" method="marketingEmailSending" cron="0 1 */2 * * ?"/>-->
+        <!--<task:scheduled ref="jobsServiceImpl" method="autoEmailSending" cron="0 */10 * * * ?"/>-->
+        <!--Run at 12 PM every day-->
+        <task:scheduled ref="jobsServiceImpl" method="deleteUserSession" cron="0 0 12 * * ?"/>
+        <!--Run at 11 PM every Friday-->
+        <task:scheduled ref="jobsServiceImpl" method="updateExpiredDateForDemoSite" cron="0 0 11 * * FRI"/>
+        <!--Run every hour at the second minute-->
+        <!--<task:scheduled ref="jobsServiceImpl" method="updateVideoStatistic" cron="0 2 * * * ?"/>-->
+    </task:scheduled-tasks>
+
+</beans>

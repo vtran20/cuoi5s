@@ -1,1 +1,23 @@
 # Add any directories, files, or patterns you don't want to be tracked by version control
+cuoi5s.iws
+cuoi5s.ipr
+cuoi5s.iml
+todo.txt
+json.json
+README.txt
+change_css_js.txt
+db.sql
+checkstyle.xml
+BUGS.txt
+jettyDebug
+jetty.bat
+jetty
+exportdb.bat
+findbugs-exclude.xml
+exportdb
+importdb.bat
+jetty2
+RELEASES.txt
+importdb
+deploy.sh
+build.sh

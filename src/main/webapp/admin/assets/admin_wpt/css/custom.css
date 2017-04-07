@@ -1,0 +1,85 @@
+.dd {
+    max-width: none;
+}
+.error {
+    color: red;
+}
+
+/*Dashboard*/
+.widget-main ul.submenu li {
+    list-style: none;
+    height: 25px;
+}
+.widget-main ul.submenu li i.menu-icon {
+    margin-right: 8px;
+}
+.widget-main ul.submenu li a {
+    font-size: 14px;
+}
+
+/*Table in products, categories and orders*/
+div#products-table_wrapper div.col-sm-12{
+    padding-left: 0;
+    padding-right: 0;
+}
+table.dataTable {
+    width: 100%;
+    margin: 0 auto;
+    clear: both;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+table.dataTable thead .sorting {
+    background-image: none;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+    cursor: default;
+    color: #666 !important;
+    border: 0px solid transparent;
+    background: transparent;
+    box-shadow: none;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    box-sizing: border-box;
+    display: inline;
+    min-width: 1.5em;
+    padding: 0;
+    margin-left: 0;
+    text-align: center;
+    text-decoration: none !important;
+    cursor: pointer;
+    color: #333 !important;
+    border: 0px solid transparent;
+}
+
+/*This is for design page*/
+body.dragging, body.dragging * {
+    cursor: move !important;
+}
+
+.dragged {
+    position: absolute;
+    opacity: 0.5;
+    z-index: 2000;
+}
+
+table#simple-table tr.placeholder, table#simple-table-content tr.placeholder {
+    position: relative;
+    margin: 5px 0;
+    padding: 0;
+    height: 30px;
+    min-height: 30px;
+    background: #F0F9FF;
+    border: 2px dashed #BED2DB;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+button.tab-close-icon-size {
+    font-size: 10px;
+    padding: 3px 0 0 4px;
+    text-align: center;
+    /*width: 25%;*/
+    word-wrap: break-word;
+}

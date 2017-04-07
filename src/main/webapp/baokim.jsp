@@ -1,0 +1,1 @@
+baokim-site-verification: baokim_${code}.html

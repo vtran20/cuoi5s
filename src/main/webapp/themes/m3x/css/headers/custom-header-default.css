@@ -1,0 +1,52 @@
+/*Header CSS*/
+.header .logo {
+    height: 80px;
+}
+.header a.logo:hover {
+    text-decoration:none;
+}
+
+/*.header-fixed .header.header-fixed-shrink {*/
+    /*background: #f5f5f5;*/
+/*}*/
+/*.topbar {*/
+    /*z-index: 12;*/
+    /*padding: 8px 0 0 0;*/
+    /*position: relative;*/
+/*}*/
+/*.topbar ul.loginbar {*/
+    /*text-align: right;*/
+/*}*/
+
+/*.topbar ul.loginbar li a,*/
+/*.topbar ul.loginbar li a:hover {*/
+    /*text-decoration: none;*/
+/*}*/
+
+/*.topbar ul.loginbar li i {*/
+    /*color: #aaa;*/
+    /*padding: 3px;*/
+    /*min-width: 30px;*/
+    /*font-size: 20px;*/
+    /*text-align: center;*/
+    /*background: #354c8c;*/
+    /*display: inline-block;*/
+/*}*/
+
+/*.topbar ul.loginbar li i.fa {*/
+    /*color: #fff;*/
+/*}*/
+
+/*.topbar ul.loginbar li i:hover {*/
+    /*color: #fff;*/
+    /*background: #e74c3c;*/
+    /*-webkit-transition: all 0.2s ease-in-out;*/
+    /*-moz-transition: all 0.2s ease-in-out;*/
+    /*-o-transition: all 0.2s ease-in-out;*/
+    /*transition: all 0.2s ease-in-out;*/
+/*}*/
+
+/*.navbar-default {*/
+    /*background-color:none;*/
+    /*border-color:none;*/
+/*}*/

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components>
+
+    <component name="checkout-basket" interface="com.easysoft.ecommerce.service.component.ComponentInfo">
+        <classes>
+            <class>com.easysoft.ecommerce.service.component.impl.InventoryCheckingComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.CalculatePriceComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.ApplyPromoCodeComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.CalculatePriceComponent</class>
+        </classes>
+    </component>
+
+    <component name="checkout-shipping" interface="com.easysoft.ecommerce.service.component.ComponentInfo">
+        <classes>
+            <class>com.easysoft.ecommerce.service.component.impl.InventoryCheckingComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.ShippingFeeComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.ApplyPromoCodeComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.CalculatePriceComponent</class>
+        </classes>
+    </component>
+
+    <component name="checkout-applyPromoCode" interface="com.easysoft.ecommerce.service.component.ComponentInfo">
+        <classes>
+            <class>com.easysoft.ecommerce.service.component.impl.InventoryCheckingComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.ShippingFeeComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.ApplyPromoCodeComponent</class>
+            <class>com.easysoft.ecommerce.service.component.impl.CalculatePriceComponent</class>
+        </classes>
+    </component>
+
+</components>

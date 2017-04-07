@@ -1,0 +1,38 @@
+<script type="text/template" id="a_template">
+    <label>Name</label>
+    <input type='text' name='text' id='modal_dyn_text' value='<%=text%>'>
+    <label>Href</label>
+    <input type='text' name='href' id='modal_dyn_href' value='<%=href%>'>
+</script>
+<script type="text/template" id="img_template">
+    <label>Alt</label>
+    <input type='text' name='alt' id='modal_dyn_alt' value='<%=alt%>'>
+    <label>Width</label>
+    <input type='text' name='width' id='modal_dyn_width' value='<%=width%>'>
+    <label>Height</label>
+    <input type='text' name='height' id='modal_dyn_height' value='<%=height%>'>
+    <label>Src</label>
+    <input type='text' name='src' id='modal_dyn_src' value='<%=src%>' class="span5">
+</script>
+<script type="text/template" id="carousel_template">
+    <label>Title 1</label>
+    <input type='text' name='title1' id='modal_dyn_title1' value='<%=title1%>'>
+    <label>Description 1</label>
+    <input type='text' name='description1' id='modal_dyn_description1' value='<%=description1%>' class="span5">
+    <label>Image 1</label>
+    <input type='text' name='image1' id='modal_dyn_image1' value='<%=image1%>' class="span5">
+    <hr>
+    <label>Title 2</label>
+    <input type='text' name='title2' id='modal_dyn_title2' value='<%=title2%>'>
+    <label>Description 2</label>
+    <input type='text' name='description2' id='modal_dyn_description2' value='<%=description2%>' class="span5">
+    <label>Image 2</label>
+    <input type='text' name='image2' id='modal_dyn_image2' value='<%=image2%>' class="span5">
+    <hr>
+    <label>Title 3</label>
+    <input type='text' name='title3' id='modal_dyn_title3' value='<%=title3%>'>
+    <label>Description 3</label>
+    <input type='text' name='description3' id='modal_dyn_description3' value='<%=description3%>' class="span5">
+    <label>Image 3</label>
+    <input type='text' name='image3' id='modal_dyn_image3' value='<%=image3%>' class="span5">
+</script>

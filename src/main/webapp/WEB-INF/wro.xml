@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups xmlns="http://www.isdc.ro/wro"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
+
+    <group name="admin_wpt_css">
+        <!-- bootstrap & fontawesome -->
+        <css>/admin/assets/admin_wpt/css/bootstrap.min.css</css>
+        <css>/admin/assets/admin_wpt/css/font-awesome.min.css</css>
+        <!-- page specific plugin styles -->
+        <css>/admin/assets/admin_wpt/css/jquery-ui.min.css</css>
+        <css>/admin/assets/admin_wpt/css/datepicker.min.css</css>
+        <css>/admin/assets/admin_wpt/css/ui.jqgrid.min.css</css>
+        <!-- text fonts -->
+        <css>/admin/assets/admin_wpt/css/ace-fonts.min.css</css>
+        <!-- ace styles -->
+        <css>/admin/assets/admin_wpt/css/ace.min.css</css>
+        <css>/admin/assets/admin_wpt/css/ace-skins.min.css</css>
+        <css>/admin/assets/admin_wpt/css/ace-rtl.min.css</css>
+        <css>/admin/assets/admin_wpt/js/bootstrap-dialog/css/bootstrap-dialog.min.css</css>
+        <css>/admin/assets/admin_wpt/css/custom.css</css>
+    </group>
+    <group name="admin_wpt_js">
+        <js>/admin/assets/admin_wpt/js/bootstrap.min.js</js>
+        <!--<js>/admin/assets/admin_wpt/js/date-time/bootstrap-datepicker.min.js</js>-->
+        <!--<js>/admin/assets/admin_wpt/js/jqGrid/jquery.jqGrid.min.js</js>-->
+        <!--<js>/admin/assets/admin_wpt/js/jqGrid/i18n/grid.locale-en.js</js>-->
+        <!-- ace scripts -->
+        <js minimize="false">/admin/assets/admin_wpt/js/ace.js</js>
+        <!--<js>/admin/assets/admin_wpt/js/ace.min.js</js>-->
+        <!--This is used for menu page-->
+        <js>/admin/assets/admin_wpt/js/jquery.nestable.js</js>
+        <!--This is used for row and partcontent-->
+        <js minimize="false">/admin/assets/admin_wpt/js/jquery-sortable-min.js</js>
+        <js>/admin/assets/admin_wpt/js/bootstrap-dialog/js/bootstrap-dialog.min.js</js>
+        <js>/admin/assets/admin_wpt/js/jquery.validate.min.js</js>
+        <js>/admin/assets/admin_wpt/js/bootstrap-remote-tabs.js</js>
+        <js>/admin/assets/admin_wpt/js/jquery.dataTables.min.js</js>
+        <js>/admin/assets/admin_wpt/js/dataTables.bootstrap.js</js>
+        <js>/admin/assets/admin_wpt/js/common.js</js>
+        <js>/admin/assets/admin_wpt/js/mustache.js</js>
+
+
+    </group>
+
+    <!--<group name="admin_css">-->
+        <!--&lt;!&ndash; Bootstrap &ndash;&gt;-->
+        <!--<css>/admin/assets/admin_new/css/bootstrap.css</css>-->
+        <!--<css>/admin/assets/admin_new/css/default.css</css>-->
+        <!--<css>/admin/assets/admin_new/css/bootstrap-responsive.css</css>-->
+        <!--&lt;!&ndash; Bootstrap Date Picker &ndash;&gt;-->
+        <!--&lt;!&ndash;<css>/admin/assets/admin_new/css/datepicker.css</css>&ndash;&gt;-->
+        <!--&lt;!&ndash; Bootstrap Date Picker &ndash;&gt;-->
+        <!--<css>/admin/assets/admin_new/css/jquery.fileupload-ui.css</css>-->
+        <!--&lt;!&ndash; Bootstrap Image Gallery styles &ndash;&gt;-->
+        <!--<css>/admin/assets/admin_new/css/bootstrap-image-gallery.min.css</css>-->
+        <!--&lt;!&ndash; Uniform &ndash;&gt;-->
+        <!--<css>/admin/assets/admin_new/css/uniform.default.css</css>-->
+        <!--&lt;!&ndash; Chosen multiselect &ndash;&gt;-->
+        <!--<css>/admin/assets/admin_new/css/chosen.intenso.css</css>-->
+        <!--&lt;!&ndash;Common style for admin site&ndash;&gt;-->
+        <!--<css>/admin/assets/admin_new/css/common.css</css>-->
+    <!--</group>-->
+
+    <!--<group name="admin_js">-->
+        <!--<js>/admin/assets/admin_new/js/jquery.min.js</js>-->
+        <!--<js>/admin/assets/admin_new/js/jquery.validate.min.js</js>-->
+        <!--&lt;!&ndash;Dialog popup confirm&ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.dialog2.js</js>-->
+        <!--<js>/admin/assets/admin_new/js/jquery.dialog2.helpers.js</js>-->
+        <!--&lt;!&ndash;Data tables&ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.dataTables.js</js>-->
+        <!--&lt;!&ndash;Jquery sortable&ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.ui.core.min.js</js>-->
+        <!--<js>/admin/assets/admin_new/js/jquery.ui.widget.min.js</js>-->
+        <!--<js>/admin/assets/admin_new/js/jquery.ui.mouse.min.js</js>-->
+        <!--<js>/admin/assets/admin_new/js/jquery.ui.sortable.min.js</js>-->
+        <!--&lt;!&ndash; jQuery UI Draggable & droppable &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.ui.draggable.min.js</js>-->
+        <!--<js>/admin/assets/admin_new/js/jquery.ui.droppable.min.js</js>-->
+        <!--&lt;!&ndash; Bootstrap &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/bootstrap.min.js</js>-->
+        <!--<js>/admin/assets/admin_new/js/bootbox.min.js</js>-->
+        <!--&lt;!&ndash; Bootstrap Date Picker &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/bootstrap-datepicker.js</js>-->
+        <!--&lt;!&ndash; jQuery Cookie &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.cookie.js</js>-->
+        <!--&lt;!&ndash;Full calendar&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/admin_new/js/fullcalendar.min.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash; Chosen multiselect &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/chosen.jquery.min.js</js>-->
+        <!--&lt;!&ndash; Uniform &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.uniform.min.js</js>-->
+        <!--&lt;!&ndash; The Templates plugin is included to render the upload/download listings &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/tmpl.min.js</js>-->
+        <!--&lt;!&ndash; The Load Image plugin is included for the preview images and image resizing functionality &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/load-image.min.js</js>-->
+        <!--&lt;!&ndash; The Canvas to Blob plugin is included for image resizing functionality &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/canvas-to-blob.min.js</js>-->
+        <!--<js>/admin/assets/admin_new/js/bootstrap-image-gallery.min.js</js>-->
+        <!--&lt;!&ndash; The Iframe Transport is required for browsers without support for XHR file uploads &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.iframe-transport.js</js>-->
+        <!--&lt;!&ndash; The basic File Upload plugin &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.fileupload.js</js>-->
+        <!--&lt;!&ndash; The File Upload image processing plugin &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.fileupload-ip.js</js>-->
+        <!--&lt;!&ndash; The File Upload user interface plugin &ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/jquery.fileupload-ui.js</js>-->
+        <!--&lt;!&ndash; The main application script &ndash;&gt;-->
+        <!--<js minimize="false">/admin/assets/admin_new/js/main.js</js>-->
+        <!--&lt;!&ndash;Javascript for admin site&ndash;&gt;-->
+        <!--<js>/admin/assets/admin_new/js/common.js</js>-->
+
+
+
+        <!--&lt;!&ndash;<js>/admin/assets/js/jquery-ui-1.8.5.custom.min.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/js/jquery.validate-1.7.min.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/js/browser.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/js/jquery.cookie.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;<js>/admin/assets/js/jquery.tablednd_0_5.js</js>&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/js/jquery.dataTables.min.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/js/jquery.popupWindow.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/js/jquery.jstree.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/js/jScrollPane.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/js/jquery.mousewheel.js</js>&ndash;&gt;-->
+    <!--</group>-->
+
+    <!--<group name="left_panel_css">-->
+        <!--<css>/themes/editor/css/jquery-ui-1.9.2.css</css>-->
+        <!--<css>/themes/editor/css/editor.css</css>-->
+        <!--<css>/themes/editor/css/etch.css</css>-->
+    <!--</group>-->
+
+    <!--<group name="left_panel_js">-->
+        <!--<js>/themes/editor/js/jquery-ui.js</js>-->
+        <!--<js minimize="false">/themes/editor/js/jquery.hoverIntent.min.js</js>-->
+        <!--<js>/themes/editor/js/jquery.metadata.js</js>-->
+        <!--<js>/themes/editor/js/jquery.mb.flipText.js</js>-->
+        <!--<js>/themes/editor/js/mbExtruder.js</js>-->
+        <!--<js minimize="false">/themes/editor/js/underscore-min-1.4.3.js</js>-->
+        <!--<js minimize="false">/themes/editor/js/backbone-min-0.9.9.js</js>-->
+        <!--<js>/themes/editor/js/etch.js</js>-->
+        <!--&lt;!&ndash; The Iframe Transport is required for browsers without support for XHR file uploads &ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/admin_new/js/jquery.iframe-transport.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash; The basic File Upload plugin &ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/admin_new/js/jquery.fileupload.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash; The File Upload image processing plugin &ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/admin_new/js/jquery.fileupload-ip.js</js>&ndash;&gt;-->
+        <!--&lt;!&ndash; The File Upload user interface plugin &ndash;&gt;-->
+        <!--&lt;!&ndash;<js>/admin/assets/admin_new/js/jquery.fileupload-ui.js</js>&ndash;&gt;-->
+
+        <!--<js minimize="false">/themes/editor/js/editor.js</js>-->
+    <!--</group>-->
+
+    <!--&lt;!&ndash;Template m00&ndash;&gt;-->
+    <!--<group name="m00_css">-->
+        <!--<css minimize="false">/themes/m00/css/bootstrap.min.css</css>-->
+        <!--<css minimize="false">/themes/m00/css/bootstrap-responsive.min.css</css>-->
+        <!--<css>/themes/m00/css/style.css</css>-->
+    <!--</group>-->
+
+    <!--<group name="m00_js">-->
+        <!--<js minimize="false">/themes/m00/js/jquery.min.js</js>-->
+        <!--<js minimize="false">/themes/m00/js/bootstrap.min.js</js>-->
+    <!--</group>-->
+
+    <!--&lt;!&ndash;Template m00&ndash;&gt;-->
+    <!--<group name="m01_css">-->
+        <!--<css minimize="false">/themes/m01/css/bootstrap.min.css</css>-->
+        <!--<css minimize="false">/themes/m01/css/bootstrap-responsive.min.css</css>-->
+        <!--<css>/themes/m01/css/style.css</css>-->
+    <!--</group>-->
+
+    <!--<group name="m01_js">-->
+        <!--<js minimize="false">/themes/m01/js/jquery.min.js</js>-->
+        <!--<js minimize="false">/themes/m01/js/bootstrap.min.js</js>-->
+    <!--</group>-->
+
+    <!--&lt;!&ndash;Template m02&ndash;&gt;-->
+    <!--<group name="m02_css">-->
+        <!--<css minimize="false">/themes/m02/css/bootstrap.min.css</css>-->
+        <!--<css minimize="false">/themes/m02/css/bootstrap-responsive.css</css>-->
+        <!--<css minimize="false">/themes/m02/css/font-awesome.min.css</css>-->
+        <!--<css>/themes/m02/css/style.css</css>-->
+    <!--</group>-->
+    <!--<group name="m02_js">-->
+        <!--<js minimize="false">/themes/m02/js/jquery.min.js</js>-->
+        <!--<js minimize="false">/themes/m02/js/bootstrap.min.js</js>-->
+        <!--<js minimize="false">/themes/m02/js/jquery.validate.min.js</js>-->
+        <!--<js>/themes/m02/js/script.js</js>-->
+    <!--</group>-->
+
+    <!--Template bootstrap m3x-->
+    <group name="m3x_css">
+        <!-- CSS Global Compulsory -->
+        <css minimize="false">/themes/m3x/plugins/bootstrap/css/bootstrap.min.css</css>
+        <!-- CSS Implementing Plugins -->
+        <css minimize="true">/themes/m3x/plugins/line-icons/line-icons.css</css>
+        <css minimize="false">/themes/m3x/plugins/font-awesome/css/font-awesome.min.css</css>
+        <css minimize="true">/themes/m3x/plugins/brand-buttons/brand-buttons.css</css>
+        <css minimize="true">/themes/m3x/plugins/brand-buttons/brand-buttons-inversed.css</css>
+        <css minimize="true">/themes/m3x/plugins/parallax-slider/css/parallax-slider.css</css>
+        <css minimize="true">/themes/m3x/plugins/noUiSlider/jquery.nouislider.css</css>
+        <css minimize="true">/themes/m3x/plugins/jquery-steps/css/custom-jquery.steps.css</css>
+        <css minimize="true">/themes/m3x/plugins/owl-carousel/owl-carousel/owl.carousel.css</css>
+
+        <css minimize="false">/themes/m3x/js/bootstrap-dialog/css/bootstrap-dialog.min.css</css>
+        <!-- CSS Page -->
+        <css minimize="true">/themes/m3x/css/pages/portfolio-v2.css</css>
+        <css minimize="true">/themes/m3x/css/pages/page_search_inner.css</css>
+        <css minimize="true">/themes/m3x/css/pages/page_error3_404.css</css>
+        <css minimize="true">/themes/m3x/css/pages/page_error4_404.css</css>
+        <css minimize="true">/themes/m3x/css/pages/page_pricing.css</css>
+
+        <css minimize="true">/themes/m3x/css/ie8.css</css>
+        <css minimize="true">/themes/m3x/css/blocks.css</css>
+        <css minimize="true">/themes/m3x/css/plugins.css</css>
+        <css minimize="true">/themes/m3x/css/app.css</css>
+        <css minimize="true">/themes/m3x/css/shop.plugins.css</css>
+        <css minimize="true">/themes/m3x/css/shop.blocks.css</css>
+        <css minimize="true">/themes/m3x/css/style.css</css>
+        <css minimize="true">/themes/m3x/css/shop.style.css</css>
+        <css minimize="true">/themes/m3x/plugins/animate.css</css>
+
+    </group>
+    <group name="m3x_red">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/red.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/red.css</css>
+    </group>
+    <group name="m3x_blue">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/blue.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/blue.css</css>
+    </group>
+    <group name="m3x_orange">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/orange.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/orange.css</css>
+    </group>
+    <group name="m3x_light">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/light.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/light.css</css>
+    </group>
+    <group name="m3x_purple">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/purple.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/purple.css</css>
+    </group>
+    <group name="m3x_aqua">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/aqua.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/aqua.css</css>
+    </group>
+    <group name="m3x_brown">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/brown.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/brown.css</css>
+    </group>
+    <group name="m3x_dark-blue">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/dark-blue.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/dark-blue.css</css>
+    </group>
+    <group name="m3x_light-green">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/light-green.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/light-green.css</css>
+    </group>
+    <group name="m3x_green">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/green.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/green.css</css>
+    </group>
+    <group name="m3x_dark-red">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/dark-red.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/dark-red.css</css>
+    </group>
+    <group name="m3x_teal">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/teal.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/teal.css</css>
+    </group>
+    <group name="m3x_dark-skin">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-skins/dark.css</css>
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m3x/css/custom.css</css>
+    </group>
+    <group name="m3x_light-skin">
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m3x/css/custom.css</css>
+    </group>
+    <!--HEADER-->
+    <group name="m3x_header-default">
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m3x/css/headers/header-default.css</css>
+        <css minimize="true">/themes/m3x/css/headers/custom-header-default.css</css>
+    </group>
+    <!--FOOTER-->
+    <group name="m3x_footer-v1">
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m3x/css/footers/footer-v1.css</css>
+        <css minimize="true">/themes/m3x/css/footers/custom-footer-v1.css</css>
+    </group>
+
+    <group name="m3x_js">
+        <!-- JS Global Compulsory -->
+        <js minimize="false">/themes/m3x/plugins/jquery/jquery.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/jquery/jquery-migrate.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/bootstrap/js/bootstrap.min.js</js>
+        <!--Dialog popup confirm-->
+        <js minimize="false">/themes/m3x/js/bootstrap-dialog/js/bootstrap-dialog.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js</js>
+        <!-- JS Implementing Plugins -->
+        <js minimize="true">/themes/m3x/plugins/back-to-top.js</js>
+        <js minimize="true">/themes/m3x/plugins/parallax-slider/js/modernizr.js</js>
+        <js minimize="true">/themes/m3x/plugins/parallax-slider/js/jquery.cslider.js</js>
+        <js minimize="false">/themes/m3x/plugins/backstretch/jquery.backstretch.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/noUiSlider/jquery.nouislider.full.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/jquery-steps/build/jquery.steps.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/owl-carousel/owl-carousel/owl.carousel.min.js</js>
+
+
+        <!-- JS Page Level -->
+        <js minimize="true">/themes/m3x/js/app.js</js>
+        <js minimize="true">/themes/m3x/js/pages/index.js</js>
+        <js minimize="true">/themes/m3x/js/plugins/fancy-box.js</js>
+        <js minimize="true">/themes/m3x/js/plugins/owl-carousel.js</js>
+        <js minimize="true">/themes/m3x/js/custom.js</js>
+    </group>
+
+</groups>

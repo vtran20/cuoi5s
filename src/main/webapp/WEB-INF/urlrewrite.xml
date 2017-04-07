@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+<urlrewrite>
+
+    <!-- Remove jsessionid to avoid problem with urls containing  sessionid in cached pages,
+and avoid 404 error on jetty when accessing I18N urls like /trang-chu.html;jsessionid=aaa -->
+    <outbound-rule encodefirst="true">
+        <from>^(.*?)(?:\;jsessionid=[^\?#]*)?(\?[^#]*)?(#.*)?$</from>
+        <to>$1$2$3</to>
+    </outbound-rule>
+
+    <!-- ================================= DYNAMIC RESOURCES - /admin/* ======================= -->
+    <!-- NO SEO or I18N support -->
+    <rule>
+        <from>^/admin$</from>
+        <to last="true">/admin/index.html</to>
+    </rule>
+    <rule>
+        <from>^/admin/$</from>
+        <to last="true">/admin/index.html</to>
+    </rule>
+
+    <!-- ================================= DYNAMIC RESOURCES - /checkout/* ======================= -->
+    <!-- NO SEO or I18N support -->
+    <rule>
+        <from>^/checkout$</from>
+        <to last="true">/checkout/basket.html</to>
+    </rule>
+    <rule>
+        <from>^/checkout/$</from>
+        <to last="true">/checkout/basket.html</to>
+    </rule>
+
+    <!-- ================================= DYNAMIC RESOURCES - /news/* ======================= -->
+    <!-- NO SEO or I18N support -->
+    <rule>
+        <from>^/news/(.*)$</from>
+        <to>/news/$1</to>
+    </rule>
+    <rule>
+        <from>^/tin-tuc/(.*)$</from>
+        <to>/news/$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/news/(.*)$</from>
+        <run class="com.easysoft.ecommerce.web.filter.URITransalator" method="outBoundNews"/>
+        <to>/%{attribute:target}/$1</to>
+    </outbound-rule>
+    <!-- ================================= DYNAMIC RESOURCES - /contact us* ======================= -->
+    <!-- NO SEO or I18N support -->
+    <rule>
+        <from>^/contact-us.html$</from>
+        <to>/contact-us.html</to>
+    </rule>
+    <rule>
+        <from>^/lien-he.html$</from>
+        <to>/contact-us.html</to>
+    </rule>
+    <outbound-rule>
+        <from>^/contact-us.html$</from>
+        <run class="com.easysoft.ecommerce.web.filter.URITransalator" method="outBoundContact"/>
+        <to>/%{attribute:target}</to>
+    </outbound-rule>
+    <!-- ================================= DYNAMIC RESOURCES - /contact us* ======================= -->
+    <!-- NO SEO or I18N support -->
+    <rule>
+        <from>^/question-answer.html$</from>
+        <to>/question-answer.html</to>
+    </rule>
+    <rule>
+        <from>^/hoi-dap.html$</from>
+        <to>/question-answer.html</to>
+    </rule>
+    <outbound-rule>
+        <from>^/question-answer.html$</from>
+        <run class="com.easysoft.ecommerce.web.filter.URITransalator" method="outBoundQuestion"/>
+        <to>/%{attribute:target}</to>
+    </outbound-rule>
+    <!-- ================================= DYNAMIC RESOURCES - /index.html ======================= -->
+    <!-- NO SEO and I18N support -->
+    <rule>
+        <from>^/$</from>
+        <to last="true">/index.html</to>
+    </rule>
+    <outbound-rule>
+        <from>^/index.html$</from>
+        <to>/</to>
+    </outbound-rule>
+    <!-- ================================= DYNAMIC RESOURCES - /Product/* ======================= -->
+    <!-- NO SEO or I18N support -->
+    <rule>
+        <from>^/product/(.*)$</from>
+        <to>/product/$1</to>
+    </rule>
+    <rule>
+        <from>^/san-pham/(.*)$</from>
+        <to>/product/$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/product/(.*)$</from>
+        <run class="com.easysoft.ecommerce.web.filter.URITransalator" method="outBoundProduct"/>
+        <to>/%{attribute:target}/$1</to>
+    </outbound-rule>
+    <!-- ================================= DYNAMIC RESOURCES - /Category/* ======================= -->
+    <!-- NO SEO or I18N support -->
+    <rule>
+        <from>^/category/(.*)$</from>
+        <to>/category/$1</to>
+    </rule>
+    <rule>
+        <from>^/danh-muc/(.*)$</from>
+        <to>/category/$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/category/(.*)$</from>
+        <run class="com.easysoft.ecommerce.web.filter.URITransalator" method="outBoundCategory"/>
+        <to>/%{attribute:target}/$1</to>
+    </outbound-rule>
+    <!-- ================================= DYNAMIC RESOURCES - /Content/* ======================= -->
+    <!-- NO SEO or I18N support -->
+    <rule>
+        <from>^/content/(.*)$</from>
+        <to>/content/$1</to>
+    </rule>
+    <rule>
+        <from>^/noi-dung/(.*)$</from>
+        <to>/content/$1</to>
+    </rule>
+    <outbound-rule>
+        <from>^/content/(.*)$</from>
+        <run class="com.easysoft.ecommerce.web.filter.URITransalator" method="outBoundContent"/>
+        <to>/%{attribute:target}/$1</to>
+    </outbound-rule>
+
+    <!-- ================================= DYNAMIC RESOURCES - /product-uri or /category-uri ======================= -->
+    <!-- SEO support -->
+    <!--<rule>-->
+    <!--&lt;!&ndash; Some requests like /favicon.ico may create errors after rewriting, so I avoid uris with dots &ndash;&gt;-->
+    <!--&lt;!&ndash; uris without params &ndash;&gt;-->
+    <!--<from>^/([^\.\?]+)$</from>-->
+    <!--<set name="source">$1</set>-->
+    <!--<run class="com.easysoft.ecommerce.web.filter.KeywordTransalator" method="uri2id"/>-->
+    <!--<to last="true">%{attribute:target}/index.html</to>-->
+    <!--</rule>-->
+    <!--<rule>-->
+    <!--&lt;!&ndash; Some requests like /favicon.ico may create errors after rewriting, so I avoid uris with dots &ndash;&gt;-->
+    <!--&lt;!&ndash; uris with params &ndash;&gt;-->
+    <!--<from>^/([^\.\?]+)(\?.+)$</from>-->
+    <!--<set name="source">$1</set>-->
+    <!--<run class="com.easysoft.ecommerce.web.filter.KeywordTransalator" method="uri2id"/>-->
+    <!--<to last="true">%{attribute:target}/index.html$2</to>-->
+    <!--</rule>-->
+
+    <!--<outbound-rule>-->
+    <!--<from>^/(category/.+)/index.html$</from>-->
+    <!--<set name="source">$1</set>-->
+    <!--<run class="com.easysoft.ecommerce.web.filter.KeywordTransalator" method="id2uri"/>-->
+    <!--<to>/%{attribute:target}</to>-->
+    <!--</outbound-rule>-->
+
+    <!--<outbound-rule>-->
+    <!--<from>^/(product/.+)/index.html$</from>-->
+    <!--<set name="source">$1</set>-->
+    <!--<run class="com.easysoft.ecommerce.web.filter.KeywordTransalator" method="id2uri"/>-->
+    <!--<to>/%{attribute:target}</to>-->
+    <!--</outbound-rule>-->
+
+</urlrewrite>
