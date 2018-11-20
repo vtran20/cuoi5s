@@ -9,7 +9,6 @@ import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.util.Messages;
 import com.easysoft.ecommerce.util.WebUtil;
-import com.easysoft.ecommerce.web.servlet.CaptchaServlet;
 import org.apache.commons.lang.StringUtils;
 import org.expressme.openid.*;
 import org.slf4j.Logger;

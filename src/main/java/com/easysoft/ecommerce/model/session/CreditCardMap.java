@@ -2,8 +2,6 @@ package com.easysoft.ecommerce.model.session;
 
 import java.util.HashMap;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
  * SessionObjectImpl implements SessionObject. This class will be used for:
  *

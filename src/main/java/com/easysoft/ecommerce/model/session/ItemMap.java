@@ -1,7 +1,5 @@
 package com.easysoft.ecommerce.model.session;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 import java.util.HashMap;
 
 /**

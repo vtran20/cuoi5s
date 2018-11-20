@@ -4,15 +4,11 @@ import com.easysoft.ecommerce.dao.OrderSessionDao;
 import com.easysoft.ecommerce.model.Order;
 import com.easysoft.ecommerce.model.OrderSession;
 import com.easysoft.ecommerce.model.Site;
-import com.easysoft.ecommerce.model.UserSession;
 import com.easysoft.ecommerce.model.session.SessionObject;
-import com.thoughtworks.xstream.XStream;
-import org.hibernate.type.TimestampType;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.Date;
-import java.util.List;
 
 @Repository
 public class OrderSessionDaoImpl extends GenericDaoImpl<OrderSession, Long> implements OrderSessionDao {

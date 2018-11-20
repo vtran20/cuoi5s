@@ -15,7 +15,6 @@ import java.util.List;
  * This helper class is used for handling cache in the entire web application.
  *
  * CacheTag is used for caching cms content and html page
- * ImagesServlet is used for caching image ur
  * CommonCache is used for caching everything except CacheTag and ImagesServlet
  *
  * User: Vu Tran

@@ -2,8 +2,6 @@ package com.easysoft.ecommerce.model.session;
 
 import java.util.HashMap;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
 /**
  * AddressesMap will contain shipping address and billing address.
  *

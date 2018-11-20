@@ -165,30 +165,32 @@
         f1 = Math.min(f1, f2);
         return Math.min(f1, f3);
     }
-    public static int NUMBER_PLAYER = 17;
-    public static int CONSTRAINT_POINT = 2;
-    public static int RUN_TIMES = 1000;
 %>
 <BODY>
 <%
     List initPlayers = new ArrayList();
-    initPlayers.add(new Player("A Chieu","6.83","7.61"));
-    initPlayers.add(new Player("Duc","8.67","7.11"));
-    initPlayers.add(new Player("Nghia AA","7.33","6.83"));
-    initPlayers.add(new Player("Ban","8.33","6.56"));
-    initPlayers.add(new Player("Thai","5.33","7.28"));
-    initPlayers.add(new Player("Tuan","7.00","7.22"));
-    initPlayers.add(new Player("Vu","9.06","8.28"));
-    initPlayers.add(new Player("Ga Minh","7.67","8.44"));
-    initPlayers.add(new Player("Nghia DT","8.44","7.89"));
-    initPlayers.add(new Player("B Anh","7.11","8.67"));
-    initPlayers.add(new Player("Nguyen","7.39","6.56"));
-    initPlayers.add(new Player("Chinh","7.67","7.11"));
-    initPlayers.add(new Player("Hieu","5.94","6.72"));
-    initPlayers.add(new Player("Duy","4.89","5.61"));
-    initPlayers.add(new Player("Minh (MSU)","5.39","6.28"));
-    initPlayers.add(new Player("Hiep", "7.5", "7.17"));
-    initPlayers.add(new Player("Other", "0", "0"));
+    initPlayers.add(new Player("A Chieu","7.21","7.43"));
+    initPlayers.add(new Player("Duc","5.5","5.86"));
+    initPlayers.add(new Player("Tuan AA","7.43","7.93"));
+    initPlayers.add(new Player("Vu","8.79","8.29"));
+    initPlayers.add(new Player("Ga Minh","7.57","8.21"));
+    initPlayers.add(new Player("B Anh","7.43","7.57"));
+    initPlayers.add(new Player("Nguyen","7.71","6.86"));
+    initPlayers.add(new Player("Chinh","7.43","6.79"));
+    initPlayers.add(new Player("Duy","6.07","6.50"));
+    initPlayers.add(new Player("Hiep", "7.43", "8.0"));
+    initPlayers.add(new Player("Hieu DT","6.71","6.79"));
+    initPlayers.add(new Player("Hieu AA","7.43","7.29"));
+    initPlayers.add(new Player("Khoa","9.07","7.64"));
+    initPlayers.add(new Player("Nhu","9.07","7.07"));
+    initPlayers.add(new Player("Tuan DT","7.07","6.93"));
+    initPlayers.add(new Player("Thai","6.86","7.07"));
+    initPlayers.add(new Player("Nghia DT", "8.07", "7.79"));
+    initPlayers.add(new Player("New 1", "0", "0"));
+    initPlayers.add(new Player("New 2", "0", "0"));
+
+    int NUMBER_PLAYER = initPlayers.size();
+    int RUN_TIMES = 1000;
 
     List listJoinPlayers = new ArrayList();
     List allListPlayers = new ArrayList();
@@ -236,7 +238,8 @@
     <%}%>
 </TABLE>
 <br>
-<div>Number of Team (2 or 3 teams): <input type="text" name="team" value="<%=request.getParameter("team") != null?request.getParameter("team"): "3"%>"/></div>
+<div>Number of Team (2 or 3 teams): <input type="text" name="team" value="<%=request.getParameter("team") != null?request.getParameter("team"): "2"%>"/></div>
+<div>Constraint different point: <input type="text" name="constraint" value="<%=request.getParameter("constraint") != null?request.getParameter("constraint"): "1"%>"/></div>
 <div><input type="submit" name="refresh" value="Refresh"></div>
 </form>
 
@@ -257,6 +260,7 @@ if (!(request.getParameter("team") != null && (request.getParameter("team").equa
 <%
     //Collections.sort(listJoinPlayers);
     String numTeam = request.getParameter("team");
+    float CONSTRAINT_POINT = request.getParameter("constraint") == null? 1f : Float.parseFloat(request.getParameter("constraint"));
     int team = 3;
     if (numTeam != null) {
         team = Integer.parseInt(numTeam);

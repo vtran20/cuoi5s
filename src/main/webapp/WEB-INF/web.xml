@@ -200,10 +200,6 @@
         <servlet-name>sitemap-xml-servlet</servlet-name>
         <servlet-class>com.easysoft.ecommerce.web.servlet.SiteMapXMLServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>jcaptcha</servlet-name>
-        <servlet-class>com.easysoft.ecommerce.web.servlet.CaptchaServlet</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>dispatcher-servlet</servlet-name>
         <url-pattern>*.html</url-pattern>
@@ -224,11 +220,6 @@
         <servlet-name>sitemap-xml-servlet</servlet-name>
         <url-pattern>/sitemap.xml</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>jcaptcha</servlet-name>
-        <url-pattern>/jcaptcha.cap</url-pattern>
-    </servlet-mapping>
-
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
