@@ -133,5 +133,13 @@
         <mapping class="com.easysoft.ecommerce.model.Album"/>
         <mapping class="com.easysoft.ecommerce.model.AlbumImage"/>
         <mapping class="com.easysoft.ecommerce.model.SiteMenuPartContent"/>
+        <!--Nail service-->
+        <mapping class="com.easysoft.ecommerce.model.NailStore"/>
+        <mapping class="com.easysoft.ecommerce.model.NailCustomer"/>
+        <mapping class="com.easysoft.ecommerce.model.NailEmployee"/>
+        <mapping class="com.easysoft.ecommerce.model.NailService"/>
+        <mapping class="com.easysoft.ecommerce.model.NailCustomerService"/>
+        <mapping class="com.easysoft.ecommerce.model.NailEmployeeService"/>
+        <mapping class="com.easysoft.ecommerce.model.NailCustomerAppointment"/>
     </session-factory>
 </hibernate-configuration>

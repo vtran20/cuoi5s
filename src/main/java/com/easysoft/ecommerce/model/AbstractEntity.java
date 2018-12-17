@@ -1,5 +1,7 @@
 package com.easysoft.ecommerce.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -51,6 +53,7 @@ public abstract class AbstractEntity implements Serializable {
         }
     }
     @Transient
+    @JsonIgnore
     public boolean isEmptyId() {
         return (this.id == null || this.id == 0);
     }

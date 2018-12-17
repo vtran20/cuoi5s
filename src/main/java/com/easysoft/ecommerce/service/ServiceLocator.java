@@ -1,6 +1,8 @@
 package com.easysoft.ecommerce.service;
 
 import com.easysoft.ecommerce.dao.*;
+import com.easysoft.ecommerce.model.NailCustomer;
+import com.easysoft.ecommerce.model.NailCustomerAppointment;
 import com.easysoft.ecommerce.model.SiteProductService;
 import com.easysoft.ecommerce.util.CacheData;
 import com.easysoft.ecommerce.web.cache.CacheKeyGenerator;
@@ -133,6 +135,20 @@ public class ServiceLocator {
     private VideoImportClassDao videoImportClassDao;
     @Autowired
     private SiteProductServiceDao siteProductServiceDao;
+    @Autowired
+    private NailCustomerDao nailCustomerDao;
+    @Autowired
+    private NailServiceDao nailServiceDao;
+    @Autowired
+    private NailEmployeeDao nailEmployeeDao;
+    @Autowired
+    private NailStoreDao nailStoreDao;
+    @Autowired
+    private NailCustomerServiceDao nailCustomerServiceDao;
+    @Autowired
+    private NailEmployeeServiceDao nailEmployeeServiceDao;
+    @Autowired
+    private NailCustomerAppointmentDao nailCustomerAppointmentDao;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -158,6 +174,8 @@ public class ServiceLocator {
     private MailService mailService;
     @Autowired
     private ContentService contentService;
+    @Autowired
+    private NailManagementService nailManagementService;
     @Autowired
     private AdminService adminService;
     @Autowired
@@ -529,5 +547,37 @@ public class ServiceLocator {
 
     public CacheKeyGenerator getCacheKeyGenerator() {
         return cacheKeyGenerator;
+    }
+
+    public NailManagementService getNailManagementService() {
+        return nailManagementService;
+    }
+
+    public NailCustomerDao getNailCustomerDao() {
+        return nailCustomerDao;
+    }
+
+    public NailServiceDao getNailServiceDao() {
+        return nailServiceDao;
+    }
+
+    public NailEmployeeDao getNailEmployeeDao() {
+        return nailEmployeeDao;
+    }
+
+    public NailStoreDao getNailStoreDao() {
+        return nailStoreDao;
+    }
+
+    public NailCustomerServiceDao getNailCustomerServiceDao() {
+        return nailCustomerServiceDao;
+    }
+
+    public NailEmployeeServiceDao getNailEmployeeServiceDao() {
+        return nailEmployeeServiceDao;
+    }
+
+    public NailCustomerAppointmentDao getNailCustomerAppointmentDao() {
+        return nailCustomerAppointmentDao;
     }
 }

@@ -71,6 +71,9 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
 	public T findById(ID id, Long siteId) {
         return (T) findUniqueBy ("id", id, siteId);
     }
+	public T findByIdByStore(ID id, Long storeId) {
+        return (T) findUniqueByStore ("id", id, storeId);
+    }
     @SuppressWarnings("unchecked")
 	public T findById(ID id) {
         return (T) this.sessionFactory.getCurrentSession().get(getPersistentClass(), id);
@@ -83,6 +86,10 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     @SuppressWarnings("unchecked")
     public List<T> findAll(Long siteId) {
         return findObjectOrAttributeBy(null, null, null, null, null, siteId);
+    }
+
+    public List<T> findAllByStore(Long storeId) {
+        return findObjectOrAttributeByStore(null, null, null, null, null, storeId);
     }
 
     @SuppressWarnings("unchecked")
@@ -208,6 +215,62 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
 
         return result;
     }
+    @SuppressWarnings("rawtypes")
+	private List findObjectOrAttributeByStore(String attributeName, Map<String, Object> criteriaValues, Integer startPosition, Integer maxResult,
+			String orderByAttr, Long storeId) {
+        List result;
+        String ejbqlString = "select " + (attributeName != null ? "o." + attributeName : "o") + " from " + getPersistentClass().getName() + " o ";
+        List<Object> paramValues = new ArrayList<Object>();
+
+        String criteria = "";
+        if (criteriaValues != null && !criteriaValues.isEmpty()) {
+            int index = 1;
+            for (Map.Entry<String, Object> entry : criteriaValues.entrySet()) {
+                String propertyName = entry.getKey();
+                Object value = entry.getValue();
+
+                String criterion;
+                if (value != null) {
+                    criterion = " o." + propertyName + " = ? ";
+                    paramValues.add(value);
+                    index ++;
+                } else {
+                    criterion = " o." + propertyName + " is null ";
+                }
+
+                if (!StringUtils.isEmpty(criteria)) {
+                    criteria += " and ";
+                }
+                criteria += criterion;
+            }
+        }
+
+        if (storeId != null && storeId > 0) {
+            if (!StringUtils.isEmpty(criteria)) {
+                criteria += " and ";
+            }
+            criteria += " o.store.id = :storeId";
+        }
+
+        if (StringUtils.isNotBlank(criteria)) ejbqlString += " where " + criteria;
+
+        if (StringUtils.isNotBlank(orderByAttr)) ejbqlString += " order by o." + orderByAttr;
+        Query query = this.sessionFactory.getCurrentSession().createQuery(ejbqlString);
+        for (int i = 0; i < paramValues.size(); i++) {
+            query.setParameter(i, paramValues.get(i));
+        }
+
+        if (storeId != null && storeId > 0) {
+            query.setParameter("storeId", storeId);
+        }
+
+        if (startPosition != null) query.setFirstResult(startPosition);
+        if (maxResult != null) query.setMaxResults(maxResult);
+
+        result = query.list();
+
+        return result;
+    }
 
     @SuppressWarnings("unchecked")
     public List<T> findBy(Map<String, Object> criteriaValues, Integer startPosition, Integer maxResult) {
@@ -245,6 +308,10 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
     @SuppressWarnings("unchecked")
     public T findUniqueBy(Map<String, Object> criteriaValues, Long siteId) {
         List<T> result = findObjectOrAttributeBy(null, criteriaValues, null, 1, null, siteId);
+        return result.isEmpty() ? null : result.get(0);
+    }
+    public T findUniqueByStore(Map<String, Object> criteriaValues, Long storeId) {
+        List<T> result = findObjectOrAttributeByStore(null, criteriaValues, null, 1, null, storeId);
         return result.isEmpty() ? null : result.get(0);
     }
 
@@ -307,6 +374,13 @@ public abstract class GenericDaoImpl<T, ID extends Serializable> implements Gene
             criteriaValues.put(propName, propVal );
         }
         return findUniqueBy(criteriaValues, siteId);
+    }
+    public T findUniqueByStore(String propName, Object propVal, Long storeId) {
+        Map<String, Object> criteriaValues = new Hashtable<String, Object>();
+        if (StringUtils.isNotBlank(propName)) {
+            criteriaValues.put(propName, propVal );
+        }
+        return findUniqueByStore(criteriaValues, storeId);
     }
     public T findFirstItemOrderByCreatedDate(Map <String, Object>criteriaValues, Long siteId) {
         List<T> result = findObjectOrAttributeBy(null, criteriaValues, null, 1, "createdDate desc", siteId);

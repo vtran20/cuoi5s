@@ -31,6 +31,29 @@ public class SessionUtil {
 //    private static Map<String, SessionObject> sessionObjectMap = Collections.synchronizedMap(new HashMap<String, SessionObject>());
 
     /**
+     * Create cookie object from cookieName
+     *
+     * @param request
+     * @param cookieName
+     * @return
+     */
+    public static void createCookie(HttpServletRequest request, HttpServletResponse response, String cookieName, String value, int cookieAge) {
+
+        Cookie sessionCookie = new Cookie(cookieName, value);
+        sessionCookie.setMaxAge(cookieAge);
+
+        // If a domain name was specified... set it.
+        sessionCookie.setDomain(request.getServerName());
+
+        // Allow the cookie to work for anything within this applications context
+//        if (StringUtils.isEmpty(request.getContextPath()))
+        sessionCookie.setPath("/");
+//        else
+//            sessionCookie.setPath(request.getContextPath());
+
+        response.addCookie(sessionCookie);
+    }
+    /**
      * Get cookie object from cookieName
      *
      * @param request

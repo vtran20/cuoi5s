@@ -24,6 +24,7 @@ public interface GenericDao<T, ID extends Serializable> {
      */
     T findById(ID id);
     T findById(ID id, Long siteId);
+    T findByIdByStore(ID id, Long storeId);
 
     /**
      * @deprecated Should use findAll(Long siteId)
@@ -31,6 +32,7 @@ public interface GenericDao<T, ID extends Serializable> {
      */
     List<T> findAll();
     List<T> findAll(Long siteId);
+    List<T> findAllByStore(Long storeId);
     /**
      * @deprecated Should use findAllOrder(String orderAttr, Long siteId)
      * @return
@@ -70,9 +72,11 @@ public interface GenericDao<T, ID extends Serializable> {
      */
     T findUniqueBy(Map<String, Object> criteriaValues);
     T findUniqueBy(Map<String, Object> criteriaValues, Long siteId);
+    T findUniqueByStore(Map<String, Object> criteriaValues, Long storeId);
 
     T findUniqueBy(String propName, Object propVal);
     T findUniqueBy(String propName, Object propVal, Long siteId);
+    T findUniqueByStore(String propName, Object propVal, Long storeId);
 
     /**
      * The function is like findUniqueBy but findFirstItemOrderByCreatedDate will sort by created date and get the first item.
