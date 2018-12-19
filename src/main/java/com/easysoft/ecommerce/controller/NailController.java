@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -89,32 +90,12 @@ public class NailController {
     Map initialNailsData(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
         Map dataObject = new HashMap ();
-        NailStore nailStore = null;
-        Cookie storeCookieId = SessionUtil.findCookie(request, STORE_ID_COOKIE);
+        NailStore nailStore = getCurrentStore(request, response);
         List stores = this.serviceLocator.getNailStoreDao().findAll(site.getId());
-        if (storeCookieId != null && StringUtils.isNumeric(storeCookieId.getValue())) {
-            nailStore = serviceLocator.getNailStoreDao().findById(Long.parseLong(storeCookieId.getValue()), site.getId());
-        }
-
-        if (nailStore == null) {
-            if (stores != null) {
-                if (stores.size() == 1) {
-                    nailStore = (NailStore) stores.get(0);
-                } else {
-                    dataObject.put("stores",stores);
-                }
-            } else {
-                throw new Exception ("No stores available");
-            }
-        }
 
         if (nailStore != null) {
-            //create a store cookie if it hasn't existed
-            if (storeCookieId == null) {
-                SessionUtil.createCookie(request, response, STORE_ID_COOKIE, nailStore.getId().toString(), 10 * 365 * 24 * 60 * 60); //10 years
-            }
+//            dataObject.put("selectedStoreId",nailStore.getId());
             dataObject.put("stores",stores);
-            dataObject.put("selectedStoreId",nailStore.getId());
             dataObject.put("employees",this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()));
             dataObject.put("services",this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
             dataObject.put("customerAppointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(new Date(), nailStore.getId()));
@@ -151,6 +132,8 @@ public class NailController {
                     employeeService.setCustomerServiceId(customerService.getId());
                 }
             }
+        } else {
+            dataObject.put("stores",stores);
         }
         return dataObject;
     }
@@ -643,4 +626,37 @@ public class NailController {
         return customer;
     }
 
+    protected NailStore getCurrentStore(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        NailStore nailStore = null;
+        Long storeId = null;
+        if (request.getParameter("storeId") != null && StringUtils.isNumeric(request.getParameter("storeId"))) {
+            storeId = new Long(request.getParameter("storeId"));
+        } else {
+            Cookie storeCookieId = SessionUtil.findCookie(request, STORE_ID_COOKIE);
+            if (storeCookieId != null && StringUtils.isNumeric(storeCookieId.getValue())) {
+                storeId = new Long(storeCookieId.getValue());
+            }
+        }
+
+        if (storeId != null) {
+            nailStore = (NailStore) ServiceLocatorHolder.getServiceLocator().getCacheData().getCommonCache("STORE_" + storeId);
+            if (nailStore == null) {
+                nailStore = serviceLocator.getNailStoreDao().findById(storeId);
+            }
+        } else {
+            List stores = this.serviceLocator.getNailStoreDao().findAll(ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite().getId());
+            if (stores != null) {
+                if (stores.size() == 1) {
+                    nailStore = (NailStore) stores.get(0);
+                    ServiceLocatorHolder.getServiceLocator().getCacheData().addCommonCache("STORE_" + nailStore.getId(), nailStore);
+                    SessionUtil.createCookie(request, response, STORE_ID_COOKIE, nailStore.getId()+"", 10*365*24*60*60);
+                }
+            } else {
+                throw new Exception ("No stores available");
+            }
+
+        }
+
+        return nailStore;
+    }
 }
