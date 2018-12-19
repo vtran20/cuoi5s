@@ -15,6 +15,7 @@ public class NailCustomerService extends AbstractEntity  {
     private Date serviceDate;
     private Date checkIn;
 
+    private String customerNote;
     private Long price;
     private String status;
 
@@ -47,6 +48,14 @@ public class NailCustomerService extends AbstractEntity  {
 
     public void setServiceDate(Date serviceDate) {
         this.serviceDate = serviceDate;
+    }
+
+    public String getCustomerNote() {
+        return customerNote;
+    }
+
+    public void setCustomerNote(String customerNote) {
+        this.customerNote = customerNote;
     }
 
     public String getStatus() {

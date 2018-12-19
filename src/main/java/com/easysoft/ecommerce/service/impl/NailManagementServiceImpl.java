@@ -39,10 +39,6 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
     @Autowired
     private NailCustomerServiceDao nailCustomerServiceDao;
 
-    @Autowired
-    private NailCustomerAppointmentDao nailCustomerAppointmentDao;
-
-
     @Override
     public Map<String, Object> addNailCustomerService(Map inputData, Long storeId) {
         Map<String, Object> result = new HashMap<String, Object>();
@@ -52,19 +48,8 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         String email = inputData.get("email") != null ? (String) inputData.get("email") : "";
         String phone = inputData.get("phone") != null ? (String) inputData.get("phone") : "";
 
-        Integer tempId = inputData.get("customerAppointmentId") != null ? (Integer) inputData.get("customerAppointmentId") : 0;
-        Long customerAppointmentId = new Long(tempId.toString());
-        NailCustomerAppointment appointment = serviceLocator.getNailCustomerAppointmentDao().findById(customerAppointmentId);
-
         Date serviceDate = new Date();
         String status = ServiceStatus.CHECKED_IN.toString();
-        if (appointment != null) {
-            status = appointment.getStatus();
-            serviceDate = appointment.getServiceDate();
-            //Update the appointment to CHECKED_IN status
-            appointment.setStatus(ServiceStatus.CHECKED_IN.toString());
-            serviceLocator.getNailCustomerAppointmentDao().merge(appointment);
-        }
         NailCustomer customer = findCustomer(null, email, phone, storeId);
         if (customer == null){
             customer = new NailCustomer();

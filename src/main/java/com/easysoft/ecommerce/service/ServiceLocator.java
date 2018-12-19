@@ -1,9 +1,6 @@
 package com.easysoft.ecommerce.service;
 
 import com.easysoft.ecommerce.dao.*;
-import com.easysoft.ecommerce.model.NailCustomer;
-import com.easysoft.ecommerce.model.NailCustomerAppointment;
-import com.easysoft.ecommerce.model.SiteProductService;
 import com.easysoft.ecommerce.util.CacheData;
 import com.easysoft.ecommerce.web.cache.CacheKeyGenerator;
 import net.sf.ehcache.CacheManager;
@@ -147,8 +144,6 @@ public class ServiceLocator {
     private NailCustomerServiceDao nailCustomerServiceDao;
     @Autowired
     private NailEmployeeServiceDao nailEmployeeServiceDao;
-    @Autowired
-    private NailCustomerAppointmentDao nailCustomerAppointmentDao;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -577,7 +572,4 @@ public class ServiceLocator {
         return nailEmployeeServiceDao;
     }
 
-    public NailCustomerAppointmentDao getNailCustomerAppointmentDao() {
-        return nailCustomerAppointmentDao;
-    }
 }

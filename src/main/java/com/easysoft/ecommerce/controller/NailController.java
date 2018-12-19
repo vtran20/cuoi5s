@@ -98,7 +98,7 @@ public class NailController {
             dataObject.put("stores",stores);
             dataObject.put("employees",this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()));
             dataObject.put("services",this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
-            dataObject.put("customerAppointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(new Date(), nailStore.getId()));
+//            dataObject.put("customerAppointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(new Date(), nailStore.getId()));
 
             List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), nailStore.getId());
             dataObject.put("customerServices",nailCustomerServices);
