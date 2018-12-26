@@ -3,7 +3,6 @@ package com.easysoft.ecommerce.controller;
 import com.easysoft.ecommerce.model.*;
 import com.easysoft.ecommerce.model.helper.ServiceStatus;
 import com.easysoft.ecommerce.model.json.NailDataObject;
-import com.easysoft.ecommerce.model.session.SessionObject;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -43,13 +41,19 @@ public class NailController {
             "/services/",
             "/customers.json",
             "/customers/{id}.json",
+            "/customers/{id}/checkIn.json",
             "/employees.json",
             "/employees/{id}.json",
             "/services.json",
             "/services/{id}.json",
             "/customers/{id}/customerServices.json",
             "/customers/{id}/customerServices/{csId}.json",
-            "/customers/customerServices.json"
+            "/customers/customerServices.json",
+            "/employees/{id}/employeeServices/{esId}.json",
+            "/employees/{id}/employeeServices.json",
+            "/employees/{id}/employeeServices/date/{date}.json",
+            "/employees/{id}/addEmployeeToCustomer/{customerId}.json",
+            "/services/{id}/addServiceToCustomer/{customerId}.json"
     }, method = RequestMethod.OPTIONS)
     public void catchAllOpt(final HttpServletResponse response)
             throws IOException {
@@ -57,7 +61,7 @@ public class NailController {
         response.addHeader("Access-Control-Max-Age", "120"); // in seconds
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Methods",
-                "HEAD, GET, OPTIONS, POST, UPDATE, DELETE");
+                "HEAD, GET, OPTIONS, POST, PUT, UPDATE, DELETE");
         response.addHeader("Access-Control-Allow-Headers",
                 "origin, content-type, accept, x-requested-with");
     }
@@ -108,6 +112,7 @@ public class NailController {
                 if (customer != null) {
                     //set customer id to customer service.
                     customerService.setCustomerId(customer.getId());
+                    customer.setStatus(customerService.getStatus());
                     customers.add(customer);
                 }
                 NailService service = customerService.getNailService();
@@ -116,11 +121,16 @@ public class NailController {
                     customerService.setServiceId(service.getId());
                 }
             }
+            List<NailCustomer> checkedInCustomers = serviceLocator.getNailCustomerDao().getCheckedInCustomersByDate(new Date(), nailStore.getId());
+            for (NailCustomer c : checkedInCustomers) {
+                if (!customers.contains(c)) {
+                    customers.add(c);
+                }
+            }
             dataObject.put("customers", customers);
 
             List<NailEmployeeService> nailEmployeeServices = this.serviceLocator.getNailEmployeeServiceDao().getEmployeeServicesByDate(new Date(), nailStore.getId());
             dataObject.put("employeeServices", nailEmployeeServices);
-            List<NailEmployee> employees = new ArrayList<NailEmployee>();
             for (NailEmployeeService employeeService : nailEmployeeServices) {
                 //adding customerService id to customers
                 NailEmployee employee = employeeService.getNailEmployee();
@@ -243,6 +253,22 @@ public class NailController {
             currentNailCustomer.setActive(customer.getActive());
         }
 
+        serviceLocator.getNailCustomerDao().merge(currentNailCustomer);
+        return new ResponseEntity<NailCustomer>(currentNailCustomer, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = {"/customers/{id}/checkIn.json"}, method = RequestMethod.PUT)
+    public ResponseEntity<NailCustomer> checkCustomer(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
+        System.out.println("Updating NailCustomer " + id);
+
+        NailCustomer currentNailCustomer = serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
+
+        if (currentNailCustomer==null) {
+            System.out.println("NailCustomer with id " + id + " not found");
+            return new ResponseEntity<NailCustomer>(HttpStatus.NOT_FOUND);
+        }
+
+        currentNailCustomer.setCheckIn(new Date());
         serviceLocator.getNailCustomerDao().merge(currentNailCustomer);
         return new ResponseEntity<NailCustomer>(currentNailCustomer, HttpStatus.OK);
     }
@@ -530,9 +556,16 @@ public class NailController {
     @RequestMapping(value = "/customers/customerServices.json", method = RequestMethod.POST)
     public ResponseEntity<Map> addNailCustomerService(
             @RequestBody Map inputData,
-            @RequestParam(required = false, value = "") final Long storeId
-    ) {
-        Map<String, Object> result = serviceLocator.getNailManagementService().addNailCustomerService(inputData, storeId);
+            @RequestParam(required = false, value = "") final Long storeId,
+            @RequestParam(required = false, value = "") final String appointment
+    ) throws Exception {
+
+        Map<String, Object> result = null;
+        if ("Y".equals(appointment)) {
+            result = serviceLocator.getNailManagementService().checkInAppointmentCustomer(inputData, storeId);
+        } else {
+            result = serviceLocator.getNailManagementService().addNailCustomerService(inputData, storeId);
+        }
 
         return new ResponseEntity<Map>(result, HttpStatus.CREATED);
     }
@@ -592,7 +625,7 @@ public class NailController {
     public ResponseEntity<NailCustomerService> deleteNailCustomerService(
             @PathVariable("id") long id,
             @PathVariable("csId") long csId
-    ) {
+    ) throws Exception {
         System.out.println("Fetching & Deleting NailCustomerService with id " + id);
 
         NailCustomerService customerService = null;
@@ -610,6 +643,203 @@ public class NailController {
 
         return new ResponseEntity<NailCustomerService>(HttpStatus.OK);
     }
+
+
+    /************************EmployeeServices**********************/
+    //-------------------Retrieve All EmployeeServices--------------------------------------------------------
+
+    @RequestMapping(value = {"/employees/{id}/employeeServices/date/{date}","/employees/{id}/employeeServices/date/{date}.json"}, method = RequestMethod.GET)
+    public ResponseEntity<List<NailEmployeeService>> listAllNailEmployeeServicesByEmployee(
+            @PathVariable("id") long id,
+            @PathVariable("date") String date //date will have format YYYYMMDD
+    ) {
+        //TODO: Will implement this later
+        List<NailEmployeeService> employeeServices = serviceLocator.getNailEmployeeServiceDao().findAllByStore(id);
+        if(employeeServices.isEmpty()){
+            return new ResponseEntity<List<NailEmployeeService>>(HttpStatus.NOT_FOUND);//You many decide to return HttpStatus.NOT_FOUND
+        }
+        return new ResponseEntity<List<NailEmployeeService>>(employeeServices, HttpStatus.OK);
+    }
+
+
+    //-------------------Retrieve Single NailEmployeeService--------------------------------------------------------
+
+    @RequestMapping(value = {"/employees/{id}/employeeServices/{esId}", "/employees/{id}/employeeServices/{esId}.json"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<NailEmployeeService> getNailEmployeeService(
+            @PathVariable("id") long id,
+            @PathVariable("esId") long esId
+    ) {
+        //TODO: Will implement this later
+        System.out.println("Fetching NailEmployeeService with id " + id);
+        NailEmployeeService employeeService = serviceLocator.getNailEmployeeServiceDao().findByIdByStore(id, esId);
+        if (employeeService == null) {
+            System.out.println("NailEmployeeService with id " + id + " not found");
+            return new ResponseEntity<NailEmployeeService>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<NailEmployeeService>(employeeService, HttpStatus.OK);
+    }
+
+
+
+    //-------------------Create a NailEmployeeService--------------------------------------------------------
+
+    @RequestMapping(value = "/employees/{id}/employeeServices.json", method = RequestMethod.POST)
+    public ResponseEntity<NailEmployeeService> addNailEmployeeService(
+            @RequestBody NailEmployeeService employeeService,
+            UriComponentsBuilder ucBuilder,
+            @PathVariable("id") Long id,
+            @RequestParam(required = false, value = "") final Long customerServiceId
+    ) {
+        NailEmployee employee = serviceLocator.getNailEmployeeDao().findById(id);
+        NailCustomerService customerService = null;
+        if (customerServiceId != null && customerServiceId > 0) {
+            customerService = serviceLocator.getNailCustomerServiceDao().findById(customerServiceId);
+        }
+        employeeService.setNailEmployee(employee);
+        employeeService.setNailCustomerService(customerService);
+        serviceLocator.getNailEmployeeServiceDao().persist(employeeService);
+        return new ResponseEntity<NailEmployeeService>(employeeService, HttpStatus.CREATED);
+    }
+
+
+    //------------------- Update a NailEmployeeService --------------------------------------------------------
+
+    @RequestMapping(value = {"/employees/{id}/employeeServices/{esId}.json"}, method = RequestMethod.PUT)
+    public ResponseEntity<NailEmployeeService> updateNailEmployeeService(
+            @PathVariable("id") long id,
+            @PathVariable("esId") long esId,
+            @RequestBody NailEmployeeService employeeService,
+            @RequestParam(required = false, value = "") final Long customerServiceId
+    ) {
+        System.out.println("Updating NailEmployeeService " + id);
+
+        NailEmployeeService currentNailEmployeeService = null;
+        try {
+            currentNailEmployeeService = serviceLocator.getNailEmployeeServiceDao().findById(esId);
+            if (currentNailEmployeeService==null) {
+                System.out.println("NailEmployeeService with id " + id + " not found");
+                return new ResponseEntity<NailEmployeeService>(HttpStatus.NOT_FOUND);
+            }
+
+            if (employeeService.getCashPay() != currentNailEmployeeService.getCashPay()) {
+                currentNailEmployeeService.setCashPay(employeeService.getCashPay());
+            }
+            if (employeeService.getCreditPay() != currentNailEmployeeService.getCreditPay()) {
+                currentNailEmployeeService.setCreditPay(employeeService.getCreditPay());
+            }
+            if (employeeService.getTipPay() != currentNailEmployeeService.getTipPay()) {
+                currentNailEmployeeService.setTipPay(employeeService.getTipPay());
+            }
+            if (employeeService.getCheckPay() != currentNailEmployeeService.getCheckPay()) {
+                currentNailEmployeeService.setCheckPay(employeeService.getCheckPay());
+            }
+            if (employeeService.getGiftPay() != currentNailEmployeeService.getGiftPay()) {
+                currentNailEmployeeService.setGiftPay(employeeService.getGiftPay());
+            }
+
+            serviceLocator.getNailEmployeeServiceDao().merge(currentNailEmployeeService);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<NailEmployeeService>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<NailEmployeeService>(currentNailEmployeeService, HttpStatus.OK);
+    }
+
+    //------------------- Delete a NailEmployeeService --------------------------------------------------------
+
+    @RequestMapping(value = {"/employees/{id}/employeeServices/{esId}.json"}, method = RequestMethod.DELETE)
+    public ResponseEntity<NailEmployeeService> deleteNailEmployeeService(
+            @PathVariable("id") long id,
+            @PathVariable("esId") long esId
+    ) {
+        System.out.println("Fetching & Deleting NailEmployeeService with id " + id);
+
+        NailEmployeeService employeeService = null;
+        try {
+            employeeService = serviceLocator.getNailEmployeeServiceDao().getEmployeeService(id, esId);
+            if (employeeService == null) {
+                System.out.println("Unable to delete. NailEmployeeService with id " + id + " not found");
+                return new ResponseEntity<NailEmployeeService>(HttpStatus.NOT_FOUND);
+            }
+            serviceLocator.getNailEmployeeServiceDao().remove(employeeService);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<NailEmployeeService>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<NailEmployeeService>(HttpStatus.OK);
+    }
+
+    /**
+     *
+     * Get the employee from the store
+     * Get the current customer
+     * Get all current customer service
+     *    Assign employee to each customer service
+     *
+     * @param id
+     * @param customerId
+     * @return Map: {
+     *     employeeServices
+     * }
+     */
+    @RequestMapping(value = "/employees/{id}/addEmployeeToCustomer/{customerId}.json", method = RequestMethod.POST)
+    public ResponseEntity<List<NailEmployeeService>> addNailEmployeeToCustomer(
+            @PathVariable("id") Long id,
+            @PathVariable("customerId") Long customerId,
+            @RequestParam(required = false, value = "") final Long storeId
+    ) {
+        NailEmployee employee = (NailEmployee) this.serviceLocator.getNailEmployeeDao().findByIdByStore(id, storeId);
+        List<NailCustomerService> customerServices = this.serviceLocator.getNailCustomerServiceDao().findBy("nailCustomer.id", customerId);
+        List<NailEmployeeService> employeeServices = new ArrayList<NailEmployeeService>();
+        for (NailCustomerService cs : customerServices) {
+            NailEmployeeService employeeService = new NailEmployeeService();
+            employeeService.setNailEmployee(employee);
+            employeeService.setNailCustomerService(cs);
+            serviceLocator.getNailEmployeeServiceDao().persist(employeeService);
+            employeeServices.add(employeeService);
+        }
+        return new ResponseEntity<List<NailEmployeeService>>(employeeServices, HttpStatus.CREATED);
+    }
+
+
+
+    /**
+     *
+     * Get the service from the store
+     * Get the current customer
+     * Create a customer service from these information
+     *
+     * @param id
+     * @param customerId
+     * @return Map: {
+     *     employeeServices
+     * }
+     */
+    @RequestMapping(value = "/services/{id}/addServiceToCustomer/{customerId}.json", method = RequestMethod.POST)
+    public ResponseEntity<NailCustomerService> addNailServiceToCustomer(
+            @PathVariable("id") Long id,
+            @PathVariable("customerId") Long customerId,
+            @RequestParam(required = false, value = "") final Long storeId
+    ) {
+        NailCustomer customer = this.serviceLocator.getNailCustomerDao().findByIdByStore(customerId, storeId);
+        NailService service = this.serviceLocator.getNailServiceDao().findByIdByStore(id, storeId);
+        NailCustomerService customerService = new NailCustomerService();
+        if (service != null && customer != null) {
+            customerService.setNailCustomer(customer);
+            customerService.setNailService(service);
+            customerService.setPrice(service.getPrice());
+            customerService.setServiceDate(new Date());
+            customerService.setStatus(ServiceStatus.WAITING.toString());
+            this.serviceLocator.getNailCustomerServiceDao().persist(customerService);
+        }
+
+        return new ResponseEntity<NailCustomerService>(customerService, HttpStatus.CREATED);
+    }
+
+
 
     protected NailCustomer findCustomer (Long id, String email, String phone, Long storeId) {
         NailCustomer customer = null;

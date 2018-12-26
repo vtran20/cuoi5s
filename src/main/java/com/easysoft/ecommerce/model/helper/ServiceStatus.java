@@ -5,6 +5,6 @@ package com.easysoft.ecommerce.model.helper;
  */
 public enum ServiceStatus {
 
-    SCHEDULED, CHECKED_IN, IN_PROGRESS, COMPLETED, CANCELED;
+    SCHEDULED, WAITING, IN_PROGRESS, COMPLETED, CANCELED;
 
 }

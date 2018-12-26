@@ -58,4 +58,24 @@ public abstract class AbstractEntity implements Serializable {
         return (this.id == null || this.id == 0);
     }
 
+    @Override
+    @Transient
+    @JsonIgnore
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractEntity)) return false;
+
+        AbstractEntity that = (AbstractEntity) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    @Transient
+    @JsonIgnore
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

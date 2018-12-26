@@ -5,5 +5,8 @@ import java.util.Map;
 public interface NailManagementService {
     public Map<String, Object> addNailCustomerService (Map inputData, Long storeId);
 
+    public Map<String, Object> checkInAppointmentCustomer(Map inputData, Long storeId) throws Exception;
+
+    public void deleteCustomerService(long customerId, long customerServiceId) throws Exception;
 }
 

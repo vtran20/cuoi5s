@@ -87,7 +87,7 @@ public class NailEmployeeService extends AbstractEntity  {
 
     @Transient
     public Long getEmployeeId() {
-        return employeeId;
+        return employeeId!= null? employeeId : (nailEmployee != null && nailEmployee.getId() != null)? nailEmployee.getId() : 0;
     }
 
     public void setEmployeeId(Long employeeId) {
@@ -96,7 +96,7 @@ public class NailEmployeeService extends AbstractEntity  {
 
     @Transient
     public Long getCustomerServiceId() {
-        return customerServiceId;
+        return customerServiceId!= null? customerServiceId : (nailCustomerService != null && nailCustomerService.getId() != null)? nailCustomerService.getId() : 0;
     }
 
     public void setCustomerServiceId(Long customerServiceId) {

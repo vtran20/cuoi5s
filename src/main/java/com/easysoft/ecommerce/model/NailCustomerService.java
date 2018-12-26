@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table (name="nail_customer_service")
@@ -13,7 +14,6 @@ public class NailCustomerService extends AbstractEntity  {
     private static final long serialVersionUID = 1L;
 
     private Date serviceDate;
-    private Date checkIn;
 
     private String customerNote;
     private Long price;
@@ -21,6 +21,7 @@ public class NailCustomerService extends AbstractEntity  {
 
     private NailCustomer nailCustomer;
     private NailService nailService;
+    private List<NailEmployeeService> nailEmployeeServices;
 
     @ManyToOne
     @JsonIgnore
@@ -74,12 +75,14 @@ public class NailCustomerService extends AbstractEntity  {
         this.price = price;
     }
 
-    public Date getCheckIn() {
-        return checkIn;
+    @OneToMany(mappedBy = "nailCustomerService", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonIgnore
+    public List<NailEmployeeService> getNailEmployeeServices() {
+        return nailEmployeeServices;
     }
 
-    public void setCheckIn(Date checkIn) {
-        this.checkIn = checkIn;
+    public void setNailEmployeeServices(List<NailEmployeeService> nailEmployeeServices) {
+        this.nailEmployeeServices = nailEmployeeServices;
     }
 
     /////////Transient attribute///////////

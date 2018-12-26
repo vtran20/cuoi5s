@@ -12,4 +12,8 @@ public interface NailEmployeeServiceDao extends GenericDao<NailEmployeeService, 
 
     public List<NailEmployeeService> getEmployeeServicesByDate(Date date, Long storeId) throws Exception;
 
+    public NailEmployeeService getEmployeeService (Long employeeId, Long employeeServiceId) throws Exception ;
+
+    public List<NailEmployeeService> getEmployeeServices(Long customerServiceId) throws Exception;
+
 }

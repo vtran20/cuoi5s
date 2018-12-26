@@ -19,6 +19,7 @@ package com.easysoft.ecommerce.model;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -35,6 +36,8 @@ public class NailCustomer extends AbstractEntity  {
 
     private NailStore store;
     private List<NailCustomerService> nailCustomerServices;
+
+    private Date checkIn;
 
     public String getFirstName() {
         return firstName;
@@ -96,4 +99,26 @@ public class NailCustomer extends AbstractEntity  {
     public void setNailCustomerServices(List<NailCustomerService> nailCustomerServices) {
         this.nailCustomerServices = nailCustomerServices;
     }
+
+    public Date getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(Date checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    /////////////////////////Transient Attribute////////////////////////
+
+    private String status;
+    @Transient
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+
 }
