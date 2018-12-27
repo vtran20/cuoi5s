@@ -33,6 +33,7 @@ public class NailCustomer extends AbstractEntity  {
     private String email;
     private String phone;
     private String active;
+    private String status;
 
     private NailStore store;
     private List<NailCustomerService> nailCustomerServices;
@@ -108,10 +109,6 @@ public class NailCustomer extends AbstractEntity  {
         this.checkIn = checkIn;
     }
 
-    /////////////////////////Transient Attribute////////////////////////
-
-    private String status;
-    @Transient
     public String getStatus() {
         return status;
     }
@@ -120,5 +117,5 @@ public class NailCustomer extends AbstractEntity  {
         this.status = status;
     }
 
-
+    /////////////////////////Transient Attribute////////////////////////
 }

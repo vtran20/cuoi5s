@@ -58,7 +58,10 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
             NailStore nailStore = serviceLocator.getNailStoreDao().findById(storeId);
             customer.setStore(nailStore);
             customer.setActive("Y");
+            customer.setStatus(ServiceStatus.WAITING.toString());
             serviceLocator.getNailCustomerDao().persist(customer);
+        } else {
+
         }
         //Set checkin to current date for both old and new customer.
         customer.setCheckIn(new Date());
@@ -76,7 +79,6 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
                     if (service != null) {
                         customerService.setPrice(service.getPrice());
                     }
-                    customerService.setStatus(status);
                     customerService.setServiceDate(serviceDate);
                     serviceLocator.getNailCustomerServiceDao().persist(customerService);
                     customerServices.add(customerService);
@@ -101,7 +103,9 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
 
         NailCustomer customer = findCustomer(customerId, email, phone, storeId);
         if (customer != null){
-            customer.setStatus(ServiceStatus.SCHEDULED.toString());
+            if (!customer.getStatus().equals(ServiceStatus.SCHEDULED.toString())) {
+                customer.setStatus(ServiceStatus.WAITING.toString());
+            }
             customer.setCheckIn(new Date()); //this will be used when reload the POS. Customer may be removed all customer services
             List csIds = inputData.get("customerServices") != null? (List) inputData.get("customerServices") : null;
             if (csIds == null || csIds.size() == 0) {

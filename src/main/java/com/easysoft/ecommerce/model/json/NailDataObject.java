@@ -72,7 +72,6 @@ public class NailDataObject {
             NailCustomerServiceJson nailCustomerServiceJson = new NailCustomerServiceJson();
             nailCustomerServiceJson.setId(customerService.getId());
             nailCustomerServiceJson.setServiceDate(customerService.getServiceDate());
-            nailCustomerServiceJson.setStatus(customerService.getStatus());
             nailCustomerServiceJsonMap.put(customerService.getId().toString(), nailCustomerServiceJson);
             allIdsCustomerServices.add(customerService.getId());
 

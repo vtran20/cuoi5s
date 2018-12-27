@@ -17,7 +17,6 @@ public class NailCustomerService extends AbstractEntity  {
 
     private String customerNote;
     private Long price;
-    private String status;
 
     private NailCustomer nailCustomer;
     private NailService nailService;
@@ -57,14 +56,6 @@ public class NailCustomerService extends AbstractEntity  {
 
     public void setCustomerNote(String customerNote) {
         this.customerNote = customerNote;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Long getPrice() {

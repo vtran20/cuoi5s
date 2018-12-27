@@ -54,7 +54,7 @@ public class NailController {
             "/employees/{id}/employeeServices/date/{date}.json",
             "/employees/{id}/addEmployeeToCustomer/{customerId}.json",
             "/services/{id}/addServiceToCustomer/{customerId}.json"
-    }, method = RequestMethod.OPTIONS)
+    }, method = {RequestMethod.OPTIONS, RequestMethod.PUT})
     public void catchAllOpt(final HttpServletResponse response)
             throws IOException {
         response.addHeader("Access-Control-Allow-Origin", "*");
@@ -112,7 +112,6 @@ public class NailController {
                 if (customer != null) {
                     //set customer id to customer service.
                     customerService.setCustomerId(customer.getId());
-                    customer.setStatus(customerService.getStatus());
                     customers.add(customer);
                 }
                 NailService service = customerService.getNailService();
@@ -252,13 +251,16 @@ public class NailController {
         if (customer.getActive() != null && !customer.getActive().equals(currentNailCustomer.getActive())) {
             currentNailCustomer.setActive(customer.getActive());
         }
+        if (customer.getStatus() != null && !customer.getStatus().equals(currentNailCustomer.getStatus())) {
+            currentNailCustomer.setStatus(customer.getStatus());
+        }
 
         serviceLocator.getNailCustomerDao().merge(currentNailCustomer);
         return new ResponseEntity<NailCustomer>(currentNailCustomer, HttpStatus.OK);
     }
 
     @RequestMapping(value = {"/customers/{id}/checkIn.json"}, method = RequestMethod.PUT)
-    public ResponseEntity<NailCustomer> checkCustomer(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity<NailCustomer> checkInCustomer(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
         System.out.println("Updating NailCustomer " + id);
 
         NailCustomer currentNailCustomer = serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
@@ -269,6 +271,7 @@ public class NailController {
         }
 
         currentNailCustomer.setCheckIn(new Date());
+        currentNailCustomer.setStatus(ServiceStatus.WAITING.toString());
         serviceLocator.getNailCustomerDao().merge(currentNailCustomer);
         return new ResponseEntity<NailCustomer>(currentNailCustomer, HttpStatus.OK);
     }
@@ -564,6 +567,7 @@ public class NailController {
         if ("Y".equals(appointment)) {
             result = serviceLocator.getNailManagementService().checkInAppointmentCustomer(inputData, storeId);
         } else {
+            //TODO: check and make sure this method is update customer status correctly.
             result = serviceLocator.getNailManagementService().addNailCustomerService(inputData, storeId);
         }
 
@@ -582,6 +586,7 @@ public class NailController {
         System.out.println("Updating NailCustomerService " + id);
 
         NailCustomerService currentNailCustomerService = null;
+        boolean hasChange = false;
         try {
             currentNailCustomerService = serviceLocator.getNailCustomerServiceDao().getCustomerService(id, csId);
             if (currentNailCustomerService==null) {
@@ -591,12 +596,11 @@ public class NailController {
 
             if (customerService.getServiceDate() != null && !customerService.getServiceDate().equals(currentNailCustomerService.getServiceDate())) {
                 currentNailCustomerService.setServiceDate(customerService.getServiceDate());
+                hasChange = true;
             }
             if (customerService.getPrice() != null && !customerService.getPrice().equals(currentNailCustomerService.getPrice())) {
                 currentNailCustomerService.setPrice(customerService.getPrice());
-            }
-            if (customerService.getStatus() != null && !customerService.getStatus().equals(currentNailCustomerService.getStatus())) {
-                currentNailCustomerService.setStatus(customerService.getStatus());
+                hasChange = true;
             }
 
             if (serviceId != null && serviceId > 0) {
@@ -606,10 +610,12 @@ public class NailController {
                     if (currentNailCustomerService.getPrice() == null || currentNailCustomerService.getPrice() <= 0) {
                         currentNailCustomerService.setPrice(service.getPrice());
                     }
+                    hasChange = true;
                 }
             }
-
-            serviceLocator.getNailCustomerServiceDao().merge(currentNailCustomerService);
+            if (hasChange) {
+                serviceLocator.getNailCustomerServiceDao().merge(currentNailCustomerService);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -617,6 +623,41 @@ public class NailController {
         }
 
         return new ResponseEntity<NailCustomerService>(currentNailCustomerService, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = {"/customers/{id}/customerServices.json"}, method = RequestMethod.PUT)
+    public ResponseEntity<List<NailCustomerService>> updateNailCustomerServices(
+            @PathVariable("id") long id,
+            @RequestBody List<NailCustomerService> customerServices
+    ) {
+        System.out.println("Updating NailCustomerService " + id);
+
+        NailCustomerService currentNailCustomerService = null;
+        try {
+            boolean hasChange = false;
+            for (NailCustomerService customerService: customerServices) {
+                currentNailCustomerService = serviceLocator.getNailCustomerServiceDao().getCustomerService(id, customerService.getId());
+                if (currentNailCustomerService != null) {
+                    if (customerService.getServiceDate() != null && !customerService.getServiceDate().equals(currentNailCustomerService.getServiceDate())) {
+                        currentNailCustomerService.setServiceDate(customerService.getServiceDate());
+                        hasChange = true;
+                    }
+                    if (customerService.getPrice() != null && !customerService.getPrice().equals(currentNailCustomerService.getPrice())) {
+                        currentNailCustomerService.setPrice(customerService.getPrice());
+                        hasChange = true;
+                    }
+                    if (hasChange) {
+                        serviceLocator.getNailCustomerServiceDao().merge(currentNailCustomerService);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<NailCustomerService>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<List<NailCustomerService>>(customerServices, HttpStatus.OK);
     }
 
     //------------------- Delete a NailCustomerService --------------------------------------------------------
@@ -792,7 +833,13 @@ public class NailController {
             @RequestParam(required = false, value = "") final Long storeId
     ) {
         NailEmployee employee = (NailEmployee) this.serviceLocator.getNailEmployeeDao().findByIdByStore(id, storeId);
-        List<NailCustomerService> customerServices = this.serviceLocator.getNailCustomerServiceDao().findBy("nailCustomer.id", customerId);
+        List<NailCustomerService> customerServices = null;
+        try {
+            customerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), customerId, storeId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<List<NailEmployeeService>>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         List<NailEmployeeService> employeeServices = new ArrayList<NailEmployeeService>();
         for (NailCustomerService cs : customerServices) {
             NailEmployeeService employeeService = new NailEmployeeService();
@@ -832,7 +879,6 @@ public class NailController {
             customerService.setNailService(service);
             customerService.setPrice(service.getPrice());
             customerService.setServiceDate(new Date());
-            customerService.setStatus(ServiceStatus.WAITING.toString());
             this.serviceLocator.getNailCustomerServiceDao().persist(customerService);
         }
 

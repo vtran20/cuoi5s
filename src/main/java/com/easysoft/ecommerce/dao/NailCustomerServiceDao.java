@@ -8,5 +8,6 @@ import java.util.List;
 public interface NailCustomerServiceDao extends GenericDao<NailCustomerService, Long> {
 
     public List<NailCustomerService> getCustomerServicesByDate (Date date, Long storeId) throws Exception;
+    public List<NailCustomerService> getCustomerServicesByDate(Date date, Long customerId, Long storeId) throws Exception;
     public NailCustomerService getCustomerService (Long customerId, Long customerServiceId) throws Exception;
 }
