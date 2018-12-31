@@ -4,6 +4,7 @@ import com.easysoft.ecommerce.dao.*;
 import com.easysoft.ecommerce.model.*;
 import com.easysoft.ecommerce.model.helper.ServiceStatus;
 import com.easysoft.ecommerce.service.NailManagementService;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,6 +155,49 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
             throw new Exception("CustomerService is not found");
         }
 
+    }
+
+    @Override
+    public Map submitCustomerPayment(Long id, Long storeId, Map inputData) throws Exception {
+        //Insert Payment
+        Map currentCheckout = (Map) inputData.get("currentCheckout");
+        NailCustomer customer = this.serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
+        NailStore store = this.serviceLocator.getNailStoreDao().findById(id);
+        NailCustomerPayment payment = new NailCustomerPayment();
+        payment.setServicePrice(currentCheckout.get("servicePrice") != null? new Long(currentCheckout.get("servicePrice") + ""): 0);
+        payment.setTaxPrice(currentCheckout.get("taxPrice") != null ? new Long(currentCheckout.get("taxPrice") + "") : 0);
+        payment.setTipPrice(currentCheckout.get("tipPrice") != null ? new Long(currentCheckout.get("tipPrice") + "") : 0);
+        payment.setTotalPrice(currentCheckout.get("totalPrice") != null ? new Long(currentCheckout.get("totalPrice") + "") : 0);
+        payment.setCredit(((Boolean) currentCheckout.get("credit")) ? "Y" : "N");
+        payment.setCash(((Boolean) currentCheckout.get("cash")) ? "Y" : "N");
+        payment.setCheck(((Boolean) currentCheckout.get("check")) ? "Y" : "N");
+        payment.setGiftcard(((Boolean) currentCheckout.get("giftcard")) ? "Y" : "N");
+        payment.setNailCustomer(customer);
+        payment.setStore(store);
+
+        //Update employeeService
+        List <Map> employeeServices = (List<Map>) inputData.get("employeeServices");
+        for (Map map : employeeServices) {
+            Long employeeServiceId = new Long (map.get("id")+"");
+            NailEmployeeService employeeService = serviceLocator.getNailEmployeeServiceDao().findById(employeeServiceId);
+            employeeService.setServicePay(map.get("servicePay") != null? new Long(map.get("servicePay")+"") : 0);
+            employeeService.setTipPay(map.get("tipPay") != null? new Long (map.get("tipPay")+"") : 0);
+            serviceLocator.getNailEmployeeServiceDao().merge(employeeService);
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(inputData);
+        payment.setServiceSession(json);
+        this.serviceLocator.getNailCustomerPaymentDao().persist(payment);
+
+        customer.setStatus(ServiceStatus.COMPLETED.toString());
+        this.serviceLocator.getNailCustomerDao().merge(customer);
+
+        Map  result = new HashMap();
+        result.put("payment", payment);
+        result.put("customer", customer);
+
+        return result;
     }
 
 }

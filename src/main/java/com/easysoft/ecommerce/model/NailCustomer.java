@@ -37,6 +37,7 @@ public class NailCustomer extends AbstractEntity  {
 
     private NailStore store;
     private List<NailCustomerService> nailCustomerServices;
+    private List<NailCustomerPayment> nailCustomerPayments;
 
     private Date checkIn;
 
@@ -99,6 +100,16 @@ public class NailCustomer extends AbstractEntity  {
 
     public void setNailCustomerServices(List<NailCustomerService> nailCustomerServices) {
         this.nailCustomerServices = nailCustomerServices;
+    }
+
+    @OneToMany(mappedBy = "nailCustomer", fetch = FetchType.LAZY)
+    @JsonIgnore
+    public List<NailCustomerPayment> getNailCustomerPayments() {
+        return nailCustomerPayments;
+    }
+
+    public void setNailCustomerPayments(List<NailCustomerPayment> nailCustomerPayments) {
+        this.nailCustomerPayments = nailCustomerPayments;
     }
 
     public Date getCheckIn() {

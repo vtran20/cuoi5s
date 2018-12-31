@@ -5,6 +5,7 @@ import com.easysoft.ecommerce.model.helper.ServiceStatus;
 import com.easysoft.ecommerce.model.json.NailDataObject;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
+import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
@@ -42,6 +43,7 @@ public class NailController {
             "/customers.json",
             "/customers/{id}.json",
             "/customers/{id}/checkIn.json",
+            "/customers/{id}/checkout.json",
             "/employees.json",
             "/employees/{id}.json",
             "/services.json",
@@ -54,7 +56,7 @@ public class NailController {
             "/employees/{id}/employeeServices/date/{date}.json",
             "/employees/{id}/addEmployeeToCustomer/{customerId}.json",
             "/services/{id}/addServiceToCustomer/{customerId}.json"
-    }, method = {RequestMethod.OPTIONS, RequestMethod.PUT})
+    }, method = {RequestMethod.OPTIONS})
     public void catchAllOpt(final HttpServletResponse response)
             throws IOException {
         response.addHeader("Access-Control-Allow-Origin", "*");
@@ -102,7 +104,7 @@ public class NailController {
             dataObject.put("stores",stores);
             dataObject.put("employees",this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()));
             dataObject.put("services",this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
-//            dataObject.put("customerAppointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(new Date(), nailStore.getId()));
+            dataObject.put("payments",this.serviceLocator.getNailCustomerPaymentDao().getCustomerPaymentsByDate(new Date(), nailStore.getId()));
 
             List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), nailStore.getId());
             dataObject.put("customerServices",nailCustomerServices);
@@ -260,7 +262,7 @@ public class NailController {
     }
 
     @RequestMapping(value = {"/customers/{id}/checkIn.json"}, method = RequestMethod.PUT)
-    public ResponseEntity<NailCustomer> checkInCustomer(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity<NailCustomer> checkInCustomer(@PathVariable("id") Long id, @RequestParam(required = false, value = "") final Long storeId) {
         System.out.println("Updating NailCustomer " + id);
 
         NailCustomer currentNailCustomer = serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
@@ -762,20 +764,11 @@ public class NailController {
                 return new ResponseEntity<NailEmployeeService>(HttpStatus.NOT_FOUND);
             }
 
-            if (employeeService.getCashPay() != currentNailEmployeeService.getCashPay()) {
-                currentNailEmployeeService.setCashPay(employeeService.getCashPay());
-            }
-            if (employeeService.getCreditPay() != currentNailEmployeeService.getCreditPay()) {
-                currentNailEmployeeService.setCreditPay(employeeService.getCreditPay());
+            if (employeeService.getServicePay() != currentNailEmployeeService.getServicePay()) {
+                currentNailEmployeeService.setServicePay(employeeService.getServicePay());
             }
             if (employeeService.getTipPay() != currentNailEmployeeService.getTipPay()) {
                 currentNailEmployeeService.setTipPay(employeeService.getTipPay());
-            }
-            if (employeeService.getCheckPay() != currentNailEmployeeService.getCheckPay()) {
-                currentNailEmployeeService.setCheckPay(employeeService.getCheckPay());
-            }
-            if (employeeService.getGiftPay() != currentNailEmployeeService.getGiftPay()) {
-                currentNailEmployeeService.setGiftPay(employeeService.getGiftPay());
             }
 
             serviceLocator.getNailEmployeeServiceDao().merge(currentNailEmployeeService);
@@ -845,6 +838,7 @@ public class NailController {
             NailEmployeeService employeeService = new NailEmployeeService();
             employeeService.setNailEmployee(employee);
             employeeService.setNailCustomerService(cs);
+            employeeService.setServicePay(cs.getPrice());
             serviceLocator.getNailEmployeeServiceDao().persist(employeeService);
             employeeServices.add(employeeService);
         }
@@ -885,6 +879,32 @@ public class NailController {
         return new ResponseEntity<NailCustomerService>(customerService, HttpStatus.CREATED);
     }
 
+    /**
+     * Create a customer payment
+     *
+     *
+     *
+     * @param id
+     * @return Map: {
+     *     employeeServices
+     * }
+     */
+    @RequestMapping(value = "/customers/{id}/checkout.json", method = RequestMethod.POST)
+    public ResponseEntity<Map> createCustomerPayment(
+            @PathVariable("id") Long id,
+            @RequestBody Map inputData,
+//            @RequestBody NailCustomerPayment payment,
+            @RequestParam(required = false, value = "") final Long storeId
+    ) throws Exception {
+        Map result = null;
+        try {
+            result = serviceLocator.getNailManagementService().submitCustomerPayment(id, storeId, inputData);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception ("We're having an issue with saving payment");
+        }
+        return new ResponseEntity<Map>(result, HttpStatus.CREATED);
+    }
 
 
     protected NailCustomer findCustomer (Long id, String email, String phone, Long storeId) {

@@ -28,6 +28,7 @@ public class NailStore extends AbstractEntity {
     private List<NailCustomer> nailCustomers;
     private List<NailEmployee> nailEmployees;
     private List<NailService> nailServices;
+    private List<NailCustomerPayment> nailCustomerPayments;
 
     public String getName() {
         return name;
@@ -156,5 +157,15 @@ public class NailStore extends AbstractEntity {
 
     public void setNailServices(List<NailService> nailServices) {
         this.nailServices = nailServices;
+    }
+
+    @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+    @JsonIgnore
+    public List<NailCustomerPayment> getNailCustomerPayments() {
+        return nailCustomerPayments;
+    }
+
+    public void setNailCustomerPayments(List<NailCustomerPayment> nailCustomerPayments) {
+        this.nailCustomerPayments = nailCustomerPayments;
     }
 }

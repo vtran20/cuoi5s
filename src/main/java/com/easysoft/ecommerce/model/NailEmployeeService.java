@@ -4,7 +4,6 @@ package com.easysoft.ecommerce.model;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table (name="nail_employee_service")
@@ -12,10 +11,7 @@ public class NailEmployeeService extends AbstractEntity  {
 
     private static final long serialVersionUID = 1L;
 
-    private long creditPay;
-    private long cashPay;
-    private long giftPay;
-    private long checkPay;
+    private long servicePay;
     private long tipPay;
 
     private NailEmployee nailEmployee;
@@ -41,36 +37,12 @@ public class NailEmployeeService extends AbstractEntity  {
         this.nailEmployee = nailEmployee;
     }
 
-    public long getCreditPay() {
-        return creditPay;
+    public long getServicePay() {
+        return servicePay;
     }
 
-    public void setCreditPay(long creditPay) {
-        this.creditPay = creditPay;
-    }
-
-    public long getCashPay() {
-        return cashPay;
-    }
-
-    public void setCashPay(long cashPay) {
-        this.cashPay = cashPay;
-    }
-
-    public long getGiftPay() {
-        return giftPay;
-    }
-
-    public void setGiftPay(long giftPay) {
-        this.giftPay = giftPay;
-    }
-
-    public long getCheckPay() {
-        return checkPay;
-    }
-
-    public void setCheckPay(long checkPay) {
-        this.checkPay = checkPay;
+    public void setServicePay(long servicePay) {
+        this.servicePay = servicePay;
     }
 
     public long getTipPay() {

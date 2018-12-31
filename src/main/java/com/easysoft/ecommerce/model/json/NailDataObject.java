@@ -137,10 +137,7 @@ public class NailDataObject {
         for (NailEmployeeService employeeService : employeeServices) {
             NailEmployeeServiceJson nailEmployeeServiceJson = new NailEmployeeServiceJson();
             nailEmployeeServiceJson.setId(employeeService.getId());
-            nailEmployeeServiceJson.setCreditPay(employeeService.getCreditPay());
-            nailEmployeeServiceJson.setCashPay(employeeService.getCashPay());
-            nailEmployeeServiceJson.setGiftPay(employeeService.getGiftPay());
-            nailEmployeeServiceJson.setCheckPay(employeeService.getCheckPay());
+            nailEmployeeServiceJson.setCreditPay(employeeService.getServicePay());
             nailEmployeeServiceJson.setTipPay(employeeService.getTipPay());
             nailEmployeeServiceJsonMap.put(employeeService.getId().toString(), nailEmployeeServiceJson);
             allIds.add(employeeService.getId());
