@@ -11,8 +11,8 @@ public class NailEmployeeService extends AbstractEntity  {
 
     private static final long serialVersionUID = 1L;
 
-    private long servicePay;
-    private long tipPay;
+    private long servicePrice;
+    private long tipPrice;
 
     private NailEmployee nailEmployee;
     private NailCustomerService nailCustomerService;
@@ -37,20 +37,20 @@ public class NailEmployeeService extends AbstractEntity  {
         this.nailEmployee = nailEmployee;
     }
 
-    public long getServicePay() {
-        return servicePay;
+    public long getServicePrice() {
+        return servicePrice;
     }
 
-    public void setServicePay(long servicePay) {
-        this.servicePay = servicePay;
+    public void setServicePrice(long servicePrice) {
+        this.servicePrice = servicePrice;
     }
 
-    public long getTipPay() {
-        return tipPay;
+    public long getTipPrice() {
+        return tipPrice;
     }
 
-    public void setTipPay(long tipPay) {
-        this.tipPay = tipPay;
+    public void setTipPrice(long tipPrice) {
+        this.tipPrice = tipPrice;
     }
 
     /////////Transient attribute///////////

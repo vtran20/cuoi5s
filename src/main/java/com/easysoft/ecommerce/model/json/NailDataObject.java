@@ -137,8 +137,8 @@ public class NailDataObject {
         for (NailEmployeeService employeeService : employeeServices) {
             NailEmployeeServiceJson nailEmployeeServiceJson = new NailEmployeeServiceJson();
             nailEmployeeServiceJson.setId(employeeService.getId());
-            nailEmployeeServiceJson.setCreditPay(employeeService.getServicePay());
-            nailEmployeeServiceJson.setTipPay(employeeService.getTipPay());
+            nailEmployeeServiceJson.setCreditPay(employeeService.getServicePrice());
+            nailEmployeeServiceJson.setTipPrice(employeeService.getTipPrice());
             nailEmployeeServiceJsonMap.put(employeeService.getId().toString(), nailEmployeeServiceJson);
             allIds.add(employeeService.getId());
 
@@ -503,7 +503,7 @@ class NailEmployeeServiceJson extends BaseInfo {
     private long cashPay;
     private long giftPay;
     private long checkPay;
-    private long tipPay;
+    private long tipPrice;
 
     public long getCreditPay() {
         return creditPay;
@@ -537,12 +537,12 @@ class NailEmployeeServiceJson extends BaseInfo {
         this.checkPay = checkPay;
     }
 
-    public long getTipPay() {
-        return tipPay;
+    public long getTipPrice() {
+        return tipPrice;
     }
 
-    public void setTipPay(long tipPay) {
-        this.tipPay = tipPay;
+    public void setTipPrice(long tipPrice) {
+        this.tipPrice = tipPrice;
     }
 }
 

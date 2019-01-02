@@ -5,7 +5,6 @@ import com.easysoft.ecommerce.model.helper.ServiceStatus;
 import com.easysoft.ecommerce.model.json.NailDataObject;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
-import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
@@ -764,11 +763,11 @@ public class NailController {
                 return new ResponseEntity<NailEmployeeService>(HttpStatus.NOT_FOUND);
             }
 
-            if (employeeService.getServicePay() != currentNailEmployeeService.getServicePay()) {
-                currentNailEmployeeService.setServicePay(employeeService.getServicePay());
+            if (employeeService.getServicePrice() != currentNailEmployeeService.getServicePrice()) {
+                currentNailEmployeeService.setServicePrice(employeeService.getServicePrice());
             }
-            if (employeeService.getTipPay() != currentNailEmployeeService.getTipPay()) {
-                currentNailEmployeeService.setTipPay(employeeService.getTipPay());
+            if (employeeService.getTipPrice() != currentNailEmployeeService.getTipPrice()) {
+                currentNailEmployeeService.setTipPrice(employeeService.getTipPrice());
             }
 
             serviceLocator.getNailEmployeeServiceDao().merge(currentNailEmployeeService);
@@ -838,7 +837,7 @@ public class NailController {
             NailEmployeeService employeeService = new NailEmployeeService();
             employeeService.setNailEmployee(employee);
             employeeService.setNailCustomerService(cs);
-            employeeService.setServicePay(cs.getPrice());
+            employeeService.setServicePrice(cs.getPrice());
             serviceLocator.getNailEmployeeServiceDao().persist(employeeService);
             employeeServices.add(employeeService);
         }

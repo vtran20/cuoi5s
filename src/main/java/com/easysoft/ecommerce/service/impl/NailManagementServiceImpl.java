@@ -180,8 +180,8 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         for (Map map : employeeServices) {
             Long employeeServiceId = new Long (map.get("id")+"");
             NailEmployeeService employeeService = serviceLocator.getNailEmployeeServiceDao().findById(employeeServiceId);
-            employeeService.setServicePay(map.get("servicePay") != null? new Long(map.get("servicePay")+"") : 0);
-            employeeService.setTipPay(map.get("tipPay") != null? new Long (map.get("tipPay")+"") : 0);
+            employeeService.setServicePrice(map.get("servicePrice") != null ? new Long(map.get("servicePrice") + "") : 0);
+            employeeService.setTipPrice(map.get("tipPrice") != null ? new Long(map.get("tipPrice") + "") : 0);
             serviceLocator.getNailEmployeeServiceDao().merge(employeeService);
         }
 

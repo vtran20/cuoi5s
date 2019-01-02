@@ -16,7 +16,7 @@ public class NailCustomerService extends AbstractEntity  {
     private Date serviceDate;
 
     private String customerNote;
-    private Long price;
+    private long price;
 
     private NailCustomer nailCustomer;
     private NailService nailService;
