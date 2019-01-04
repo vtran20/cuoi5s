@@ -162,16 +162,16 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         //Insert Payment
         Map currentCheckout = (Map) inputData.get("currentCheckout");
         NailCustomer customer = this.serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
-        NailStore store = this.serviceLocator.getNailStoreDao().findById(id);
+        NailStore store = this.serviceLocator.getNailStoreDao().findById(storeId);
         NailCustomerPayment payment = new NailCustomerPayment();
         payment.setServicePrice(currentCheckout.get("servicePrice") != null? new Long(currentCheckout.get("servicePrice") + ""): 0);
         payment.setTaxPrice(currentCheckout.get("taxPrice") != null ? new Long(currentCheckout.get("taxPrice") + "") : 0);
         payment.setTipPrice(currentCheckout.get("tipPrice") != null ? new Long(currentCheckout.get("tipPrice") + "") : 0);
         payment.setTotalPrice(currentCheckout.get("totalPrice") != null ? new Long(currentCheckout.get("totalPrice") + "") : 0);
-        payment.setCredit(((Boolean) currentCheckout.get("credit")) ? "Y" : "N");
-        payment.setCash(((Boolean) currentCheckout.get("cash")) ? "Y" : "N");
-        payment.setCheck(((Boolean) currentCheckout.get("check")) ? "Y" : "N");
-        payment.setGiftcard(((Boolean) currentCheckout.get("giftcard")) ? "Y" : "N");
+        payment.setCredit(currentCheckout.get("credit")+"");
+        payment.setCash(currentCheckout.get("cash")+"");
+        payment.setCheck(currentCheckout.get("check")+"");
+        payment.setGiftcard(currentCheckout.get("giftcard")+"");
         payment.setNailCustomer(customer);
         payment.setStore(store);
 

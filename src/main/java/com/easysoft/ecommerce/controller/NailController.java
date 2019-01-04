@@ -822,12 +822,21 @@ public class NailController {
     public ResponseEntity<List<NailEmployeeService>> addNailEmployeeToCustomer(
             @PathVariable("id") Long id,
             @PathVariable("customerId") Long customerId,
+            @RequestParam(required = false, value = "") final Long customerServiceId,
             @RequestParam(required = false, value = "") final Long storeId
     ) {
         NailEmployee employee = (NailEmployee) this.serviceLocator.getNailEmployeeDao().findByIdByStore(id, storeId);
         List<NailCustomerService> customerServices = null;
         try {
-            customerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), customerId, storeId);
+            if (customerServiceId != null && customerServiceId > 0) {
+                customerServices = new ArrayList<NailCustomerService>();
+                NailCustomerService customerService = this.serviceLocator.getNailCustomerServiceDao().getCustomerService(customerId, customerServiceId);
+                if (customerService != null) {
+                    customerServices.add(customerService);
+                }
+            } else {
+                customerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), customerId, storeId);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<List<NailEmployeeService>>(HttpStatus.INTERNAL_SERVER_ERROR);
