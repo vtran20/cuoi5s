@@ -2,11 +2,10 @@ package com.easysoft.ecommerce.controller;
 
 import com.easysoft.ecommerce.controller.exception.NailsException;
 import com.easysoft.ecommerce.model.*;
-import com.easysoft.ecommerce.model.helper.ServiceStatus;
-import com.easysoft.ecommerce.model.json.NailDataObject;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.util.Messages;
+import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
@@ -61,6 +60,7 @@ public class NailController {
             "/employees/{id}/employeeServices/date/{date}.json",
             "/employees/{id}/addEmployeeToCustomer/{customerId}.json",
             "/services/{id}/addServiceToCustomer/{customerId}.json",
+            "/errorLog.json",
             "/appointments.json",
             "/appointments/{id}.json",
     }, method = {RequestMethod.OPTIONS})
@@ -1155,4 +1155,19 @@ public class NailController {
 
         return nailStore;
     }
+
+    //-------------------Create a NailCustomer--------------------------------------------------------
+
+    @RequestMapping(value = {"/errorLog.json"}, method = RequestMethod.POST)
+    public ResponseEntity createErrorLog(@RequestBody Map inputData, @RequestParam(required = false, value = "") final Long storeId) {
+        ErrorLog errorLog = new ErrorLog();
+        errorLog.setRootCause(inputData.get("rootCause") + "");
+        Gson gson = new Gson();
+        String json = gson.toJson(inputData.get("data"));
+        errorLog.setDataSession(json);
+        errorLog.setStoreId(storeId);
+        serviceLocator.getErrorLogDao().persist(errorLog);
+        return new ResponseEntity(errorLog, HttpStatus.CREATED);
+    }
+
 }

@@ -149,6 +149,8 @@ public class ServiceLocator {
     private NailCustomerPaymentDao nailCustomerPaymentDao;
     @Autowired
     private NailCustomerAppointmentDao nailCustomerAppointmentDao;
+    @Autowired
+    private ErrorLogDao errorLogDao;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -583,5 +585,9 @@ public class ServiceLocator {
 
     public NailCustomerAppointmentDao getNailCustomerAppointmentDao() {
         return nailCustomerAppointmentDao;
+    }
+
+    public ErrorLogDao getErrorLogDao() {
+        return errorLogDao;
     }
 }
