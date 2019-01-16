@@ -80,4 +80,5 @@ public class NailService extends AbstractEntity  {
     public void setMinutes(int minutes) {
         this.minutes = minutes;
     }
+
 }
