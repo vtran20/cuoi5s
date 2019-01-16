@@ -1,10 +1,12 @@
 package com.easysoft.ecommerce.controller;
 
+import com.easysoft.ecommerce.controller.exception.NailsException;
 import com.easysoft.ecommerce.model.*;
 import com.easysoft.ecommerce.model.helper.ServiceStatus;
 import com.easysoft.ecommerce.model.json.NailDataObject;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
+import com.easysoft.ecommerce.util.Messages;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
@@ -21,6 +23,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -50,11 +55,14 @@ public class NailController {
             "/customers/{id}/customerServices.json",
             "/customers/{id}/customerServices/{csId}.json",
             "/customers/customerServices.json",
+            "/customers/makeAppointment.json",
             "/employees/{id}/employeeServices/{esId}.json",
             "/employees/{id}/employeeServices.json",
             "/employees/{id}/employeeServices/date/{date}.json",
             "/employees/{id}/addEmployeeToCustomer/{customerId}.json",
-            "/services/{id}/addServiceToCustomer/{customerId}.json"
+            "/services/{id}/addServiceToCustomer/{customerId}.json",
+            "/appointments.json",
+            "/appointments/{id}.json",
     }, method = {RequestMethod.OPTIONS})
     public void catchAllOpt(final HttpServletResponse response)
             throws IOException {
@@ -66,29 +74,43 @@ public class NailController {
         response.addHeader("Access-Control-Allow-Headers",
                 "origin, content-type, accept, x-requested-with");
     }
-    @Deprecated
-    @RequestMapping(value = {"/naildata.json"}, method = RequestMethod.GET)
-    public
-    @ResponseBody
-    NailDataObject getNailsData(HttpServletRequest request) throws Exception {
-        Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
-        NailDataObject dataObject = new NailDataObject ();
-        List stores = this.serviceLocator.getNailStoreDao().findAll(site.getId());
-        NailStore nailStore = null;
-        if (stores != null && stores.size() > 0) {
-            nailStore = (NailStore) stores.get(0);
-            dataObject.setStoreInfo(nailStore);
-            List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), nailStore.getId());
-            if (nailCustomerServices != null && nailCustomerServices.size() > 0) {
-                //Don't need to do this if doesn't have any customer service on that day
-                dataObject.setCustomerServices(nailCustomerServices);
-            }
-            dataObject.setEmployeeServices(this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()), this.serviceLocator.getNailEmployeeServiceDao().getEmployeeServicesByDate(new Date(), nailStore.getId()));
 
-            dataObject.setServices(this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
-        }
-        return dataObject;
-    }
+//    @ExceptionHandler(NailsException.class )
+//    public @ResponseBody ResponseEntity handleException(NailsException e) {
+//        Map map = new HashMap();
+//        map.put("error", e.getMessage());
+//        return new ResponseEntity(map,HttpStatus.BAD_REQUEST);
+//    }
+
+//    @ExceptionHandler({Exception.class} )
+//    public ResponseEntity handleException(Exception e) {
+//        return new ResponseEntity(e.getMessage() + ":" + e.getCause().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+
+//    @Deprecated
+//    @RequestMapping(value = {"/naildata.json"}, method = RequestMethod.GET)
+//    public
+//    @ResponseBody
+//    NailDataObject getNailsData(HttpServletRequest request) throws Exception {
+//        Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
+//        NailDataObject dataObject = new NailDataObject ();
+//        List stores = this.serviceLocator.getNailStoreDao().findAll(site.getId());
+//        NailStore nailStore = null;
+//        if (stores != null && stores.size() > 0) {
+//            nailStore = (NailStore) stores.get(0);
+//            dataObject.setStoreInfo(nailStore);
+//            List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), nailStore.getId());
+//            if (nailCustomerServices != null && nailCustomerServices.size() > 0) {
+//                //Don't need to do this if doesn't have any customer service on that day
+//                dataObject.setCustomerServices(nailCustomerServices);
+//            }
+//            dataObject.setEmployeeServices(this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()), this.serviceLocator.getNailEmployeeServiceDao().getEmployeeServicesByDate(new Date(), nailStore.getId()));
+//
+//            dataObject.setServices(this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
+//        }
+//        return dataObject;
+//    }
+
     @RequestMapping(value = {"/initialData.json"}, method = RequestMethod.GET)
     public
     @ResponseBody
@@ -104,6 +126,7 @@ public class NailController {
             dataObject.put("employees",this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()));
             dataObject.put("services",this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
             dataObject.put("payments",this.serviceLocator.getNailCustomerPaymentDao().getCustomerPaymentsByDate(new Date(), nailStore.getId()));
+            dataObject.put("appointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(new Date(), new Date(), nailStore.getId()));
 
             List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), nailStore.getId());
             dataObject.put("customerServices",nailCustomerServices);
@@ -175,26 +198,26 @@ public class NailController {
     //-------------------Retrieve All Customers--------------------------------------------------------
 
     @RequestMapping(value = "/customers/", method = RequestMethod.GET)
-    public ResponseEntity<List<NailCustomer>> listAllNailCustomers(@RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity listAllNailCustomers(@RequestParam(required = false, value = "") final Long storeId) {
         List<NailCustomer> customers = serviceLocator.getNailCustomerDao().findAllByStore(storeId);
         if(customers.isEmpty()){
-            return new ResponseEntity<List<NailCustomer>>(HttpStatus.NOT_FOUND);//You many decide to return HttpStatus.NOT_FOUND
+            return new ResponseEntity(HttpStatus.NOT_FOUND);//You many decide to return HttpStatus.NOT_FOUND
         }
-        return new ResponseEntity<List<NailCustomer>>(customers, HttpStatus.OK);
+        return new ResponseEntity(customers, HttpStatus.OK);
     }
 
 
     //-------------------Retrieve Single NailCustomer--------------------------------------------------------
 
     @RequestMapping(value = {"/customers/{id}", "/customers/{id}.json"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<NailCustomer> getNailCustomer(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity getNailCustomer(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
         System.out.println("Fetching NailCustomer with id " + id);
         NailCustomer customer = serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
         if (customer == null) {
             System.out.println("NailCustomer with id " + id + " not found");
-            return new ResponseEntity<NailCustomer>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<NailCustomer>(customer, HttpStatus.OK);
+        return new ResponseEntity(customer, HttpStatus.OK);
     }
 
 
@@ -202,7 +225,7 @@ public class NailController {
     //-------------------Create a NailCustomer--------------------------------------------------------
 
     @RequestMapping(value = {"/customers/","/customers.json"}, method = RequestMethod.POST)
-    public ResponseEntity<NailCustomer> createNailCustomer(@RequestBody NailCustomer customer,  UriComponentsBuilder ucBuilder, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity createNailCustomer(@RequestBody NailCustomer customer,  UriComponentsBuilder ucBuilder, @RequestParam(required = false, value = "") final Long storeId) {
         //TODO: will check this later
 //        if (customerService.isNailCustomerExist(customer)) {
 //            System.out.println("A NailCustomer with name " + customer.getName() + " already exist");
@@ -220,21 +243,21 @@ public class NailController {
 //        headers.setLocation(ucBuilder.path("/customers/{id}").buildAndExpand(customer.getId()).toUri());
         }
 
-        return new ResponseEntity<NailCustomer>(customer, HttpStatus.CREATED);
+        return new ResponseEntity(customer, HttpStatus.CREATED);
     }
 
 
     //------------------- Update a NailCustomer --------------------------------------------------------
 
     @RequestMapping(value = {"/customers/{id}", "/customers/{id}.json"}, method = RequestMethod.PUT)
-    public ResponseEntity<NailCustomer> updateNailCustomer(@PathVariable("id") long id, @RequestBody NailCustomer customer, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity updateNailCustomer(@PathVariable("id") long id, @RequestBody NailCustomer customer, @RequestParam(required = false, value = "") final Long storeId) {
         System.out.println("Updating NailCustomer " + id);
 
         NailCustomer currentNailCustomer = serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
 
         if (currentNailCustomer==null) {
             System.out.println("NailCustomer with id " + id + " not found");
-            return new ResponseEntity<NailCustomer>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
         if (customer.getFirstName() != null && !customer.getFirstName().equals(currentNailCustomer.getFirstName())) {
@@ -272,7 +295,7 @@ public class NailController {
         }
 
         currentNailCustomer.setCheckIn(new Date());
-        currentNailCustomer.setStatus(ServiceStatus.WAITING.toString());
+//        currentNailCustomer.setStatus(ServiceStatus.WAITING.toString());
         serviceLocator.getNailCustomerDao().merge(currentNailCustomer);
         return new ResponseEntity<NailCustomer>(currentNailCustomer, HttpStatus.OK);
     }
@@ -575,6 +598,18 @@ public class NailController {
         return new ResponseEntity<Map>(result, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/customers/makeAppointment.json", method = RequestMethod.POST)
+    public ResponseEntity<Map> makeAppointment(
+            @RequestBody Map inputData,
+            @RequestParam(required = false, value = "") final Long storeId
+    ) throws Exception {
+
+        Map<String, Object> result = null;
+        result = serviceLocator.getNailManagementService().makeAppointment(inputData, storeId);
+
+        return new ResponseEntity<Map>(result, HttpStatus.CREATED);
+    }
+
     //------------------- Update a NailCustomerService --------------------------------------------------------
 
     @RequestMapping(value = {"/customers/{id}/customerServices/{csId}.json"}, method = RequestMethod.PUT)
@@ -805,6 +840,163 @@ public class NailController {
         return new ResponseEntity<NailEmployeeService>(HttpStatus.OK);
     }
 
+    /************************Appointments**********************/
+    //-------------------Retrieve All Appointments--------------------------------------------------------
+
+    @RequestMapping(value = "/appointments.json", method = RequestMethod.GET)
+    public ResponseEntity listAllNailAppointmentsByDate(
+            @RequestParam(required = false, value = "") final Long storeId,
+            @RequestParam(required = false, value = "") final String startDate,
+            @RequestParam(required = false, value = "") final String endDate
+    ) throws Exception {
+        Date startDateObj;
+        Date endDateObj;
+        if (StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)) {
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                startDateObj = sdf.parse(startDate);
+                endDateObj = sdf.parse(endDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Messages messages = new Messages();
+                messages.addError("Cannot parse the date. Please recheck");
+                return new ResponseEntity(messages, HttpStatus.OK);
+            }
+        } else {
+            startDateObj = new Date();
+            endDateObj = new Date();
+        }
+        List<NailCustomerAppointment> appointments = serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(startDateObj, endDateObj, storeId);
+        return new ResponseEntity(appointments, HttpStatus.OK);
+    }
+
+
+    //-------------------Retrieve Single NailCustomerAppointment--------------------------------------------------------
+
+    @RequestMapping(value = {"/appointments/{id}", "/appointments/{id}.json"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<NailCustomerAppointment> getNailCustomerAppointment(
+            @PathVariable("id") long id,
+            @RequestParam(required = false, value = "") final Long storeId,
+            @RequestParam(required = false, value = "") final String date
+    ) {
+        System.out.println("Fetching NailCustomerAppointment with id " + id);
+        NailCustomerAppointment appointment = serviceLocator.getNailCustomerAppointmentDao().findByIdByStore(id, storeId);
+        if (appointment == null) {
+            System.out.println("NailCustomerAppointment with id " + id + " not found");
+            return new ResponseEntity<NailCustomerAppointment>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<NailCustomerAppointment>(appointment, HttpStatus.OK);
+    }
+
+
+
+    //-------------------Create a NailCustomerAppointment--------------------------------------------------------
+
+    @RequestMapping(value = {"/appointments/","/appointments.json"}, method = RequestMethod.POST)
+    public ResponseEntity<NailCustomerAppointment> createNailCustomerAppointment(@RequestBody Map appointment,  UriComponentsBuilder ucBuilder, @RequestParam(required = false, value = "") final Long storeId) throws Exception {
+        NailCustomerAppointment customerAppointment = new NailCustomerAppointment();
+        NailStore nailStore = serviceLocator.getNailStoreDao().findById(storeId);
+        customerAppointment.setStore(nailStore);
+
+        NailCustomer nailCustomer = null;
+        if (appointment.get("customerId") != null && StringUtils.isNumeric(appointment.get("customerId")+"")) {
+            nailCustomer = serviceLocator.getNailCustomerDao().findByIdByStore(new Long(appointment.get("customerId") + ""), storeId);
+        }
+        if (nailCustomer != null) {
+            customerAppointment.setNailCustomer(nailCustomer);
+        } else {
+            throw new NailsException("Cannot find customer");
+        }
+
+        NailEmployee nailEmployee = null;
+        if (appointment.get("employeeId") != null && StringUtils.isNumeric(appointment.get("employeeId")+"")) {
+            nailEmployee = serviceLocator.getNailEmployeeDao().findByIdByStore(new Long(appointment.get("employeeId") + ""), storeId);
+        }
+        if (nailEmployee != null) {
+            customerAppointment.setNailEmployee(nailEmployee);
+        } else {
+            throw new NailsException("Cannot find employee");
+        }
+
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startDate = sdf.parse(appointment.get("startDate")+"");
+        Date endDate = sdf.parse(appointment.get("endDate")+"");
+        customerAppointment.setStartTime(startDate);
+        customerAppointment.setEndTime(endDate);
+        if (appointment.get("note") != null) {
+            customerAppointment.setCustomerNote(appointment.get("note")+"");
+        }
+        serviceLocator.getNailCustomerAppointmentDao().persist(customerAppointment);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(ucBuilder.path("/appointments/{id}").buildAndExpand(appointment.getId()).toUri());
+
+        return new ResponseEntity<NailCustomerAppointment>(customerAppointment, HttpStatus.CREATED);
+    }
+
+
+    //------------------- Update a NailCustomerAppointment --------------------------------------------------------
+
+    @RequestMapping(value = {"/appointments/{id}", "/appointments/{id}.json"}, method = RequestMethod.PUT)
+    public ResponseEntity<NailCustomerAppointment> updateNailCustomerAppointment(@PathVariable("id") long id, @RequestBody NailCustomerAppointment appointment, @RequestParam(required = false, value = "") final Long storeId) {
+        System.out.println("Updating NailCustomerAppointment " + id);
+
+        NailCustomerAppointment currentNailCustomerAppointment = serviceLocator.getNailCustomerAppointmentDao().findByIdByStore(id, storeId);
+
+        if (currentNailCustomerAppointment==null) {
+            System.out.println("NailCustomerAppointment with id " + id + " not found");
+            return new ResponseEntity<NailCustomerAppointment>(HttpStatus.NOT_FOUND);
+        }
+//TODO: need update
+//        if (appointment.getFirstName() != null && !appointment.getFirstName().equals(currentNailCustomerAppointment.getFirstName())) {
+//            currentNailCustomerAppointment.setFirstName(appointment.getFirstName());
+//        }
+//        if (appointment.getLastName() != null && !appointment.getLastName().equals(currentNailCustomerAppointment.getLastName())) {
+//            currentNailCustomerAppointment.setLastName(appointment.getLastName());
+//        }
+//        if (appointment.getPhone() != null && !appointment.getPhone().equals(currentNailCustomerAppointment.getPhone())) {
+//            currentNailCustomerAppointment.setPhone(appointment.getPhone());
+//        }
+//        if (appointment.getEmail() != null && !appointment.getEmail().equals(currentNailCustomerAppointment.getEmail())) {
+//            currentNailCustomerAppointment.setEmail(appointment.getEmail());
+//        }
+//        if (appointment.getActive() != null && !appointment.getActive().equals(currentNailCustomerAppointment.getActive())) {
+//            currentNailCustomerAppointment.setActive(appointment.getActive());
+//        }
+//        if (appointment.getStatus() != null && !appointment.getStatus().equals(currentNailCustomerAppointment.getStatus())) {
+//            currentNailCustomerAppointment.setStatus(appointment.getStatus());
+//        }
+
+        serviceLocator.getNailCustomerAppointmentDao().merge(currentNailCustomerAppointment);
+        return new ResponseEntity<NailCustomerAppointment>(currentNailCustomerAppointment, HttpStatus.OK);
+    }
+
+    //------------------- Delete a NailCustomerAppointment --------------------------------------------------------
+
+    @RequestMapping(value = {"/appointments/{id}", "/appointments/{id}.json"}, method = RequestMethod.DELETE)
+    public ResponseEntity deleteNailCustomerAppointment(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) throws Exception {
+        System.out.println("Fetching & Deleting NailCustomerAppointment with id " + id);
+
+        NailCustomerAppointment appointment = serviceLocator.getNailCustomerAppointmentDao().findByIdByStore(id, storeId);
+        if (appointment == null) {
+            System.out.println("Unable to delete. NailCustomerAppointment with id " + id + " not found");
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } else {
+            // Only delete customer services and employee services if it is in the future.
+            // We don't delete appointment in the past because it relates to pricing...
+            if (appointment.getStartTime().after(new Date())) {
+                NailCustomer customer = serviceLocator.getNailCustomerDao().findByIdByStore(appointment.getCustomerId(), storeId);
+                if (customer != null) {
+                    customer.setCheckIn(null);
+                    customer.setStatus(null);
+                }
+                serviceLocator.getNailCustomerAppointmentDao().remove(appointment);
+            } else {
+                throw new NailsException("Cannot delete the old appointment");
+            }
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     /**
      *
      * Get the employee from the store
@@ -909,7 +1101,7 @@ public class NailController {
             result = serviceLocator.getNailManagementService().submitCustomerPayment(id, storeId, inputData);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new Exception ("We're having an issue with saving payment");
+            throw new NailsException ("We're having an issue with saving payment");
         }
         return new ResponseEntity<Map>(result, HttpStatus.CREATED);
     }
@@ -956,7 +1148,7 @@ public class NailController {
                     SessionUtil.createCookie(request, response, STORE_ID_COOKIE, nailStore.getId()+"", 10*365*24*60*60);
                 }
             } else {
-                throw new Exception ("No stores available");
+                throw new NailsException ("No stores available");
             }
 
         }

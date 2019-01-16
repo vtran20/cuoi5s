@@ -19,6 +19,7 @@ public class NailCustomerService extends AbstractEntity  {
     private long price;
 
     private NailCustomer nailCustomer;
+    private NailCustomerAppointment appointment;
     private NailService nailService;
     private List<NailEmployeeService> nailEmployeeServices;
 
@@ -32,7 +33,17 @@ public class NailCustomerService extends AbstractEntity  {
         this.nailCustomer = nailCustomer;
     }
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JsonIgnore
+    public NailCustomerAppointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(NailCustomerAppointment appointment) {
+        this.appointment = appointment;
+    }
+
+    @ManyToOne (fetch = FetchType.LAZY)
     @JsonIgnore
     public NailService getNailService() {
         return nailService;

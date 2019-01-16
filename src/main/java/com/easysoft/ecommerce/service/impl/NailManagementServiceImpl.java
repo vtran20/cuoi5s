@@ -1,16 +1,24 @@
 package com.easysoft.ecommerce.service.impl;
 
+import com.easysoft.ecommerce.controller.exception.NailsException;
 import com.easysoft.ecommerce.dao.*;
 import com.easysoft.ecommerce.model.*;
 import com.easysoft.ecommerce.model.helper.ServiceStatus;
 import com.easysoft.ecommerce.service.NailManagementService;
+import com.easysoft.ecommerce.util.Messages;
+import com.easysoft.ecommerce.util.WebUtil;
 import com.google.gson.Gson;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -93,6 +101,129 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
     }
 
     @Override
+    public Map<String, Object> makeAppointment(Map inputData, Long storeId) throws Exception {
+        Map<String, Object> result = new HashMap<String, Object>();
+        Messages messages = new Messages();
+        List<NailCustomerService> customerServices = new ArrayList<NailCustomerService>();
+        List<NailEmployeeService> employeeServices = new ArrayList<NailEmployeeService>();
+
+        String startDate = inputData.get("startDate") != null? (String) inputData.get("startDate") : null;
+        Date serviceDate = null;
+        Calendar appointmentCalendar = Calendar.getInstance();
+        int appointmentDuration = 0;
+
+        if (startDate != null) {
+            DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            serviceDate = sdf.parse(startDate);
+            appointmentCalendar.setTime(serviceDate);
+            if (appointmentCalendar.before(Calendar.getInstance())) {
+                messages.addError("Cannot make appointment in the past. Please select time for appointment");
+                result.put("messages", messages);
+                return result;
+            }
+        } else {
+            messages.addError("Please select time for appointment");
+            result.put("messages", messages);
+            return result;
+        }
+
+        Long customerId = inputData.get("id") != null ?  new Long(inputData.get("id")+"") : null;
+        String email = inputData.get("email") != null ? (String) inputData.get("email") : "";
+        String phone = inputData.get("phone") != null ? (String) inputData.get("phone") : "";
+
+        NailCustomer customer = findCustomer(customerId, email, phone, storeId);
+        if (customer == null){
+            customer = new NailCustomer();
+            customer.setFirstName(inputData.get("firstName") != null ? (String) inputData.get("firstName") : "");
+            customer.setLastName(inputData.get("lastName") != null ? (String) inputData.get("lastName") : "");
+            customer.setEmail(email);
+            customer.setPhone(phone);
+
+            NailStore nailStore = serviceLocator.getNailStoreDao().findById(storeId);
+            customer.setStore(nailStore);
+            customer.setActive("Y");
+            customer.setStatus(ServiceStatus.SCHEDULED.toString());
+            serviceLocator.getNailCustomerDao().persist(customer);
+        } else {
+            customer.setStatus(ServiceStatus.SCHEDULED.toString());
+            serviceLocator.getNailCustomerDao().merge(customer);
+        }
+
+        List <NailService> services = new ArrayList<NailService>();
+        List serviceIds = inputData.get("services") != null? (List) inputData.get("services") : null;
+        if (serviceIds != null && serviceIds.size() > 0) {
+            for (Object obj : serviceIds) {
+                if (obj instanceof String) {
+                    String i = (String) obj;
+                    Long serviceId = new Long(i);
+                    NailService service = serviceLocator.getNailServiceDao().findById(serviceId);
+                    services.add(service);
+                    //calculate duration
+                    if (service.getMinutes() <= 0) {
+                        appointmentDuration += 30; // assume this server will take 30 minutes.
+                    } else {
+                        appointmentDuration += service.getMinutes();
+                    }
+                }
+            }
+        } else {
+            messages.addError("Please select services");
+            result.put("messages", messages);
+            return result;
+        }
+
+        //Add Appointment
+        Long employeeId = inputData.get("employeeId") != null? new Long (inputData.get("employeeId")+"") : 0;
+        NailEmployee employee = serviceLocator.getNailEmployeeDao().findByIdByStore(employeeId, storeId);
+        NailCustomerAppointment customerAppointment = new NailCustomerAppointment();
+        customerAppointment.setStartTime(serviceDate);
+        appointmentCalendar.add(Calendar.MINUTE, appointmentDuration);
+        customerAppointment.setEndTime(appointmentCalendar.getTime());
+        if (inputData.get("note") != null) {
+            customerAppointment.setCustomerNote(inputData.get("note")+"");
+        }
+        customerAppointment.setNailCustomer(customer);
+        customerAppointment.setNailEmployee(employee);
+        NailStore store = serviceLocator.getNailStoreDao().findById(storeId);
+        customerAppointment.setStore(store);
+        serviceLocator.getNailCustomerAppointmentDao().persist(customerAppointment);
+
+
+        for (NailService service: services) {
+            //Add customer services
+            NailCustomerService customerService = new NailCustomerService();
+            customerService.setNailService(service);
+            customerService.setNailCustomer(customer);
+            if (service != null) {
+                customerService.setPrice(service.getPrice());
+            }
+            customerService.setServiceDate(serviceDate);
+            customerService.setAppointment(customerAppointment);
+            serviceLocator.getNailCustomerServiceDao().persist(customerService);
+            customerServices.add(customerService);
+
+            //Add employee services
+            NailEmployeeService employeeService = new NailEmployeeService();
+            employeeService.setNailEmployee(employee);
+            employeeService.setNailCustomerService(customerService);
+            employeeService.setServicePrice(customerService.getPrice());
+            serviceLocator.getNailEmployeeServiceDao().persist(employeeService);
+            employeeServices.add(employeeService);
+
+        }
+        if (WebUtil.isToday(customerAppointment.getStartTime())) {
+            result.put("customer", customer);
+            result.put("customerServices", customerServices);
+            result.put("employeeServices", employeeServices);
+            result.put("appointment", customerAppointment);
+        } else {
+            result.put("appointment", customerAppointment);
+        }
+
+        return result;
+    }
+
+    @Override
     public Map<String, Object> checkInAppointmentCustomer(Map inputData, Long storeId) throws Exception {
         Map<String, Object> result = new HashMap<String, Object>();
 
@@ -110,7 +241,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
             customer.setCheckIn(new Date()); //this will be used when reload the POS. Customer may be removed all customer services
             List csIds = inputData.get("customerServices") != null? (List) inputData.get("customerServices") : null;
             if (csIds == null || csIds.size() == 0) {
-                throw new Exception("Cannot find your appointment");
+                throw new NailsException("Cannot find your appointment");
             } else {
                 for (Object obj : csIds) {
                     if (obj instanceof Integer) {
@@ -128,7 +259,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
             result.put("customerServices", customerServices);
 
         } else {
-            throw new Exception("Cannot find your appointment");
+            throw new NailsException("Cannot find your appointment");
         }
 
 
@@ -148,11 +279,11 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
             customerService = serviceLocator.getNailCustomerServiceDao().getCustomerService(customerId, customerServiceId);
             if (customerService == null) {
                 System.out.println("Unable to delete. NailCustomerService with id " + customerId + " not found");
-                throw new Exception("CustomerService is not found");
+                throw new NailsException("CustomerService is not found");
             }
             serviceLocator.getNailCustomerServiceDao().remove(customerService);
         } catch (Exception e) {
-            throw new Exception("CustomerService is not found");
+            throw new NailsException("CustomerService is not found");
         }
 
     }
@@ -200,4 +331,17 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         return result;
     }
 
+    public static void main(String[] args) {
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = sdf.parse("2019-01-13 11:02:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(new DateTime(date).toLocalDate().equals(new LocalDate()));
+        System.out.println(new DateTime(new Date()).toLocalDate().equals(new LocalDate()));
+
+
+    }
 }

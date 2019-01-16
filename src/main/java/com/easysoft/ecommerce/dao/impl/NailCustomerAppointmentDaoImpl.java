@@ -2,7 +2,6 @@ package com.easysoft.ecommerce.dao.impl;
 
 import com.easysoft.ecommerce.dao.NailCustomerAppointmentDao;
 import com.easysoft.ecommerce.model.NailCustomerAppointment;
-import com.easysoft.ecommerce.model.NailCustomerService;
 import org.hibernate.type.TimestampType;
 import org.springframework.stereotype.Repository;
 
@@ -14,19 +13,26 @@ import java.util.List;
 public class NailCustomerAppointmentDaoImpl extends GenericDaoImpl<NailCustomerAppointment, Long> implements NailCustomerAppointmentDao {
 
     @Override
-    public List<NailCustomerAppointment> getCustomerAppointmentsByDate(Date date, Long storeId) throws Exception {
+    public List<NailCustomerAppointment> getCustomerAppointmentsByDate(Date startDateObj, Date endDateObj, Long storeId) throws Exception {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
+        calendar.setTime(startDateObj);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         Date startDate = calendar.getTime();
+
+        calendar = Calendar.getInstance();
+        calendar.setTime(endDateObj);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         Date endDate = calendar.getTime();
 
         return getSessionFactory().getCurrentSession()
-                .createQuery("SELECT cs FROM " + getPersistentClass().getName() + " cs join cs.nailCustomer c join c.store s where cs.serviceDate between :startDate and :endDate and s.id = :storeId ORDER BY cs.serviceDate asc")
+                .createQuery("SELECT cs FROM " + getPersistentClass().getName() + " cs join cs.store s where cs.startTime between :startDate and :endDate and s.id = :storeId")
                 .setParameter("startDate", startDate, new TimestampType())
                 .setParameter("endDate", endDate, new TimestampType())
                 .setParameter("storeId", storeId).list();

@@ -2,6 +2,7 @@ package com.easysoft.ecommerce.model;
 
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -89,4 +90,12 @@ public class NailEmployee extends AbstractEntity  {
     public void setCheckIn(Date checkIn) {
         this.checkIn = checkIn;
     }
+
+    /////////Transient attribute///////////
+    @Transient
+    @JsonProperty("name")
+    public String getName() {
+        return this.firstName + " " + this.lastName;
+    }
+
 }

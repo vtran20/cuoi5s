@@ -13,6 +13,8 @@ import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.runtime.parser.ParseException;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
 import org.joda.time.format.PeriodFormatter;
@@ -28,6 +30,7 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -354,6 +357,18 @@ public class WebUtil {
             result = formatter.format(date);
         }
         return result;
+    }
+
+    public static Date stringToDate (String s, String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        DateFormat sdf = new SimpleDateFormat(format);
+        Date date = null;
+        try {
+            date = sdf.parse(s);
+        } catch (java.text.ParseException e) {
+            return null;
+        }
+        return date;
     }
 
     public static boolean renameFile (String source, String dest) {
@@ -687,4 +702,21 @@ public class WebUtil {
         return url;
     }
 
+    public static boolean isToday (Date date) {
+        return new DateTime(date).toLocalDate().equals(new LocalDate());
+    }
+    public static boolean isToday (String d, String format) {
+        if (StringUtils.isEmpty(d)) return false;
+        if (StringUtils.isEmpty(format)) {
+            format = "yyyy-MM-dd HH:mm:ss";
+        }
+        DateFormat sdf = new SimpleDateFormat(format);
+        Date date = null;
+        try {
+            date = sdf.parse(d);
+        } catch (java.text.ParseException e) {
+            return false;
+        }
+        return new DateTime(date).toLocalDate().equals(new LocalDate());
+    }
 }

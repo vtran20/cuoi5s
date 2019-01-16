@@ -141,6 +141,6 @@
         <mapping class="com.easysoft.ecommerce.model.NailCustomerService"/>
         <mapping class="com.easysoft.ecommerce.model.NailEmployeeService"/>
         <mapping class="com.easysoft.ecommerce.model.NailCustomerPayment"/>
-        <!--<mapping class="com.easysoft.ecommerce.model.NailCustomerAppointment"/>-->
+        <mapping class="com.easysoft.ecommerce.model.NailCustomerAppointment"/>
     </session-factory>
 </hibernate-configuration>

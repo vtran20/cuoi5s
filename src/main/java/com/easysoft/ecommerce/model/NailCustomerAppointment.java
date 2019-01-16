@@ -1,14 +1,14 @@
 package com.easysoft.ecommerce.model;
 
 
+import com.easysoft.ecommerce.model.json.DateSerializer;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table (name="nail_customer_appointment")
@@ -16,30 +16,26 @@ public class NailCustomerAppointment extends AbstractEntity  {
 
     private static final long serialVersionUID = 1L;
 
-    private Date serviceDate;
+    private Date startTime;
+    private Date endTime;
 
     private String customerNote;
-    private String status;
 
     private NailCustomer nailCustomer;
+    private NailEmployee nailEmployee;
+    private NailStore store;
+
+    private List<NailCustomerService> nailCustomerServices;
 
     @ManyToOne
-    @JsonProperty("customer")
+//    @JsonProperty("customer")
+    @JsonIgnore
     public NailCustomer getNailCustomer() {
         return nailCustomer;
     }
 
     public void setNailCustomer(NailCustomer nailCustomer) {
         this.nailCustomer = nailCustomer;
-    }
-
-
-    public Date getServiceDate() {
-        return serviceDate;
-    }
-
-    public void setServiceDate(Date serviceDate) {
-        this.serviceDate = serviceDate;
     }
 
     public String getCustomerNote() {
@@ -50,13 +46,90 @@ public class NailCustomerAppointment extends AbstractEntity  {
         this.customerNote = customerNote;
     }
 
-    public String getStatus() {
-        return status;
+    @JsonSerialize(using=DateSerializer.class)
+    @JsonProperty("start")
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
+    @JsonSerialize(using=DateSerializer.class)
+    @JsonProperty("end")
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    @ManyToOne
+    @JsonIgnore
+    public NailEmployee getNailEmployee() {
+        return nailEmployee;
+    }
+
+    public void setNailEmployee(NailEmployee nailEmployee) {
+        this.nailEmployee = nailEmployee;
+    }
+
+    @ManyToOne (fetch = FetchType.LAZY)
+    @JsonIgnore
+    public NailStore getStore() {
+        return store;
+    }
+
+    public void setStore(NailStore store) {
+        this.store = store;
+    }
+
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonIgnore
+    public List<NailCustomerService> getNailCustomerServices() {
+        return nailCustomerServices;
+    }
+
+    public void setNailCustomerServices(List<NailCustomerService> nailCustomerServices) {
+        this.nailCustomerServices = nailCustomerServices;
+    }
+
+
+    /////////Transient attribute///////////
+    private Long employeeId;
+    private Long customerId;
+
+    @Transient
+    @JsonProperty("resourceId")
+    public Long getEmployeeId() {
+        return employeeId!= null? employeeId : (nailEmployee != null && nailEmployee.getId() != null)? nailEmployee.getId() : 0;
+    }
+
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    @Transient
+    public Long getCustomerId() {
+        return customerId!= null? customerId : (nailCustomer != null && nailCustomer.getId() != null)? nailCustomer.getId() : 0;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    private String customerName;
+
+    @Transient
+    @JsonProperty("title")
+    public String getCustomerName() {
+        return this.nailCustomer != null? this.nailCustomer.getFirstName() + " " + this.nailCustomer.getLastName() : "" + " - " + this.nailCustomer.getPhone();
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
 }
 

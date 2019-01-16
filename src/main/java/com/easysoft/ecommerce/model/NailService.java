@@ -14,6 +14,7 @@ public class NailService extends AbstractEntity  {
     private String name;
     private String description;
     private long price;
+    private int minutes;
     private String active;
 
     private NailStore store;
@@ -70,5 +71,13 @@ public class NailService extends AbstractEntity  {
 
     public void setNailCustomerServices(List<NailCustomerService> nailCustomerServices) {
         this.nailCustomerServices = nailCustomerServices;
+    }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(int minutes) {
+        this.minutes = minutes;
     }
 }
