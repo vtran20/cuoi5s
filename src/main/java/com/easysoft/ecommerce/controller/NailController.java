@@ -2,6 +2,7 @@ package com.easysoft.ecommerce.controller;
 
 import com.easysoft.ecommerce.controller.exception.NailsException;
 import com.easysoft.ecommerce.model.*;
+import com.easysoft.ecommerce.model.helper.ServiceStatus;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.util.Messages;
@@ -295,7 +296,7 @@ public class NailController {
         }
 
         currentNailCustomer.setCheckIn(new Date());
-//        currentNailCustomer.setStatus(ServiceStatus.WAITING.toString());
+        currentNailCustomer.setStatus(ServiceStatus.WAITING.toString());
         serviceLocator.getNailCustomerDao().merge(currentNailCustomer);
         return new ResponseEntity<NailCustomer>(currentNailCustomer, HttpStatus.OK);
     }
@@ -363,69 +364,87 @@ public class NailController {
     //-------------------Create a NailEmployee--------------------------------------------------------
 
     @RequestMapping(value = {"/employees/","/employees.json"}, method = RequestMethod.POST)
-    public ResponseEntity<NailEmployee> createNailEmployee(@RequestBody NailEmployee employee,  UriComponentsBuilder ucBuilder, @RequestParam(required = false, value = "") final Long storeId) {
-        //TODO: will check this later
-//        if (employeeService.isNailEmployeeExist(employee)) {
-//            System.out.println("A NailEmployee with name " + employee.getName() + " already exist");
-//            return new ResponseEntity<NailEmployee>(HttpStatus.CONFLICT);
-//        }
-        NailStore nailStore = serviceLocator.getNailStoreDao().findById(storeId);
-        employee.setStore(nailStore);
-        employee.setActive("Y");
-        serviceLocator.getNailEmployeeDao().persist(employee);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setLocation(ucBuilder.path("/employees/{id}").buildAndExpand(employee.getId()).toUri());
-        return new ResponseEntity<NailEmployee>(employee, HttpStatus.CREATED);
+    public ResponseEntity createNailEmployee(@RequestBody NailEmployee employee,  UriComponentsBuilder ucBuilder, @RequestParam(required = false, value = "") final Long storeId) {
+        Map result = new HashMap();
+        Messages messages = new Messages();
+        if (employee.isEmptyId()) {
+            System.out.println("A NailEmployee with name " + employee.getName() + " already exist");
+            NailStore nailStore = serviceLocator.getNailStoreDao().findById(storeId);
+            employee.setStore(nailStore);
+            employee.setActive("Y");
+            serviceLocator.getNailEmployeeDao().persist(employee);
+            messages.addInfo("The employee has been created.");
+            result.put("messages", messages);
+            result.put("employee", employee);
+            return new ResponseEntity(result, HttpStatus.CREATED);
+        } else {
+            messages.addError("Cannot create a new Employee.");
+            result.put("messages", messages);
+            return new ResponseEntity(result, HttpStatus.OK);
+        }
     }
-
 
     //------------------- Update a NailEmployee --------------------------------------------------------
 
     @RequestMapping(value = {"/employees/{id}", "/employees/{id}.json"}, method = RequestMethod.PUT)
-    public ResponseEntity<NailEmployee> updateNailEmployee(@PathVariable("id") long id, @RequestBody NailEmployee employee, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity updateNailEmployee(@PathVariable("id") long id, @RequestBody NailEmployee employee, @RequestParam(required = false, value = "") final Long storeId) {
         System.out.println("Updating NailEmployee " + id);
-
-        NailEmployee currentNailEmployee = serviceLocator.getNailEmployeeDao().findByIdByStore(id, storeId);
-
-        if (currentNailEmployee==null) {
-            System.out.println("NailEmployee with id " + id + " not found");
-            return new ResponseEntity<NailEmployee>(HttpStatus.NOT_FOUND);
+        Map result = new HashMap();
+        Messages messages = new Messages();
+        if (!employee.isEmptyId()) {
+            System.out.println("A NailEmployee with name " + employee.getName() + " already exist");
+            NailEmployee nailEmployee = serviceLocator.getNailEmployeeDao().findByIdByStore(employee.getId(), storeId);
+            boolean isUpdate = false;
+            if (nailEmployee != null) {
+                if (employee.getFirstName() != null && !employee.getFirstName().equals(nailEmployee.getFirstName())) {
+                    nailEmployee.setFirstName(employee.getFirstName());
+                    isUpdate = true;
+                }
+                if (employee.getLastName() != null && !employee.getLastName().equals(nailEmployee.getLastName())) {
+                    nailEmployee.setLastName(employee.getLastName());
+                    isUpdate = true;
+                }
+                if (employee.getPhone() != null && !employee.getPhone().equals(nailEmployee.getPhone())) {
+                    nailEmployee.setPhone(employee.getPhone());
+                    isUpdate = true;
+                }
+                if (employee.getEmail() != null && !employee.getEmail().equals(nailEmployee.getEmail())) {
+                    nailEmployee.setEmail(employee.getEmail());
+                    isUpdate = true;
+                }
+                if (isUpdate) {
+                    serviceLocator.getNailEmployeeDao().merge(nailEmployee);
+                    messages.addInfo("The employee has been updated.");
+                    result.put("employee", nailEmployee);
+                } else {
+                    messages.addInfo("Nothing change.");
+                }
+            } else {
+                messages.addError("Cannot find this employee data. It may have been deleted.");
+            }
+        } else {
+            messages.addError("Cannot find this employee data. It may have been deleted.");
         }
-
-        if (employee.getFirstName() != null && !employee.getFirstName().equals(currentNailEmployee.getFirstName())) {
-            currentNailEmployee.setFirstName(employee.getFirstName());
-        }
-        if (employee.getLastName() != null && !employee.getLastName().equals(currentNailEmployee.getLastName())) {
-            currentNailEmployee.setLastName(employee.getLastName());
-        }
-        if (employee.getPhone() != null && !employee.getPhone().equals(currentNailEmployee.getPhone())) {
-            currentNailEmployee.setPhone(employee.getPhone());
-        }
-        if (employee.getEmail() != null && !employee.getEmail().equals(currentNailEmployee.getEmail())) {
-            currentNailEmployee.setEmail(employee.getEmail());
-        }
-        if (employee.getActive() != null && !employee.getActive().equals(currentNailEmployee.getActive())) {
-            currentNailEmployee.setActive(employee.getActive());
-        }
-
-        serviceLocator.getNailEmployeeDao().merge(currentNailEmployee);
-        return new ResponseEntity<NailEmployee>(currentNailEmployee, HttpStatus.OK);
+        result.put("messages", messages);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 
     //------------------- Delete a NailEmployee --------------------------------------------------------
 
     @RequestMapping(value = {"/employees/{id}", "/employees/{id}.json"}, method = RequestMethod.DELETE)
-    public ResponseEntity<NailEmployee> deleteNailEmployee(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity deleteNailEmployee(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
         System.out.println("Fetching & Deleting NailEmployee with id " + id);
 
         NailEmployee employee = serviceLocator.getNailEmployeeDao().findByIdByStore(id, storeId);
         if (employee == null) {
             System.out.println("Unable to delete. NailEmployee with id " + id + " not found");
-            return new ResponseEntity<NailEmployee>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
         serviceLocator.getNailEmployeeDao().remove(employee);
-        return new ResponseEntity<NailEmployee>(HttpStatus.OK);
+        Messages messages = new Messages();
+        messages.addInfo("The employee has been deleted.");
+        return new ResponseEntity(messages, HttpStatus.OK);
     }
 
     /************************Services**********************/
@@ -459,56 +478,76 @@ public class NailController {
     //-------------------Create a NailService--------------------------------------------------------
 
     @RequestMapping(value = {"/services/","/services.json"}, method = RequestMethod.POST)
-    public ResponseEntity<NailService> createNailService(@RequestBody NailService service,  UriComponentsBuilder ucBuilder, @RequestParam(required = false, value = "") final Long storeId) {
-        //TODO: will check this later
-//        if (serviceService.isNailServiceExist(service)) {
-//            System.out.println("A NailService with name " + service.getName() + " already exist");
-//            return new ResponseEntity<NailService>(HttpStatus.CONFLICT);
-//        }
-        NailStore nailStore = serviceLocator.getNailStoreDao().findById(storeId);
-        service.setStore(nailStore);
-        service.setActive("Y");
-        serviceLocator.getNailServiceDao().persist(service);
+    public ResponseEntity createNailService(@RequestBody NailService service,  UriComponentsBuilder ucBuilder, @RequestParam(required = false, value = "") final Long storeId) throws Exception {
+        Map result = new HashMap();
+        Messages messages = new Messages();
+        if (service.isEmptyId()) {
+            System.out.println("A NailService with name " + service.getName() + " already exist");
+            NailStore nailStore = serviceLocator.getNailStoreDao().findById(storeId);
+            service.setStore(nailStore);
+            service.setActive("Y");
+            serviceLocator.getNailServiceDao().persist(service);
+            messages.addInfo("The service has been created.");
+            result.put("messages", messages);
+            result.put("service", service);
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setLocation(ucBuilder.path("/services/{id}").buildAndExpand(service.getId()).toUri());
-        return new ResponseEntity<NailService>(service, HttpStatus.CREATED);
+            return new ResponseEntity(result, HttpStatus.CREATED);
+        } else {
+            messages.addError("Cannot create a new Service.");
+            result.put("messages", messages);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setLocation(ucBuilder.path("/services/{id}").buildAndExpand(service.getId()).toUri());
+            return new ResponseEntity(result, HttpStatus.OK);
+        }
     }
 
 
     //------------------- Update a NailService --------------------------------------------------------
 
     @RequestMapping(value = {"/services/{id}", "/services/{id}.json"}, method = RequestMethod.PUT)
-    public ResponseEntity<NailService> updateNailService(@PathVariable("id") long id, @RequestBody NailService service, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity updateNailService(@PathVariable("id") long id, @RequestBody NailService service, @RequestParam(required = false, value = "") final Long storeId) throws Exception {
         System.out.println("Updating NailService " + id);
-
-        NailService currentNailService = serviceLocator.getNailServiceDao().findByIdByStore(id, storeId);
-
-        if (currentNailService==null) {
-            System.out.println("NailService with id " + id + " not found");
-            return new ResponseEntity<NailService>(HttpStatus.NOT_FOUND);
+        Map result = new HashMap();
+        Messages messages = new Messages();
+        if (!service.isEmptyId()) {
+            System.out.println("A NailService with name " + service.getName() + " already exist");
+            NailService nailService = serviceLocator.getNailServiceDao().findByIdByStore(service.getId(), storeId);
+            boolean isUpdate = false;
+            if (nailService != null) {
+                if (service.getName() != null && !service.getName().equals(nailService.getName())) {
+                    nailService.setName(service.getName());
+                    isUpdate = true;
+                }
+                if (service.getPrice() != nailService.getPrice()) {
+                    nailService.setPrice(service.getPrice());
+                    isUpdate = true;
+                }
+                if (service.getMinutes() != nailService.getMinutes()) {
+                    nailService.setMinutes(service.getMinutes());
+                    isUpdate = true;
+                }
+                if (isUpdate) {
+                    serviceLocator.getNailServiceDao().merge(nailService);
+                    messages.addInfo("The service has been updated.");
+                    result.put("service", nailService);
+                } else {
+                    messages.addInfo("Nothing change.");
+                }
+            } else {
+                messages.addError("Cannot find this service data. It may have been deleted.");
+            }
+        } else {
+            messages.addError("Cannot find this service data. It may have been deleted.");
         }
-
-        if (service.getName() != null && !service.getName().equals(currentNailService.getName())) {
-            currentNailService.setName(service.getName());
-        }
-        if (service.getDescription() != null && !service.getDescription().equals(currentNailService.getDescription())) {
-            currentNailService.setDescription(service.getDescription());
-        }
-        if (service.getPrice() > 0 && service.getPrice() != currentNailService.getPrice()) {
-            currentNailService.setPrice(service.getPrice());
-        }
-        if (service.getActive() != null && !service.getActive().equals(currentNailService.getActive())) {
-            currentNailService.setActive(service.getActive());
-        }
-
-        serviceLocator.getNailServiceDao().merge(currentNailService);
-        return new ResponseEntity<NailService>(currentNailService, HttpStatus.OK);
+        result.put("messages", messages);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 
     //------------------- Delete a NailService --------------------------------------------------------
 
     @RequestMapping(value = {"/services/{id}", "/services/{id}.json"}, method = RequestMethod.DELETE)
-    public ResponseEntity<NailService> deleteNailService(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity deleteNailService(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) {
         System.out.println("Fetching & Deleting NailService with id " + id);
 
         NailService service = serviceLocator.getNailServiceDao().findByIdByStore(id, storeId);
@@ -518,7 +557,9 @@ public class NailController {
         }
 
         serviceLocator.getNailServiceDao().remove(service);
-        return new ResponseEntity<NailService>(HttpStatus.OK);
+        Messages messages = new Messages();
+        messages.addInfo("The service has been deleted.");
+        return new ResponseEntity(messages, HttpStatus.OK);
     }
 
     /************************CustomerServices**********************/
