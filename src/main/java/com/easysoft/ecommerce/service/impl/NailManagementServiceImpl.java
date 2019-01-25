@@ -290,8 +290,26 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
 
     @Override
     public Map submitCustomerPayment(Long id, Long storeId, Map inputData) throws Exception {
-        //Insert Payment
+        Map  result = new HashMap();
+        Messages messages = new Messages();
         Map currentCheckout = (Map) inputData.get("currentCheckout");
+        //Validate data
+        List <Integer> employeeIds = (List<Integer>) inputData.get("employeeIds");
+        //Many employees work on the same customer
+        //Update employeeService
+        List <Map> employeeServices = (List<Map>) inputData.get("employeeServices");
+        if (employeeIds != null && employeeIds.size() > 1) {
+            //Validate to make sure tip enter correctly.
+            Integer totalTip = getTotalTips(employeeServices);
+            Integer globalTipPrice = currentCheckout.get("tipPrice") != null ? (Integer) currentCheckout.get("tipPrice") : 0;
+            if (!totalTip.equals(globalTipPrice)) {
+                messages.addError("Tips of the employees don't match with total tip.");
+                result.put("messages", messages);
+                return result;
+            }
+        }
+
+        //Insert Payment
         NailCustomer customer = this.serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
         NailStore store = this.serviceLocator.getNailStoreDao().findById(storeId);
         NailCustomerPayment payment = new NailCustomerPayment();
@@ -306,16 +324,6 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         payment.setNailCustomer(customer);
         payment.setStore(store);
 
-        //Update employeeService
-        List <Map> employeeServices = (List<Map>) inputData.get("employeeServices");
-        for (Map map : employeeServices) {
-            Long employeeServiceId = new Long (map.get("id")+"");
-            NailEmployeeService employeeService = serviceLocator.getNailEmployeeServiceDao().findById(employeeServiceId);
-            employeeService.setServicePrice(map.get("servicePrice") != null ? new Long(map.get("servicePrice") + "") : 0);
-            employeeService.setTipPrice(map.get("tipPrice") != null ? new Long(map.get("tipPrice") + "") : 0);
-            serviceLocator.getNailEmployeeServiceDao().merge(employeeService);
-        }
-
         Gson gson = new Gson();
         String json = gson.toJson(inputData);
         payment.setServiceSession(json);
@@ -324,7 +332,31 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         customer.setStatus(ServiceStatus.COMPLETED.toString());
         this.serviceLocator.getNailCustomerDao().merge(customer);
 
-        Map  result = new HashMap();
+        if (employeeIds != null && employeeIds.size() > 1) {
+            for (Map map : employeeServices) {
+                Long employeeServiceId = new Long (map.get("id")+"");
+                NailEmployeeService employeeService = serviceLocator.getNailEmployeeServiceDao().findById(employeeServiceId);
+                employeeService.setServicePrice(map.get("servicePrice") != null ? new Long(map.get("servicePrice") + "") : 0);
+                employeeService.setTipPrice(map.get("tipPrice") != null ? new Long(map.get("tipPrice") + "") : 0);
+                employeeService.setNailCustomerPayment(payment);
+                serviceLocator.getNailEmployeeServiceDao().merge(employeeService);
+            }
+        } else {
+            boolean chargeTip = false;
+            for (Map map : employeeServices) {
+                Long employeeServiceId = new Long (map.get("id")+"");
+                NailEmployeeService employeeService = serviceLocator.getNailEmployeeServiceDao().findById(employeeServiceId);
+                employeeService.setServicePrice(map.get("servicePrice") != null ? new Long(map.get("servicePrice") + "") : 0);
+                if (!chargeTip) {
+                    employeeService.setTipPrice(currentCheckout.get("tipPrice") != null ? new Long(currentCheckout.get("tipPrice") + "") : 0);
+                    chargeTip = true;
+                }
+                employeeService.setNailCustomerPayment(payment);
+                serviceLocator.getNailEmployeeServiceDao().merge(employeeService);
+            }
+
+        }
+
         result.put("payment", payment);
         result.put("customer", customer);
 
@@ -343,5 +375,13 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         System.out.println(new DateTime(new Date()).toLocalDate().equals(new LocalDate()));
 
 
+    }
+
+    private Integer getTotalTips (List <Map>employeeServices) {
+        Integer totalTip = 0;
+        for (Map map : employeeServices) {
+            totalTip += map.get("tipPrice") != null ? (Integer)map.get("tipPrice") : 0;
+        }
+        return totalTip;
     }
 }

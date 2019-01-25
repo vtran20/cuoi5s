@@ -16,6 +16,7 @@ public class NailEmployeeService extends AbstractEntity  {
 
     private NailEmployee nailEmployee;
     private NailCustomerService nailCustomerService;
+    private NailCustomerPayment nailCustomerPayment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
@@ -35,6 +36,16 @@ public class NailEmployeeService extends AbstractEntity  {
 
     public void setNailEmployee(NailEmployee nailEmployee) {
         this.nailEmployee = nailEmployee;
+    }
+
+    @ManyToOne
+    @JsonIgnore
+    public NailCustomerPayment getNailCustomerPayment() {
+        return nailCustomerPayment;
+    }
+
+    public void setNailCustomerPayment(NailCustomerPayment nailCustomerPayment) {
+        this.nailCustomerPayment = nailCustomerPayment;
     }
 
     public long getServicePrice() {
