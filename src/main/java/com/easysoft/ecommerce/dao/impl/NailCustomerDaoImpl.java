@@ -16,17 +16,23 @@ import java.util.List;
 public class NailCustomerDaoImpl extends GenericDaoImpl<NailCustomer, Long> implements NailCustomerDao {
 
     @Override
-    public List<NailCustomer> findSuggestionCustomers(String phone, String email, Long storeId) {
+    public List<NailCustomer> findSuggestionCustomers(String phone, String email, Long storeId, int maxResult) {
         if (StringUtils.isNotEmpty(phone)) {
             return getSessionFactory().getCurrentSession()
                     .createQuery("SELECT c FROM " + getPersistentClass().getName() + " c where c.store.id = :storeId and c.phone like :phone ORDER BY c.phone asc")
                     .setParameter("storeId", storeId)
-                    .setParameter("phone", phone+"%").list();
+                    .setParameter("phone", phone+"%")
+                    .setFirstResult(0)
+                    .setMaxResults(maxResult)
+                    .list();
         } else if (StringUtils.isNotEmpty(email)) {
             return getSessionFactory().getCurrentSession()
                     .createQuery("SELECT c FROM " + getPersistentClass().getName() + " c where c.store.id = :storeId and c.email like :email ORDER BY c.email asc")
                     .setParameter("storeId", storeId)
-                    .setParameter("email", email+"%").list();
+                    .setParameter("email", email+"%")
+                    .setFirstResult(0)
+                    .setMaxResults(maxResult)
+                    .list();
         }
         return null;
     }

@@ -190,7 +190,7 @@ public class NailController {
                 map.put("email", email);
             }
 
-            nailCustomers = this.serviceLocator.getNailCustomerDao().findSuggestionCustomers(phone, email, nailStore.getId());
+            nailCustomers = this.serviceLocator.getNailCustomerDao().findSuggestionCustomers(phone, email, nailStore.getId(), 5);
         }
         return nailCustomers;
     }
