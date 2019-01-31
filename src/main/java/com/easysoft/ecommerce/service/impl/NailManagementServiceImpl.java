@@ -46,7 +46,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
     private NailCustomerServiceDao nailCustomerServiceDao;
 
     @Override
-    public Map<String, Object> addNailCustomerService(Map inputData, Long storeId) {
+    public Map<String, Object> addNailCustomerService(Map inputData, Long storeId, Date currentDate) {
         Map<String, Object> result = new HashMap<String, Object>();
 
         List<NailCustomerService> customerServices = new ArrayList<NailCustomerService>();
@@ -54,7 +54,6 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         String email = inputData.get("email") != null ? (String) inputData.get("email") : "";
         String phone = inputData.get("phone") != null ? (String) inputData.get("phone") : "";
 
-        Date serviceDate = new Date();
         String status = ServiceStatus.WAITING.toString();
         NailCustomer customer = findCustomer(null, email, phone, storeId);
         if (customer == null){
@@ -73,7 +72,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
 
         }
         //Set checkin to current date for both old and new customer.
-        customer.setCheckIn(new Date());
+        customer.setCheckIn(currentDate);
 
         List services = inputData.get("services") != null? (List) inputData.get("services") : null;
         if (services != null && services.size() > 0) {
@@ -88,7 +87,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
                     if (service != null) {
                         customerService.setPrice(service.getPrice());
                     }
-                    customerService.setServiceDate(serviceDate);
+                    customerService.setServiceDate(currentDate);
                     serviceLocator.getNailCustomerServiceDao().persist(customerService);
                     customerServices.add(customerService);
                 }
@@ -224,7 +223,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
     }
 
     @Override
-    public Map<String, Object> checkInAppointmentCustomer(Map inputData, Long storeId) throws Exception {
+    public Map<String, Object> checkInAppointmentCustomer(Map inputData, Long storeId, Date currentDate) throws Exception {
         Map<String, Object> result = new HashMap<String, Object>();
 
         List<NailCustomerService> customerServices = new ArrayList<NailCustomerService>();
@@ -238,7 +237,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
             if (!customer.getStatus().equals(ServiceStatus.SCHEDULED.toString())) {
                 customer.setStatus(ServiceStatus.WAITING.toString());
             }
-            customer.setCheckIn(new Date()); //this will be used when reload the POS. Customer may be removed all customer services
+            customer.setCheckIn(currentDate); //this will be used when reload the POS. Customer may be removed all customer services
             List csIds = inputData.get("customerServices") != null? (List) inputData.get("customerServices") : null;
             if (csIds == null || csIds.size() == 0) {
                 throw new NailsException("Cannot find your appointment");
@@ -289,7 +288,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
     }
 
     @Override
-    public Map submitCustomerPayment(Long id, Long storeId, Map inputData) throws Exception {
+    public Map submitCustomerPayment(Long id, Long storeId, Map inputData, Date currentDate) throws Exception {
         Map  result = new HashMap();
         Messages messages = new Messages();
         Map currentCheckout = (Map) inputData.get("currentCheckout");
@@ -327,6 +326,7 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
         Gson gson = new Gson();
         String json = gson.toJson(inputData);
         payment.setServiceSession(json);
+        payment.setCreatedDate(currentDate);
         this.serviceLocator.getNailCustomerPaymentDao().persist(payment);
 
         customer.setStatus(ServiceStatus.COMPLETED.toString());
@@ -364,10 +364,10 @@ public class NailManagementServiceImpl extends BaseServiceImpl implements NailMa
     }
 
     public static void main(String[] args) {
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         Date date = null;
         try {
-            date = sdf.parse("2019-01-13 11:02:00");
+            date = sdf.parse("2019-01-29T14:57:41-05:00");
         } catch (ParseException e) {
             e.printStackTrace();
         }

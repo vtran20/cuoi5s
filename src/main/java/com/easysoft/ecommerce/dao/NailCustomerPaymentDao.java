@@ -7,6 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface NailCustomerPaymentDao extends GenericDao<NailCustomerPayment, Long> {
-    public List<NailCustomerPayment> getCustomerPaymentsByDate (Date date, Long storeId) throws Exception;
+    public List<NailCustomerPayment> getCustomerPaymentsByDate (Date startDate, Date endDate, Long storeId) throws Exception;
 
 }

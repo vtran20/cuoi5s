@@ -38,17 +38,7 @@ public class NailCustomerDaoImpl extends GenericDaoImpl<NailCustomer, Long> impl
     }
 
     @Override
-    public List<NailCustomer> getCheckedInCustomersByDate(Date date, Long storeId) throws Exception {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date startDate = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date endDate = calendar.getTime();
-
+    public List<NailCustomer> getCheckedInCustomersByDate(Date startDate, Date endDate, Long storeId) throws Exception {
         return getSessionFactory().getCurrentSession()
                 .createQuery("SELECT c FROM " + getPersistentClass().getName() + " c where c.checkIn between :startDate and :endDate and c.store.id = :storeId")
                 .setParameter("startDate", startDate, new TimestampType())

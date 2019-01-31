@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface NailEmployeeServiceDao extends GenericDao<NailEmployeeService, Long> {
 
-    public List<NailEmployeeService> getEmployeeServicesByDate(Date date, Long storeId) throws Exception;
+    public List<NailEmployeeService> getEmployeeServicesByDate(Date startDate, Date endDate, Long storeId) throws Exception;
 
     public NailEmployeeService getEmployeeService (Long employeeId, Long employeeServiceId) throws Exception ;
 

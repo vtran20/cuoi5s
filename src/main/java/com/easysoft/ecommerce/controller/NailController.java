@@ -6,6 +6,7 @@ import com.easysoft.ecommerce.model.helper.ServiceStatus;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.util.Messages;
+import com.easysoft.ecommerce.util.WebUtil;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -120,16 +121,18 @@ public class NailController {
         Map dataObject = new HashMap ();
         NailStore nailStore = getCurrentStore(request, response);
         List stores = this.serviceLocator.getNailStoreDao().findAll(site.getId());
+        Date startDate = WebUtil.stringToDate(request.getParameter("startDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
+        Date endDate = WebUtil.stringToDate(request.getParameter("endDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
 
         if (nailStore != null) {
 //            dataObject.put("selectedStoreId",nailStore.getId());
             dataObject.put("stores",stores);
             dataObject.put("employees",this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()));
             dataObject.put("services",this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
-            dataObject.put("payments",this.serviceLocator.getNailCustomerPaymentDao().getCustomerPaymentsByDate(new Date(), nailStore.getId()));
-            dataObject.put("appointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(new Date(), new Date(), nailStore.getId()));
+            dataObject.put("payments",this.serviceLocator.getNailCustomerPaymentDao().getCustomerPaymentsByDate(startDate, endDate, nailStore.getId()));
+            dataObject.put("appointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(startDate, endDate, nailStore.getId()));
 
-            List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), nailStore.getId());
+            List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(startDate, endDate, nailStore.getId());
             dataObject.put("customerServices",nailCustomerServices);
             List<NailCustomer> customers = new ArrayList<NailCustomer>();
             for (NailCustomerService customerService : nailCustomerServices) {
@@ -145,7 +148,7 @@ public class NailController {
                     customerService.setServiceId(service.getId());
                 }
             }
-            List<NailCustomer> checkedInCustomers = serviceLocator.getNailCustomerDao().getCheckedInCustomersByDate(new Date(), nailStore.getId());
+            List<NailCustomer> checkedInCustomers = serviceLocator.getNailCustomerDao().getCheckedInCustomersByDate(startDate, endDate, nailStore.getId());
             for (NailCustomer c : checkedInCustomers) {
                 if (!customers.contains(c)) {
                     customers.add(c);
@@ -153,7 +156,7 @@ public class NailController {
             }
             dataObject.put("customers", customers);
 
-            List<NailEmployeeService> nailEmployeeServices = this.serviceLocator.getNailEmployeeServiceDao().getEmployeeServicesByDate(new Date(), nailStore.getId());
+            List<NailEmployeeService> nailEmployeeServices = this.serviceLocator.getNailEmployeeServiceDao().getEmployeeServicesByDate(startDate, endDate, nailStore.getId());
             dataObject.put("employeeServices", nailEmployeeServices);
             for (NailEmployeeService employeeService : nailEmployeeServices) {
                 //adding customerService id to customers
@@ -171,6 +174,63 @@ public class NailController {
         }
         return dataObject;
     }
+
+    @RequestMapping(value = {"/reload.json"}, method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map reload(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
+        Map dataObject = new HashMap ();
+        NailStore nailStore = getCurrentStore(request, response);
+        List stores = this.serviceLocator.getNailStoreDao().findAll(site.getId());
+        Date startDate = WebUtil.stringToDate(request.getParameter("startDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
+        Date endDate = WebUtil.stringToDate(request.getParameter("endDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
+
+        if (nailStore != null) {
+            dataObject.put("appointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(startDate, endDate, nailStore.getId()));
+
+            List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(startDate, endDate, nailStore.getId());
+            dataObject.put("customerServices",nailCustomerServices);
+            List<NailCustomer> customers = new ArrayList<NailCustomer>();
+            for (NailCustomerService customerService : nailCustomerServices) {
+                NailCustomer customer = customerService.getNailCustomer();
+                if (customer != null) {
+                    //set customer id to customer service.
+                    customerService.setCustomerId(customer.getId());
+                    customers.add(customer);
+                }
+                NailService service = customerService.getNailService();
+                if (service != null) {
+                    //set customer id to customer service.
+                    customerService.setServiceId(service.getId());
+                }
+            }
+
+            List<NailCustomer> checkedInCustomers = serviceLocator.getNailCustomerDao().getCheckedInCustomersByDate(startDate, endDate, nailStore.getId());
+            for (NailCustomer c : checkedInCustomers) {
+                if (!customers.contains(c)) {
+                    customers.add(c);
+                }
+            }
+            dataObject.put("customers", customers);
+
+            List<NailEmployeeService> nailEmployeeServices = this.serviceLocator.getNailEmployeeServiceDao().getEmployeeServicesByDate(startDate, endDate, nailStore.getId());
+            dataObject.put("employeeServices", nailEmployeeServices);
+            for (NailEmployeeService employeeService : nailEmployeeServices) {
+                //adding customerService id to customers
+                NailEmployee employee = employeeService.getNailEmployee();
+                if (employee != null) {
+                    employeeService.setEmployeeId(employee.getId());
+                }
+                NailCustomerService customerService = employeeService.getNailCustomerService();
+                if (customerService != null) {
+                    employeeService.setCustomerServiceId(customerService.getId());
+                }
+            }
+        }
+        return dataObject;
+    }
+
     @RequestMapping(value = {"/searchNailCustomer.json"}, method = RequestMethod.GET)
     public
     @ResponseBody
@@ -285,17 +345,17 @@ public class NailController {
     }
 
     @RequestMapping(value = {"/customers/{id}/checkIn.json"}, method = RequestMethod.PUT)
-    public ResponseEntity<NailCustomer> checkInCustomer(@PathVariable("id") Long id, @RequestParam(required = false, value = "") final Long storeId) {
+    public ResponseEntity<NailCustomer> checkInCustomer(HttpServletRequest request, @PathVariable("id") Long id, @RequestParam(required = false, value = "") final Long storeId) {
         System.out.println("Updating NailCustomer " + id);
 
+        Date currentDate = WebUtil.stringToDate(request.getParameter("currentDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
         NailCustomer currentNailCustomer = serviceLocator.getNailCustomerDao().findByIdByStore(id, storeId);
-
         if (currentNailCustomer==null) {
             System.out.println("NailCustomer with id " + id + " not found");
             return new ResponseEntity<NailCustomer>(HttpStatus.NOT_FOUND);
         }
 
-        currentNailCustomer.setCheckIn(new Date());
+        currentNailCustomer.setCheckIn(currentDate);
         currentNailCustomer.setStatus(ServiceStatus.WAITING.toString());
         serviceLocator.getNailCustomerDao().merge(currentNailCustomer);
         return new ResponseEntity<NailCustomer>(currentNailCustomer, HttpStatus.OK);
@@ -623,17 +683,19 @@ public class NailController {
 
     @RequestMapping(value = "/customers/customerServices.json", method = RequestMethod.POST)
     public ResponseEntity<Map> addNailCustomerService(
+            HttpServletRequest request,
             @RequestBody Map inputData,
             @RequestParam(required = false, value = "") final Long storeId,
             @RequestParam(required = false, value = "") final String appointment
     ) throws Exception {
 
         Map<String, Object> result = null;
+        Date currentDate = WebUtil.stringToDate(request.getParameter("currentDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
         if ("Y".equals(appointment)) {
-            result = serviceLocator.getNailManagementService().checkInAppointmentCustomer(inputData, storeId);
+            result = serviceLocator.getNailManagementService().checkInAppointmentCustomer(inputData, storeId, currentDate);
         } else {
             //TODO: check and make sure this method is update customer status correctly.
-            result = serviceLocator.getNailManagementService().addNailCustomerService(inputData, storeId);
+            result = serviceLocator.getNailManagementService().addNailCustomerService(inputData, storeId, currentDate);
         }
 
         return new ResponseEntity<Map>(result, HttpStatus.CREATED);
@@ -1014,7 +1076,7 @@ public class NailController {
     //------------------- Delete a NailCustomerAppointment --------------------------------------------------------
 
     @RequestMapping(value = {"/appointments/{id}", "/appointments/{id}.json"}, method = RequestMethod.DELETE)
-    public ResponseEntity deleteNailCustomerAppointment(@PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) throws Exception {
+    public ResponseEntity deleteNailCustomerAppointment(HttpServletRequest request, @PathVariable("id") long id, @RequestParam(required = false, value = "") final Long storeId) throws Exception {
         System.out.println("Fetching & Deleting NailCustomerAppointment with id " + id);
 
         NailCustomerAppointment appointment = serviceLocator.getNailCustomerAppointmentDao().findByIdByStore(id, storeId);
@@ -1024,7 +1086,8 @@ public class NailController {
         } else {
             // Only delete customer services and employee services if it is in the future.
             // We don't delete appointment in the past because it relates to pricing...
-            if (appointment.getStartTime().after(new Date())) {
+            Date currentDate = WebUtil.stringToDate(request.getParameter("currentDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
+            if (appointment.getStartTime().after(currentDate)) {
                 NailCustomer customer = serviceLocator.getNailCustomerDao().findByIdByStore(appointment.getCustomerId(), storeId);
                 if (customer != null) {
                     customer.setCheckIn(null);
@@ -1053,6 +1116,7 @@ public class NailController {
      */
     @RequestMapping(value = "/employees/{id}/addEmployeeToCustomer/{customerId}.json", method = RequestMethod.POST)
     public ResponseEntity<List<NailEmployeeService>> addNailEmployeeToCustomer(
+            HttpServletRequest request,
             @PathVariable("id") Long id,
             @PathVariable("customerId") Long customerId,
             @RequestParam(required = false, value = "") final Long customerServiceId,
@@ -1068,7 +1132,10 @@ public class NailController {
                     customerServices.add(customerService);
                 }
             } else {
-                customerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), customerId, storeId);
+                Date startDate = WebUtil.stringToDate(request.getParameter("startDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
+                Date endDate = WebUtil.stringToDate(request.getParameter("endDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
+
+                customerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(startDate, endDate, customerId, storeId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1102,6 +1169,7 @@ public class NailController {
      */
     @RequestMapping(value = "/services/{id}/addServiceToCustomer/{customerId}.json", method = RequestMethod.POST)
     public ResponseEntity<NailCustomerService> addNailServiceToCustomer(
+            HttpServletRequest request,
             @PathVariable("id") Long id,
             @PathVariable("customerId") Long customerId,
             @RequestParam(required = false, value = "") final Long storeId
@@ -1113,7 +1181,8 @@ public class NailController {
             customerService.setNailCustomer(customer);
             customerService.setNailService(service);
             customerService.setPrice(service.getPrice());
-            customerService.setServiceDate(new Date());
+            Date currentDate = WebUtil.stringToDate(request.getParameter("currentDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
+            customerService.setServiceDate(currentDate);
             this.serviceLocator.getNailCustomerServiceDao().persist(customerService);
         }
 
@@ -1132,6 +1201,7 @@ public class NailController {
      */
     @RequestMapping(value = "/customers/{id}/checkout.json", method = RequestMethod.POST)
     public ResponseEntity<Map> createCustomerPayment(
+            HttpServletRequest request,
             @PathVariable("id") Long id,
             @RequestBody Map inputData,
 //            @RequestBody NailCustomerPayment payment,
@@ -1139,7 +1209,8 @@ public class NailController {
     ) throws Exception {
         Map result = null;
         try {
-            result = serviceLocator.getNailManagementService().submitCustomerPayment(id, storeId, inputData);
+            Date currentDate = WebUtil.stringToDate(request.getParameter("currentDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
+            result = serviceLocator.getNailManagementService().submitCustomerPayment(id, storeId, inputData, currentDate);
         } catch (Exception e) {
             e.printStackTrace();
             throw new NailsException ("We're having an issue with saving payment");

@@ -14,6 +14,7 @@ import org.apache.velocity.runtime.parser.ParseException;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
@@ -46,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WebUtil {
 
-
+    public static String POS_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
     public static String getRelationType(int relationType) {
         switch (relationType) {
             case 1:
@@ -359,15 +360,23 @@ public class WebUtil {
         return result;
     }
 
+    public static Date stringToDate (String s, String format, Date defaultDate) {
+        Date date = stringToDate(s, format);
+        if (date == null) {
+            date = defaultDate;
+        }
+        return date;
+    }
     public static Date stringToDate (String s, String format) {
-        SimpleDateFormat formatter = new SimpleDateFormat(format);
         DateFormat sdf = new SimpleDateFormat(format);
         Date date = null;
         try {
             date = sdf.parse(s);
         } catch (java.text.ParseException e) {
-            return null;
+            e.printStackTrace();
         }
+//        java.util.Date date1 = new java.util.Date( 1390276603054L );
+//        DateTime dateTimeUtc = new DateTime( date1, DateTimeZone.UTC );
         return date;
     }
 

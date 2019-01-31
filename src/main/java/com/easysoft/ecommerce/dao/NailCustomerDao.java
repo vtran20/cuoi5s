@@ -10,5 +10,5 @@ import java.util.Map;
 public interface NailCustomerDao extends GenericDao<NailCustomer, Long> {
 
     List<NailCustomer> findSuggestionCustomers(String phone, String email, Long storeId, int maxResult);
-    List<NailCustomer> getCheckedInCustomersByDate(Date date, Long storeId) throws Exception;
+    List<NailCustomer> getCheckedInCustomersByDate(Date startDate, Date endDate, Long storeId) throws Exception;
 }

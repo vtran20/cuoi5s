@@ -13,17 +13,7 @@ import java.util.List;
 public class NailCustomerServiceDaoImpl extends GenericDaoImpl<NailCustomerService, Long> implements NailCustomerServiceDao {
 
     @Override
-    public List<NailCustomerService> getCustomerServicesByDate(Date date, Long storeId) throws Exception {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date startDate = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date endDate = calendar.getTime();
-
+    public List<NailCustomerService> getCustomerServicesByDate(Date startDate, Date endDate, Long storeId) throws Exception {
         return getSessionFactory().getCurrentSession()
                 .createQuery("SELECT cs FROM " + getPersistentClass().getName() + " cs join cs.nailCustomer c join c.store s where cs.serviceDate between :startDate and :endDate and s.id = :storeId ORDER BY cs.serviceDate asc")
                 .setParameter("startDate", startDate, new TimestampType())
@@ -32,17 +22,7 @@ public class NailCustomerServiceDaoImpl extends GenericDaoImpl<NailCustomerServi
     }
 
     @Override
-    public List<NailCustomerService> getCustomerServicesByDate(Date date, Long customerId, Long storeId) throws Exception {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date startDate = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date endDate = calendar.getTime();
-
+    public List<NailCustomerService> getCustomerServicesByDate(Date startDate, Date endDate, Long customerId, Long storeId) throws Exception {
         return getSessionFactory().getCurrentSession()
                 .createQuery("SELECT cs FROM " + getPersistentClass().getName() + " cs join cs.nailCustomer c join c.store s where cs.serviceDate between :startDate and :endDate and c.id = :customerId and s.id = :storeId ORDER BY cs.serviceDate asc")
                 .setParameter("startDate", startDate, new TimestampType())

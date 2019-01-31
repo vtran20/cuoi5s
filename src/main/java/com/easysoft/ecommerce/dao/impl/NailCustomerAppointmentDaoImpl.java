@@ -14,27 +14,11 @@ public class NailCustomerAppointmentDaoImpl extends GenericDaoImpl<NailCustomerA
 
     @Override
     public List<NailCustomerAppointment> getCustomerAppointmentsByDate(Date startDateObj, Date endDateObj, Long storeId) throws Exception {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDateObj);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Date startDate = calendar.getTime();
-
-        calendar = Calendar.getInstance();
-        calendar.setTime(endDateObj);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date endDate = calendar.getTime();
 
         return getSessionFactory().getCurrentSession()
                 .createQuery("SELECT cs FROM " + getPersistentClass().getName() + " cs join cs.store s where cs.startTime between :startDate and :endDate and s.id = :storeId")
-                .setParameter("startDate", startDate, new TimestampType())
-                .setParameter("endDate", endDate, new TimestampType())
+                .setParameter("startDate", startDateObj, new TimestampType())
+                .setParameter("endDate", endDateObj, new TimestampType())
                 .setParameter("storeId", storeId).list();
     }
 
