@@ -9,6 +9,7 @@ import com.easysoft.ecommerce.model.Site;
 import com.easysoft.ecommerce.model.User;
 import com.easysoft.ecommerce.model.UserRole;
 import com.easysoft.ecommerce.service.UserService;
+import com.fasterxml.uuid.Generators;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.EmailValidator;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
@@ -105,6 +106,7 @@ public class UserServiceImpl implements UserService {
         site.setActive("Y");
         site.setDefaultSite("N");
         site.setSubDomain(siteCode + "." + domain);
+        site.setAppId(Generators.timeBasedGenerator().generate().toString());
         siteDao.persist(site);
 
         //Update user

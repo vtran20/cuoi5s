@@ -27,6 +27,7 @@ public class Site extends AbstractEntity  {
     private String subDomain;
     private String defaultSite;
     private String active;
+    private String appId;
     private Date startDate;
     private Date endDate;
     private Date updatedDate;
@@ -211,6 +212,15 @@ public class Site extends AbstractEntity  {
 
     public void setActive(String active) {
         this.active = convertActiveFlag(active);
+    }
+
+    @Column(name = "app_id", nullable = true, length = 40)
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
     @Column(name = "defaultSite", nullable = true, length = 1)

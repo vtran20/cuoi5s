@@ -3,16 +3,19 @@ package com.easysoft.ecommerce.controller;
 import com.easysoft.ecommerce.controller.exception.NailsException;
 import com.easysoft.ecommerce.model.*;
 import com.easysoft.ecommerce.model.helper.ServiceStatus;
+import com.easysoft.ecommerce.model.session.SessionObject;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.util.Messages;
 import com.easysoft.ecommerce.util.WebUtil;
+import com.fasterxml.uuid.Generators;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +45,8 @@ public class NailController {
     }
 
     @RequestMapping(value = {
+            "/login.json",
+            "/logout.json",
             "/naildata.json",
             "/searchNailCustomer.json",
             "/services/",
@@ -73,45 +78,94 @@ public class NailController {
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Methods",
                 "HEAD, GET, OPTIONS, POST, PUT, UPDATE, DELETE");
-        response.addHeader("Access-Control-Allow-Headers",
-                "origin, content-type, accept, x-requested-with");
+        response.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with, app-id");
     }
 
-//    @ExceptionHandler(NailsException.class )
-//    public @ResponseBody ResponseEntity handleException(NailsException e) {
-//        Map map = new HashMap();
-//        map.put("error", e.getMessage());
-//        return new ResponseEntity(map,HttpStatus.BAD_REQUEST);
-//    }
+    @RequestMapping(value = {"login.json"}, method = {RequestMethod.POST})
+    public
+    @ResponseBody
+    Map login(
+            @RequestBody Map inputData,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws Exception {
+        Map result = new HashMap();
+        Messages messages = new Messages();
+        if (SessionUtil.isLoggedInForRestAPI(request, response)) {
+            result.put("isLoggedIn", "Y");
+            result.put(SessionObject.USER_SESSION_SECURE_COOKIE_KEY, SessionUtil.findCookieValue(request, SessionObject.USER_SESSION_SECURE_COOKIE_KEY));
+            return result;
+        } else {
+            String userName = (String) inputData.get("userName");
+            String password = (String) inputData.get("password");
+            Boolean rememberMe = (Boolean) inputData.get("rememberMe");
 
-//    @ExceptionHandler({Exception.class} )
-//    public ResponseEntity handleException(Exception e) {
-//        return new ResponseEntity(e.getMessage() + ":" + e.getCause().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+            if (!StringUtils.isEmpty(userName) && !StringUtils.isEmpty(password)) {
+                List<User> users = serviceLocator.getUserDao().findByUsername(userName);
+                if (users != null && users.size() > 0) {
+                    User user = users.get(0);
+                    if (!"Y".equals(user.getBlocked())) {
+                        if (StringUtils.isNotEmpty(user.getUserSessionId())) {
+                            request.getSession().setAttribute(SessionObject.USER_SESSION_ID_KEY, user.getUserSessionId());
+                        }
+                        SessionObject so = SessionUtil.load(request, response);
+                        //Generate USER_SESSION_SECURE_COOKIE
+                        String userSessionCookie = Generators.timeBasedGenerator().generate().toString();
+                        if (serviceLocator.getUserService().isValidPassword(password, user.getPassword())) {
+                            SessionUtil.setSessionObjectAttribute(so, user);
+                            //Remember me - cookie will be remember 30 days
+                            if (rememberMe != null && rememberMe) {
+                                SessionUtil.setUserSessionCookie(userSessionCookie, request, response, false);
+                            } else {
+                                SessionUtil.setUserSessionCookie(userSessionCookie, request, response, true);
+                            }
+                            SessionUtil.updateUserSessionId(user, request, response);
+                            serviceLocator.getUserDao().merge(user);
+                            //set USER_SESSION_SECURE_COOKIE into sessionObject and save into UserSession
+                            so.setSecureCookie(userSessionCookie);
+                            SessionUtil.save(so);
+                            result.put("isLoggedIn", "Y");
+                            result.put(SessionObject.USER_SESSION_SECURE_COOKIE_KEY, userSessionCookie);
+                            return result;
+                        } else {
+                            messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("error.username.password.incorrect", null, LocaleContextHolder.getLocale()));
+                            result.put("messages", messages);
+                            return result;
+                        }
+                    } else {
+                        messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("error.account.blocked", null, LocaleContextHolder.getLocale()));
+                        result.put("messages", messages);
+                        return result;
+                    }
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("login.forgot.password.error", null, LocaleContextHolder.getLocale()));
+                    result.put("messages", messages);
+                    return result;
+                }
+            } else {
+                messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("error.username.password.blank", null, LocaleContextHolder.getLocale()));
+                result.put("messages", messages);
+                return result;
+            }
+        }
 
-//    @Deprecated
-//    @RequestMapping(value = {"/naildata.json"}, method = RequestMethod.GET)
-//    public
-//    @ResponseBody
-//    NailDataObject getNailsData(HttpServletRequest request) throws Exception {
-//        Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
-//        NailDataObject dataObject = new NailDataObject ();
-//        List stores = this.serviceLocator.getNailStoreDao().findAll(site.getId());
-//        NailStore nailStore = null;
-//        if (stores != null && stores.size() > 0) {
-//            nailStore = (NailStore) stores.get(0);
-//            dataObject.setStoreInfo(nailStore);
-//            List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(new Date(), nailStore.getId());
-//            if (nailCustomerServices != null && nailCustomerServices.size() > 0) {
-//                //Don't need to do this if doesn't have any customer service on that day
-//                dataObject.setCustomerServices(nailCustomerServices);
-//            }
-//            dataObject.setEmployeeServices(this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()), this.serviceLocator.getNailEmployeeServiceDao().getEmployeeServicesByDate(new Date(), nailStore.getId()));
-//
-//            dataObject.setServices(this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
-//        }
-//        return dataObject;
-//    }
+    }
+
+    @RequestMapping(value = {"logout.json"}, method = {RequestMethod.GET})
+    public
+    @ResponseBody
+    ResponseEntity logout(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws Exception {
+        SessionObject so = SessionUtil.load(request, response);
+        SessionUtil.removeUserInfo(so);
+        request.getSession().invalidate();
+        SessionUtil.save(so);
+        SessionUtil.expireSecureSessionCookie(request, response);
+        SessionUtil.expireUserSessionCookie(request, response);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @RequestMapping(value = {"/initialData.json"}, method = RequestMethod.GET)
     public

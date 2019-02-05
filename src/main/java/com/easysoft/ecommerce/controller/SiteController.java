@@ -486,14 +486,14 @@ public class SiteController {
                         //Generate USER_SESSION_SECURE_COOKIE
                         String userSessionCookie = Generators.timeBasedGenerator().generate().toString();
                         if (serviceLocator.getUserService().isValidPassword(password, user.getPassword())) {
-                            setSessionObjectAttribute(so, user);
+                            SessionUtil.setSessionObjectAttribute(so, user);
                             //Remember me - cookie will be remember 30 days
                             if ("Y".equals(WebUtil.convertActiveFlag(rememberMe))) {
                                 SessionUtil.setUserSessionCookie(userSessionCookie, request, response, false);
                             } else {
                                 SessionUtil.setUserSessionCookie(userSessionCookie, request, response, true);
                             }
-                            updateUserSessionId(user, request, response);
+                            SessionUtil.updateUserSessionId(user, request, response);
                             serviceLocator.getUserDao().merge(user);
                             //set USER_SESSION_SECURE_COOKIE into sessionObject and save into UserSession
                             so.setSecureCookie(userSessionCookie);
@@ -506,10 +506,10 @@ public class SiteController {
                         } else if (serviceLocator.getUserService().isValidPassword(password, user.getTempPassword())) {
                             user.setTempPassword("");
                             //set data to sessionObject
-                            setSessionObjectAttribute(so, user);
+                            SessionUtil.setSessionObjectAttribute(so, user);
                             //set user session secure
                             SessionUtil.setUserSessionCookie(userSessionCookie, request, response, true);
-                            updateUserSessionId(user, request, response);
+                            SessionUtil.updateUserSessionId(user, request, response);
                             serviceLocator.getUserDao().merge(user);
                             //set USER_SESSION_SECURE_COOKIE into sessionObject and save into UserSession
                             so.setSecureCookie(userSessionCookie);
@@ -556,17 +556,7 @@ public class SiteController {
             return new ModelAndView("/site/login", "messages", error);
         }
     }
-    private void updateUserSessionId (User user, HttpServletRequest request, HttpServletResponse response) {
-        Cookie userSessionId = SessionUtil.findCookie(request, SessionObject.USER_SESSION_ID_KEY);
-        //if user object doesn't have user_session_id
-        if (StringUtils.isEmpty(user.getUserSessionId())) {
-            if (userSessionId != null) {
-                user.setUserSessionId(userSessionId.getValue());
-            }
-        } else { //if have user_session_id, then use this and replace for the current one in the browser
-            SessionUtil.setUserSession(user.getUserSessionId(), request, response);
-        }
-    }
+
     @RequestMapping("main.html")
     public String billingShipping(HttpServletRequest request, HttpServletResponse response) throws Exception {
         SessionObject so = SessionUtil.load(request, response);
@@ -586,35 +576,6 @@ public class SiteController {
     public ModelAndView changeAccountPost(@Valid User entity, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Messages messages = createOrUpdateUser(entity);
         return new ModelAndView("/site/main", "messages", messages);
-    }
-
-    private void setSessionObjectAttribute(SessionObject so, User user) {
-        so.setUserName(user.getUsername());
-        so.set("FIRST_NAME", user.getFirstName());
-        so.set("LAST_NAME", user.getLastName());
-        so.setUserId(user.getId());
-        //set billing address
-        so.getAddresses().getBillingAddress().setFirstName(user.getFirstName());
-        so.getAddresses().getBillingAddress().setLastName(user.getLastName());
-        so.getAddresses().getBillingAddress().setStreet(user.getAddress_1());
-        so.getAddresses().getBillingAddress().setDistrict(user.getDistrict());
-        so.getAddresses().getBillingAddress().setCity(user.getCity());
-        so.getAddresses().getBillingAddress().setState(user.getState());
-        so.getAddresses().getBillingAddress().setZipCode(user.getZipCode());
-        so.getAddresses().getBillingAddress().setCountry(user.getCountry());
-        so.getAddresses().getBillingAddress().setPhone(user.getPhone());
-        so.getAddresses().getBillingAddress().setEmail(user.getEmail());
-
-        //set default shipping address
-        so.getAddresses().getShippingAddress().setFirstName(user.getFirstNameShipping());
-        so.getAddresses().getShippingAddress().setLastName(user.getLastNameShipping());
-        so.getAddresses().getShippingAddress().setStreet(user.getAddress_1Shipping());
-        so.getAddresses().getShippingAddress().setDistrict(user.getDistrictShipping());
-        so.getAddresses().getShippingAddress().setCity(user.getCityShipping());
-        so.getAddresses().getShippingAddress().setState(user.getStateShipping());
-        so.getAddresses().getShippingAddress().setZipCode(user.getZipCodeShipping());
-        so.getAddresses().getShippingAddress().setCountry(user.getCountryShipping());
-        so.getAddresses().getShippingAddress().setPhone(user.getPhoneShipping());
     }
 
     @RequestMapping(value = {"logout.html", "dang-xuat.html"}, method = RequestMethod.GET)

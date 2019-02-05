@@ -7,6 +7,7 @@ import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.service.SiteService;
 import com.easysoft.ecommerce.util.Messages;
+import com.fasterxml.uuid.Generators;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
@@ -56,6 +57,7 @@ public class SiteServiceImpl implements SiteService {
         if (entity.isEmptyId()) {
             //create new site
             original = entity;
+            original.setAppId(Generators.timeBasedGenerator().generate().toString());
             siteDao.persist(original);
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.saved.success", null, LocaleContextHolder.getLocale()));
         } else {
@@ -299,6 +301,7 @@ public class SiteServiceImpl implements SiteService {
             }
             newSite.setSubDomain(siteCode + "." + freeDomain);
             newSite.setParentSite(site); //retailer where the site is created
+            newSite.setAppId(Generators.timeBasedGenerator().generate().toString());
             siteDao.persist(newSite);
 
             //Create a record for SiteProductService table. This record is for website hosting product.
@@ -548,6 +551,7 @@ public class SiteServiceImpl implements SiteService {
             }
             newSite.setSubDomain(siteCode + "." + freeDomain);
             newSite.setParentSite(site); //retailer where the site is created
+            newSite.setAppId(Generators.timeBasedGenerator().generate().toString());
             siteDao.persist(newSite);
 
             copyTemplates(site, newSite);

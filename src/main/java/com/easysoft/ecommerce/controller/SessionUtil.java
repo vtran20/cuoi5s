@@ -327,6 +327,20 @@ public class SessionUtil {
         }
         return false;
     }
+
+    /**
+     * Login successfully if secure cookie in sessionObject equals secure cookie from the client
+     * @param request
+     * @param response
+     * @return
+     */
+    public static boolean isLoggedInForRestAPI (HttpServletRequest request, HttpServletResponse response) {
+        if(!StringUtils.isEmpty(request.getHeader("app-id")) && request.getHeader("app-id").equals(ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite().getAppId())) {
+            return isLoggedIn(request, response);
+        }
+        return false;
+    }
+
     /**
      * Load user object
      * @param request
@@ -390,4 +404,46 @@ public class SessionUtil {
         so.setUserId(0l);
         so.setSecureCookie("");
     }
+
+    public static void setSessionObjectAttribute(SessionObject so, User user) {
+        so.setUserName(user.getUsername());
+        so.set("FIRST_NAME", user.getFirstName());
+        so.set("LAST_NAME", user.getLastName());
+        so.setUserId(user.getId());
+        //set billing address
+        so.getAddresses().getBillingAddress().setFirstName(user.getFirstName());
+        so.getAddresses().getBillingAddress().setLastName(user.getLastName());
+        so.getAddresses().getBillingAddress().setStreet(user.getAddress_1());
+        so.getAddresses().getBillingAddress().setDistrict(user.getDistrict());
+        so.getAddresses().getBillingAddress().setCity(user.getCity());
+        so.getAddresses().getBillingAddress().setState(user.getState());
+        so.getAddresses().getBillingAddress().setZipCode(user.getZipCode());
+        so.getAddresses().getBillingAddress().setCountry(user.getCountry());
+        so.getAddresses().getBillingAddress().setPhone(user.getPhone());
+        so.getAddresses().getBillingAddress().setEmail(user.getEmail());
+
+        //set default shipping address
+        so.getAddresses().getShippingAddress().setFirstName(user.getFirstNameShipping());
+        so.getAddresses().getShippingAddress().setLastName(user.getLastNameShipping());
+        so.getAddresses().getShippingAddress().setStreet(user.getAddress_1Shipping());
+        so.getAddresses().getShippingAddress().setDistrict(user.getDistrictShipping());
+        so.getAddresses().getShippingAddress().setCity(user.getCityShipping());
+        so.getAddresses().getShippingAddress().setState(user.getStateShipping());
+        so.getAddresses().getShippingAddress().setZipCode(user.getZipCodeShipping());
+        so.getAddresses().getShippingAddress().setCountry(user.getCountryShipping());
+        so.getAddresses().getShippingAddress().setPhone(user.getPhoneShipping());
+    }
+
+    public static void updateUserSessionId (User user, HttpServletRequest request, HttpServletResponse response) {
+        Cookie userSessionId = SessionUtil.findCookie(request, SessionObject.USER_SESSION_ID_KEY);
+        //if user object doesn't have user_session_id
+        if (StringUtils.isEmpty(user.getUserSessionId())) {
+            if (userSessionId != null) {
+                user.setUserSessionId(userSessionId.getValue());
+            }
+        } else { //if have user_session_id, then use this and replace for the current one in the browser
+            SessionUtil.setUserSession(user.getUserSessionId(), request, response);
+        }
+    }
+
 }
