@@ -48,7 +48,7 @@ public class NailController {
             "/login.json",
             "/logout.json",
             "/initialData.json",
-            "/reload,json",
+            "/reload.json",
             "/searchNailCustomer.json",
             "/services/",
             "/customers.json",
@@ -74,7 +74,7 @@ public class NailController {
     }, method = {RequestMethod.OPTIONS})
     public void catchAllOpt(final HttpServletResponse response)
             throws IOException {
-        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         response.addHeader("Access-Control-Max-Age", "120"); // in seconds
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Methods",
@@ -172,11 +172,11 @@ public class NailController {
     public
     @ResponseBody
     Map initialNailsData(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        if (!SessionUtil.isLoggedInForRestAPI(request, response)) {
-//            Map result = new HashMap();
-//            result.put("isLoggedIn", "N");
-//            return result;
-//        }
+        if (!SessionUtil.isLoggedInForRestAPI(request, response)) {
+            Map result = new HashMap();
+            result.put("isLoggedIn", "N");
+            return result;
+        }
         Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
         Map dataObject = new HashMap ();
         NailStore nailStore = getCurrentStore(request, response);
