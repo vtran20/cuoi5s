@@ -47,7 +47,8 @@ public class NailController {
     @RequestMapping(value = {
             "/login.json",
             "/logout.json",
-            "/naildata.json",
+            "/initialData.json",
+            "/reload,json",
             "/searchNailCustomer.json",
             "/services/",
             "/customers.json",
@@ -78,7 +79,7 @@ public class NailController {
         response.addHeader("Access-Control-Allow-Credentials", "true");
         response.addHeader("Access-Control-Allow-Methods",
                 "HEAD, GET, OPTIONS, POST, PUT, UPDATE, DELETE");
-        response.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with, app-id");
+        response.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with, app-id, user_session_secure_cookie");
     }
 
     @RequestMapping(value = {"login.json"}, method = {RequestMethod.POST})
@@ -171,6 +172,11 @@ public class NailController {
     public
     @ResponseBody
     Map initialNailsData(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//        if (!SessionUtil.isLoggedInForRestAPI(request, response)) {
+//            Map result = new HashMap();
+//            result.put("isLoggedIn", "N");
+//            return result;
+//        }
         Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
         Map dataObject = new HashMap ();
         NailStore nailStore = getCurrentStore(request, response);
@@ -182,9 +188,20 @@ public class NailController {
 //            dataObject.put("selectedStoreId",nailStore.getId());
             dataObject.put("stores",stores);
             dataObject.put("employees",this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()));
-            dataObject.put("services",this.serviceLocator.getNailServiceDao().findBy("store.id", nailStore.getId()));
+            List<NailService> serviceGroups = this.serviceLocator.getNailServiceDao().getGroupServices(nailStore.getId());
+            List<NailService> services = new ArrayList<NailService>();
+            if (serviceGroups != null) {
+                for (NailService group : serviceGroups) {
+                    List<NailService> children = this.serviceLocator.getNailServiceDao().getServices(group.getId(), nailStore.getId());
+                    if (services != null) {
+                        services.addAll(children);
+                    }
+                }
+            }
+
+            dataObject.put("serviceGroups",serviceGroups);
+            dataObject.put("services",services);
             dataObject.put("payments",this.serviceLocator.getNailCustomerPaymentDao().getCustomerPaymentsByDate(startDate, endDate, nailStore.getId()));
-            dataObject.put("appointments",this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(startDate, endDate, nailStore.getId()));
 
             List<NailCustomerService> nailCustomerServices = this.serviceLocator.getNailCustomerServiceDao().getCustomerServicesByDate(startDate, endDate, nailStore.getId());
             dataObject.put("customerServices",nailCustomerServices);
@@ -208,6 +225,14 @@ public class NailController {
                     customers.add(c);
                 }
             }
+            List<NailCustomerAppointment> nailCustomerAppointments = this.serviceLocator.getNailCustomerAppointmentDao().getCustomerAppointmentsByDate(startDate, endDate, nailStore.getId());
+            for (NailCustomerAppointment appointment : nailCustomerAppointments) {
+                if (!customers.contains(appointment.getNailCustomer())) {
+                    customers.add(appointment.getNailCustomer());
+                }
+            }
+            dataObject.put("appointments", nailCustomerAppointments);
+
             dataObject.put("customers", customers);
 
             List<NailEmployeeService> nailEmployeeServices = this.serviceLocator.getNailEmployeeServiceDao().getEmployeeServicesByDate(startDate, endDate, nailStore.getId());
@@ -598,6 +623,12 @@ public class NailController {
         if (service.isEmptyId()) {
             System.out.println("A NailService with name " + service.getName() + " already exist");
             NailStore nailStore = serviceLocator.getNailStoreDao().findById(storeId);
+            if (service.getGroupId() != null && service.getGroupId() > 0) {
+                NailService group = serviceLocator.getNailServiceDao().findByIdByStore(service.getGroupId(), storeId);
+                if (group != null) {
+                    service.setGroup(group);
+                }
+            }
             service.setStore(nailStore);
             service.setActive("Y");
             serviceLocator.getNailServiceDao().persist(service);
@@ -640,6 +671,14 @@ public class NailController {
                 if (service.getMinutes() != nailService.getMinutes()) {
                     nailService.setMinutes(service.getMinutes());
                     isUpdate = true;
+                }
+                if ((nailService.getGroupId() != null && !nailService.getGroupId().equals(service.getGroupId())) ||
+                        service.getGroupId() != null && !service.getGroupId().equals(nailService.getGroupId())) {
+                    NailService group = serviceLocator.getNailServiceDao().findByIdByStore(service.getGroupId(), storeId);
+                    if (group != null) {
+                        nailService.setGroup(group);
+                        isUpdate = true;
+                    }
                 }
                 if (isUpdate) {
                     serviceLocator.getNailServiceDao().merge(nailService);

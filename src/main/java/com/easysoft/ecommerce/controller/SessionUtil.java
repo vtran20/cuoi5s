@@ -335,7 +335,7 @@ public class SessionUtil {
      * @return
      */
     public static boolean isLoggedInForRestAPI (HttpServletRequest request, HttpServletResponse response) {
-        if(!StringUtils.isEmpty(request.getHeader("app-id")) && request.getHeader("app-id").equals(ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite().getAppId())) {
+        if(!StringUtils.isEmpty(request.getHeader("app-id")) && request.getHeader("app-id").equals(ServiceLocatorHolder.getServiceLocator().getSystemContext().getGlobalConfig("app-id"))) {
             return isLoggedIn(request, response);
         }
         return false;

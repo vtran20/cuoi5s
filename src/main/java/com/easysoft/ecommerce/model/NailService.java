@@ -16,8 +16,11 @@ public class NailService extends AbstractEntity  {
     private long price;
     private int minutes;
     private String active;
+    private float sequence;
 
     private NailStore store;
+    private NailService group;
+    private List <NailService> services;
     private List<NailCustomerService> nailCustomerServices;
 
     public String getName() {
@@ -81,4 +84,43 @@ public class NailService extends AbstractEntity  {
         this.minutes = minutes;
     }
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    public NailService getGroup() {
+        return group;
+    }
+
+    public void setGroup(NailService group) {
+        this.group = group;
+    }
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @JsonIgnore
+    public List<NailService> getServices() {
+        return services;
+    }
+
+    public void setServices(List<NailService> services) {
+        this.services = services;
+    }
+
+    public float getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(float sequence) {
+        this.sequence = sequence;
+    }
+
+    /////////Transient attribute///////////
+    private Long groupId;
+
+    @Transient
+    public Long getGroupId() {
+        return groupId != null? groupId : (group != null && group.getId() != null)? group.getId() : 0;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
 }
