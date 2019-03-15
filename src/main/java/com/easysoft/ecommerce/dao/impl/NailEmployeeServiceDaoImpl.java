@@ -24,11 +24,18 @@ public class NailEmployeeServiceDaoImpl extends GenericDaoImpl<NailEmployeeServi
 
     @Override
     public NailEmployeeService getEmployeeService(Long employeeId, Long employeeServiceId) throws Exception {
-        return (NailEmployeeService) getSessionFactory().getCurrentSession()
-                .createQuery("SELECT es FROM " + getPersistentClass().getName() + " es where es.nailEmployee.id = :employeeId and es.id = :employeeServiceId")
-                .setParameter("employeeId", employeeId)
-                .setParameter("employeeServiceId",employeeServiceId)
-                .uniqueResult();
+        if (employeeId > 0) {
+            return (NailEmployeeService) getSessionFactory().getCurrentSession()
+                    .createQuery("SELECT es FROM " + getPersistentClass().getName() + " es where es.nailEmployee.id = :employeeId and es.id = :employeeServiceId")
+                    .setParameter("employeeId", employeeId)
+                    .setParameter("employeeServiceId",employeeServiceId)
+                    .uniqueResult();
+        } else {
+            return (NailEmployeeService) getSessionFactory().getCurrentSession()
+                    .createQuery("SELECT es FROM " + getPersistentClass().getName() + " es where es.id = :employeeServiceId")
+                    .setParameter("employeeServiceId",employeeServiceId)
+                    .uniqueResult();
+        }
     }
 
     @Override

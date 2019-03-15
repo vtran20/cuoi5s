@@ -22,6 +22,24 @@ public class NailCustomerAppointmentDaoImpl extends GenericDaoImpl<NailCustomerA
                 .setParameter("storeId", storeId).list();
     }
 
+    @Override
+    public List<NailCustomerAppointment> getCustomerAppointmentsByDate(Date startDateObj, Date endDateObj, Long storeId, Long employeeId) throws Exception {
+        if (employeeId > 0) {
+            return getSessionFactory().getCurrentSession()
+                    .createQuery("SELECT cs FROM " + getPersistentClass().getName() + " cs join cs.store s join cs.nailEmployee e where cs.startTime between :startDate and :endDate and s.id = :storeId and e.id = :employeeId")
+                    .setParameter("startDate", startDateObj, new TimestampType())
+                    .setParameter("endDate", endDateObj, new TimestampType())
+                    .setParameter("storeId", storeId)
+                    .setParameter("employeeId", employeeId).list();
+        } else {
+            return getSessionFactory().getCurrentSession()
+                    .createQuery("SELECT cs FROM " + getPersistentClass().getName() + " cs join cs.store s  where cs.startTime between :startDate and :endDate and s.id = :storeId and cs.nailEmployee is null")
+                    .setParameter("startDate", startDateObj, new TimestampType())
+                    .setParameter("endDate", endDateObj, new TimestampType())
+                    .setParameter("storeId", storeId).list();
+        }
+    }
+
     public NailCustomerAppointment getCustomerAppointment (Long customerId, Long customerAppointmentId) throws Exception {
         return (NailCustomerAppointment) getSessionFactory().getCurrentSession()
                 .createQuery("SELECT cs FROM " + getPersistentClass().getName() + " cs where cs.nailCustomer.id = :customerId and cs.id = :customerAppointmentId")

@@ -14,19 +14,13 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping()
@@ -223,4 +217,164 @@ public class GeneralController {
     public ModelAndView album(String uri, HttpServletRequest request, HttpServletResponse response) throws Exception {
         return new ModelAndView("page/album");
     }
+    /***************************************************************************
+     Implement Booking Page.
+     ***************************************************************************/
+    @RequestMapping("/booking.html")
+    public ModelAndView booking(String uri, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return new ModelAndView("booking");
+    }
+
+    @RequestMapping(value = {"/load-timeslots.json"}, method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map loadAvailableTimeslots(HttpServletRequest request) throws Exception {
+        NailStore store = null;
+        Calendar currentDate = Calendar.getInstance();
+        currentDate.setTime(new Date(new Long(request.getParameter("currentDate"))));
+        if (StringUtils.isNotEmpty(request.getParameter("storeId")) && StringUtils.isNumeric(request.getParameter("storeId"))) {
+            Long storeId = new Long(request.getParameter("storeId"));
+            store = ServiceLocatorHolder.getServiceLocator().getNailStoreDao().findById(storeId);
+        }
+        if (StringUtils.isNotEmpty(request.getParameter("date")) && store != null) {
+            Date date = WebUtil.stringToDate(request.getParameter("date"), "yyyy-MM-dd");
+            String dayOfWeek = WebUtil.dateToString(date, "EEE");
+            String hours = null;
+            if ("Sun".equals(dayOfWeek)) hours = store.getHourSun();
+            if ("Mon".equals(dayOfWeek)) hours = store.getHourMon();
+            if ("Tue".equals(dayOfWeek)) hours = store.getHourTue();
+            if ("Wed".equals(dayOfWeek)) hours = store.getHourWed();
+            if ("Thu".equals(dayOfWeek)) hours = store.getHourThu();
+            if ("Fri".equals(dayOfWeek)) hours = store.getHourFri();
+            if ("Sat".equals(dayOfWeek)) hours = store.getHourSat();
+            if (hours != null) {
+                if ("0".equals(hours)) {
+                    return null;
+                } else {
+                    String startEnd[] = hours.split("-");
+                    if (startEnd.length == 2) {
+                        int startDay = Integer.valueOf(startEnd[0]).intValue();
+                        int endTDay = Integer.valueOf(startEnd[1]).intValue();
+
+                        Calendar startTime = WebUtil.getStartDate(date);
+                        startTime.set(Calendar.HOUR_OF_DAY, startDay); //start time
+                        if (currentDate.after(startTime)) {
+                            startTime.set(Calendar.HOUR_OF_DAY, currentDate.get(Calendar.HOUR_OF_DAY));
+                            startTime.add(Calendar.HOUR_OF_DAY, 2); //only make appointment next 2 hours
+                        }
+
+                        Calendar endTime = WebUtil.getStartDate(date);
+                        endTime.set(Calendar.HOUR_OF_DAY, endTDay); //end time
+
+                        Long employeeId = 0l;
+                        if (StringUtils.isNotEmpty(request.getParameter("employeeId"))) {
+                            employeeId = Long.parseLong(request.getParameter("employeeId"));
+                        }
+
+                        List<NailCustomerAppointment> appointments = ServiceLocatorHolder.getServiceLocator().getNailCustomerAppointmentDao()
+                                    .getCustomerAppointmentsByDate(WebUtil.getStartDate(date).getTime(), WebUtil.getEndDate(date).getTime(), store.getId(), employeeId);
+
+                        //all available timeslots
+                        Set <Date> timeslots = new LinkedHashSet<Date>();
+                        while (!startTime.after(endTime)) {
+                            timeslots.add(startTime.getTime());
+                            startTime.add(Calendar.MINUTE, 15);
+                        }
+
+                        if (appointments != null && appointments.size() > 0) {
+                            //remove booked timeslots
+                            for (NailCustomerAppointment appt : appointments) {
+                                Calendar time = Calendar.getInstance();
+                                time.setTime(appt.getStartTime());
+                                while (timeslots.contains(time.getTime()) && time.getTime().before(appt.getEndTime())) {
+                                    timeslots.remove(time.getTime());
+                                    time.add(Calendar.MINUTE, 15);
+                                }
+                            }
+
+                        }
+
+                        //remove timeslots that cannot book because is not enough time range. Start at a timeslot, if ahead of time have 1 hour available, then the timeslot is valid
+                        Set <Date> timeslotsClone = new LinkedHashSet<Date>(timeslots);
+                        //available slot if enough 1 hour
+                        int slotSteps = 3;
+                        for (Date dateTimeSlot : timeslotsClone) {
+                            Calendar time = Calendar.getInstance();
+                            time.setTime(dateTimeSlot);
+                            for (int i = 0; i < slotSteps; i++) {
+                                time.add(Calendar.MINUTE, 15);
+                                if (timeslots.contains(time.getTime())) {
+                                    //do nothing
+                                } else {
+                                    timeslots.remove(dateTimeSlot);
+                                }
+                            }
+                        }
+                        //Group by morning, afternoon and evening
+                        Calendar afternoonTime = WebUtil.getStartDate(date);
+                        afternoonTime.set(Calendar.HOUR_OF_DAY, 12);
+                        Calendar eveningTime = WebUtil.getStartDate(date);
+                        eveningTime.set(Calendar.HOUR_OF_DAY, 17);
+                        Map result = new HashMap();
+                        List morning = new ArrayList();
+                        List afternoon = new ArrayList();
+                        List evening = new ArrayList();
+                        result.put("morning", morning);
+                        result.put("afternoon", afternoon);
+                        result.put("evening", evening);
+                        for (Date ts : timeslots) {
+                            if (ts.before(afternoonTime.getTime())) {
+                                morning.add(WebUtil.dateToString(ts, "hh:mm a"));
+                            } else if (ts.before(eveningTime.getTime())) {
+                                afternoon.add(WebUtil.dateToString(ts, "hh:mm a"));
+                            } else {
+                                evening.add(WebUtil.dateToString(ts, "hh:mm a"));
+                            }
+                        }
+
+                        return result;
+
+                    } else {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @RequestMapping(value = {"/submit_appointment.html"}, method = RequestMethod.POST, produces="application/x-www-form-urlencoded; charset=UTF-8")
+    public
+    @ResponseBody
+    String submitAppointment(HttpServletRequest request) {
+        try {
+            Map inputData = new HashMap();
+            inputData.put("selectedStoreId", request.getParameter("selectedStoreId"));
+            inputData.put("selectedDate", request.getParameter("selectedDate"));
+            inputData.put("selectedTime", request.getParameter("selectedTime"));
+            String services = request.getParameter("selectedServiceId");
+            String []serviceIds = services != null? services.split(",") : null;
+            inputData.put("selectedServiceId", serviceIds);
+            inputData.put("selectedEmployeeId", request.getParameter("selectedEmployeeId"));
+            inputData.put("firstName", request.getParameter("firstName"));
+            inputData.put("lastName", request.getParameter("lastName"));
+            String phone = request.getParameter("phone");
+            if (StringUtils.isNotEmpty(phone)) {
+                phone = phone.replaceAll("\\(", "");
+                phone = phone.replaceAll("\\)", "");
+                phone = phone.replaceAll("-", "");
+                phone = phone.replaceAll(" ", "");
+            }
+            inputData.put("phone", phone);
+            inputData.put("email", request.getParameter("email"));
+            inputData.put("message", request.getParameter("message"));
+            return serviceLocator.getSystemContext().getServiceLocator().getNailManagementService().makeAppointmentFromFrontEnd(inputData, new Long(request.getParameter("selectedStoreId"))).toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Messages error = new Messages();
+            error.addError("System error: Sorry we cannot make appointment right now.");
+            return error.toString();
+        }
+    }
+
 }

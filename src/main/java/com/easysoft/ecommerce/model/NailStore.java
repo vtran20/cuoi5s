@@ -4,7 +4,6 @@ package com.easysoft.ecommerce.model;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -23,6 +22,14 @@ public class NailStore extends AbstractEntity {
     private String country;
     private String phone;
     private String email;
+
+    private String hourSun;
+    private String hourMon;
+    private String hourTue;
+    private String hourWed;
+    private String hourThu;
+    private String hourFri;
+    private String hourSat;
 
     private Site site;
     private List<NailCustomer> nailCustomers;
@@ -167,5 +174,61 @@ public class NailStore extends AbstractEntity {
 
     public void setNailCustomerPayments(List<NailCustomerPayment> nailCustomerPayments) {
         this.nailCustomerPayments = nailCustomerPayments;
+    }
+
+    public String getHourSun() {
+        return hourSun;
+    }
+
+    public void setHourSun(String hourSun) {
+        this.hourSun = hourSun;
+    }
+
+    public String getHourMon() {
+        return hourMon;
+    }
+
+    public void setHourMon(String hourMon) {
+        this.hourMon = hourMon;
+    }
+
+    public String getHourTue() {
+        return hourTue;
+    }
+
+    public void setHourTue(String hourTue) {
+        this.hourTue = hourTue;
+    }
+
+    public String getHourWed() {
+        return hourWed;
+    }
+
+    public void setHourWed(String hourWed) {
+        this.hourWed = hourWed;
+    }
+
+    public String getHourThu() {
+        return hourThu;
+    }
+
+    public void setHourThu(String hourThu) {
+        this.hourThu = hourThu;
+    }
+
+    public String getHourFri() {
+        return hourFri;
+    }
+
+    public void setHourFri(String hourFri) {
+        this.hourFri = hourFri;
+    }
+
+    public String getHourSat() {
+        return hourSat;
+    }
+
+    public void setHourSat(String hourSat) {
+        this.hourSat = hourSat;
     }
 }

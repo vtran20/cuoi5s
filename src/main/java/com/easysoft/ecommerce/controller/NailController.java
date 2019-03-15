@@ -1050,8 +1050,8 @@ public class NailController {
         if (StringUtils.isNotEmpty(startDate) && StringUtils.isNotEmpty(endDate)) {
             DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             try {
-                startDateObj = sdf.parse(startDate);
-                endDateObj = sdf.parse(endDate);
+                startDateObj = WebUtil.getStartDate(sdf.parse(startDate)).getTime();
+                endDateObj = WebUtil.getEndDate(sdf.parse(endDate)).getTime();
             } catch (ParseException e) {
                 e.printStackTrace();
                 Messages messages = new Messages();

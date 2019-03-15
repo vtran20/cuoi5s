@@ -1,7 +1,6 @@
 package com.easysoft.ecommerce.util;
 
 import com.easysoft.ecommerce.model.*;
-import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -14,7 +13,6 @@ import org.apache.velocity.runtime.parser.ParseException;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.ISOPeriodFormat;
@@ -346,38 +344,6 @@ public class WebUtil {
         }
         input = input.replaceAll("--+", "-");
         return input.toLowerCase();
-    }
-
-    public static String dateToString (Date date, String format) {
-        String result = "";
-        if (date != null) {
-            if (StringUtils.isEmpty(format)) {
-                format = "dd/MM/yyyy";
-            }
-            SimpleDateFormat formatter = new SimpleDateFormat(format);
-            result = formatter.format(date);
-        }
-        return result;
-    }
-
-    public static Date stringToDate (String s, String format, Date defaultDate) {
-        Date date = stringToDate(s, format);
-        if (date == null) {
-            date = defaultDate;
-        }
-        return date;
-    }
-    public static Date stringToDate (String s, String format) {
-        DateFormat sdf = new SimpleDateFormat(format);
-        Date date = null;
-        try {
-            date = sdf.parse(s);
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
-        }
-//        java.util.Date date1 = new java.util.Date( 1390276603054L );
-//        DateTime dateTimeUtc = new DateTime( date1, DateTimeZone.UTC );
-        return date;
     }
 
     public static boolean renameFile (String source, String dest) {
@@ -727,5 +693,140 @@ public class WebUtil {
             return false;
         }
         return new DateTime(date).toLocalDate().equals(new LocalDate());
+    }
+
+    public static String dateToString (Date date, String format) {
+        String result = "";
+        if (date != null) {
+            if (StringUtils.isEmpty(format)) {
+                format = "dd/MM/yyyy";
+            }
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            result = formatter.format(date);
+        }
+        return result;
+    }
+
+    public static Date stringToDate (String s, String format, Date defaultDate) {
+        Date date = stringToDate(s, format);
+        if (date == null) {
+            date = defaultDate;
+        }
+        return date;
+    }
+    public static Date stringToDate (String s, String format) {
+        DateFormat sdf = new SimpleDateFormat(format);
+        Date date = null;
+        try {
+            date = sdf.parse(s);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+//        java.util.Date date1 = new java.util.Date( 1390276603054L );
+//        DateTime dateTimeUtc = new DateTime( date1, DateTimeZone.UTC );
+        return date;
+    }
+
+    public static Calendar getCurrentStartDate() {
+        Calendar startTime = Calendar.getInstance();
+        startTime.set(Calendar.HOUR_OF_DAY, 0);
+        startTime.set(Calendar.MINUTE, 0);
+        startTime.set(Calendar.SECOND, 0);
+        startTime.set(Calendar.MILLISECOND, 0);
+        return startTime;
+    }
+    public static Calendar getStartDate(Date date) {
+        Calendar startTime = Calendar.getInstance();
+        startTime.setTime(date);
+        startTime.set(Calendar.HOUR_OF_DAY, 0);
+        startTime.set(Calendar.MINUTE, 0);
+        startTime.set(Calendar.SECOND, 0);
+        startTime.set(Calendar.MILLISECOND, 0);
+        return startTime;
+    }
+    public static Calendar getEndDate(Date date) {
+        Calendar endTime = Calendar.getInstance();
+        endTime.setTime(date);
+        endTime.set(Calendar.HOUR_OF_DAY, 23);
+        endTime.set(Calendar.MINUTE, 59);
+        endTime.set(Calendar.SECOND, 59);
+        endTime.set(Calendar.MILLISECOND, 999);
+        return endTime;
+    }
+
+    public static void main(String[] args) {
+
+        ////Get day of week/////
+        Calendar dateOfWeek = Calendar.getInstance();
+        System.out.println(WebUtil.dateToString(dateOfWeek.getTime(), "EEE"));
+        ////Timeslot processing/////
+        Calendar startTime = WebUtil.getCurrentStartDate();
+        startTime.set(Calendar.HOUR_OF_DAY, 10); //start time
+
+        Calendar endTime = WebUtil.getCurrentStartDate();
+        endTime.set(Calendar.HOUR_OF_DAY, 21); //end time
+
+        List<NailCustomerAppointment> appointments = new ArrayList<NailCustomerAppointment>();
+
+        NailCustomerAppointment appointment = new NailCustomerAppointment();
+        Calendar startAppointment = WebUtil.getCurrentStartDate();
+        startAppointment.set(Calendar.HOUR_OF_DAY, 10);
+        startAppointment.set(Calendar.MINUTE, 15);
+        Calendar endAppointment = WebUtil.getCurrentStartDate();
+        endAppointment.set(Calendar.HOUR_OF_DAY, 11);
+        endAppointment.set(Calendar.MINUTE, 15);
+        appointment.setStartTime(startAppointment.getTime());
+        appointment.setEndTime(endAppointment.getTime());
+        appointments.add(appointment);
+
+        appointment = new NailCustomerAppointment();
+        startAppointment = WebUtil.getCurrentStartDate();
+        startAppointment.set(Calendar.HOUR_OF_DAY, 12);
+        startAppointment.set(Calendar.MINUTE, 0);
+        endAppointment = WebUtil.getCurrentStartDate();
+        endAppointment.set(Calendar.HOUR_OF_DAY, 13);
+        endAppointment.set(Calendar.MINUTE, 0);
+        appointment.setStartTime(startAppointment.getTime());
+        appointment.setEndTime(endAppointment.getTime());
+        appointments.add(appointment);
+
+        //all available timeslots
+        Set <Date> timeslots = new LinkedHashSet<Date>();
+        while (!startTime.after(endTime)) {
+            timeslots.add(startTime.getTime());
+            startTime.add(Calendar.MINUTE, 15);
+        }
+
+        //remove booked timeslots
+        for (NailCustomerAppointment appt : appointments) {
+            Calendar time = Calendar.getInstance();
+            time.setTime(appt.getStartTime());
+            while (timeslots.contains(time.getTime()) && time.getTime().before(appt.getEndTime())) {
+                timeslots.remove(time.getTime());
+                time.add(Calendar.MINUTE, 15);
+            }
+        }
+
+        //remove timeslots that cannot book because is not enough time range. Start at a timeslot, if ahead of time have 1 hour available, then the timeslot is valid
+        Set <Date> timeslotsClone = new LinkedHashSet<Date>(timeslots);
+        //available slot if enough 1 hour
+        int slotSteps = 3;
+        for (Date date : timeslotsClone) {
+            Calendar time = Calendar.getInstance();
+            time.setTime(date);
+            for (int i = 0; i < slotSteps; i++) {
+                time.add(Calendar.MINUTE, 15);
+                if (timeslots.contains(time.getTime())) {
+                    //do nothing
+                } else {
+                    timeslots.remove(date);
+                }
+            }
+        }
+
+        //print remain timeslots
+        for (Date ts : timeslots) {
+            System.out.println(dateToString(ts, "HH:mm a"));
+        }
     }
 }

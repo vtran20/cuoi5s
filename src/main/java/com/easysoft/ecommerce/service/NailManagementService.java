@@ -1,12 +1,13 @@
 package com.easysoft.ecommerce.service;
 
-import java.text.ParseException;
+import com.easysoft.ecommerce.util.Messages;
 import java.util.Date;
 import java.util.Map;
 
 public interface NailManagementService {
     public Map<String, Object> addNailCustomerService (Map inputData, Long storeId, Date currentDate);
     public Map<String, Object> makeAppointment (Map inputData, Long storeId) throws Exception;
+    public Messages makeAppointmentFromFrontEnd(Map inputData, Long storeId) throws Exception;
 
     public Map<String, Object> checkInAppointmentCustomer(Map inputData, Long storeId, Date currentDate) throws Exception;
 

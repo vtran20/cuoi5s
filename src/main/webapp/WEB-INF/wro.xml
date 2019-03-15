@@ -203,8 +203,9 @@
         <css minimize="true">/themes/m3x/plugins/noUiSlider/jquery.nouislider.css</css>
         <css minimize="true">/themes/m3x/plugins/jquery-steps/css/custom-jquery.steps.css</css>
         <css minimize="true">/themes/m3x/plugins/owl-carousel/owl-carousel/owl.carousel.css</css>
-
         <css minimize="false">/themes/m3x/js/bootstrap-dialog/css/bootstrap-dialog.min.css</css>
+        <css minimize="false">/themes/m3x/plugins/multiselect/css/bootstrap-multiselect.css</css>
+
         <!-- CSS Page -->
         <css minimize="true">/themes/m3x/css/pages/portfolio-v2.css</css>
         <css minimize="true">/themes/m3x/css/pages/page_search_inner.css</css>
@@ -334,6 +335,7 @@
         <js minimize="false">/themes/m3x/plugins/noUiSlider/jquery.nouislider.full.min.js</js>
         <js minimize="false">/themes/m3x/plugins/jquery-steps/build/jquery.steps.min.js</js>
         <js minimize="false">/themes/m3x/plugins/owl-carousel/owl-carousel/owl.carousel.min.js</js>
+        <js minimize="true">/themes/m3x/plugins/multiselect/js/bootstrap-multiselect.js</js>
 
 
         <!-- JS Page Level -->
