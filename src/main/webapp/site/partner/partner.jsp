@@ -415,7 +415,7 @@
         $(".show-confirm").click(function () {
             var object = $(this);
             BootstrapDialog.show({
-                title: 'Xác nhận',
+                title: '<fmt:message key="common.confirm.title"/>',
                 message: '<fmt:message key='site.do.you.want.upgrade.partner'/>',
                 buttons: [{
                     label: 'Yes',

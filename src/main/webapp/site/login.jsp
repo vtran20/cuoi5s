@@ -159,6 +159,7 @@
                 </div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="login" action="/site/login.html" id="login" method="post">
+                        <input name="rememberMe" type="hidden" value="Y"/>
                         <h:frontendmessage _messages="${error}"/>
                         <div class="input-group margin-bottom-20">
                             <span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -167,14 +168,6 @@
                         <div class="input-group margin-bottom-20">
                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                             <input type="password" name="password" placeholder="<fmt:message key="site.register.password"/>" class="form-control">
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label><input name="rememberMe" type="checkbox"> <fmt:message key="site.stay.signed.in"/></label>
-                            </div>
-                            <div class="col-md-6">
-                                <a class="pull-right" href="/site/forgot_password_popup.html"><fmt:message key="site.forget.password"/></a>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">

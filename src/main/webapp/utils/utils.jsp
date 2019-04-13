@@ -115,6 +115,6 @@
     }
 %>
 <p>Clear cache completed.</p>
-
+<fmt:message key="site.data.store.error"/>
 </body>
 </html>

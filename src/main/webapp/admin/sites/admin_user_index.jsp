@@ -8,7 +8,7 @@ $(".show-confirm").click(function () {
         type:BootstrapDialog.TYPE_DANGER,
         closeByBackdrop: false,
         closeByKeyboard: false,
-        title:'Xác Nhận',
+        title:'<fmt:message key="common.confirm.title"/>',
         message:object.attr("lang"),
         buttons:[
             {

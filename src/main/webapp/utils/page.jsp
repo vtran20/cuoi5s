@@ -580,7 +580,8 @@
                 <h3><a href="http://m12.webphattai.com/page/album.html?albumId=39" class="hover-effect">Foot</a></h3>                                    </div>
         </div>
     </div>
-    <div class="global-clear"></div>             </div>
+    <div class="global-clear"></div>
+</div>
 </div>
 </body>
 </html>

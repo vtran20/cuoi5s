@@ -132,7 +132,7 @@
         $("body").on("click", ".show-confirm", function () {
             var object = $(this);
             BootstrapDialog.show({
-                title: 'Xác nhận',
+                title: '<fmt:message key="common.confirm.title"/>',
                 message: object.attr("data-message"),
                 buttons: [{
                     label: 'Yes',
@@ -152,7 +152,7 @@
         $("body").on("click", ".show-confirm-modal", function () {
             var object = $(this);
             BootstrapDialog.show({
-                title: 'Xác nhận',
+                title: '<fmt:message key="common.confirm.title"/>',
                 message: object.attr("data-message"),
                 buttons: [{
                     label: 'Yes',

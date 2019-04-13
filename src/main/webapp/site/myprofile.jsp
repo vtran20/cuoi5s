@@ -23,8 +23,6 @@
             rules:{
                 firstName:"required",
                 lastName:"required",
-                address_1:"required",
-                city:"required",
                 phone:"required"
 
             },
@@ -32,8 +30,6 @@
             messages:{
                 firstName:"<fmt:message key="site.register.firstnameisrequied"/>",
                 lastName:"<fmt:message key="site.register.lastnameisrequired"/>",
-                address_1:"<fmt:message key="site.register.address"/>",
-                city:"<fmt:message key="site.register.city"/>",
                 phone:"<fmt:message key="site.register.phoneisrequired"/>"
 
             },
@@ -85,18 +81,6 @@
                             <label for="lastName" class="col-lg-3 control-label"><fmt:message key="site.register.lastName"/></label>
                             <div class="col-lg-9">
                                 <input type="text" class="form-control" id="lastName" name="lastName" maxlength="50" placeholder="<fmt:message key="site.register.lastName"/>" value="${user.lastName}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="address_1" class="col-lg-3 control-label"><fmt:message key="billing.shipping.address"/></label>
-                            <div class="col-lg-9">
-                                <input id="address_1" type="text" placeholder="<fmt:message key="billing.shipping.address"/>" name="address_1" class="form-control required" value="${user.address_1}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="city" class="col-lg-3 control-label"><fmt:message key="site.billing.city"/></label>
-                            <div class="col-lg-9">
-                                <h:stringparamselector name="city" stringParam="CITY" defaultValue="${user.city}" includeTitle="Tỉnh/Thành Phố" styleClass="form-control required"/>
                             </div>
                         </div>
                         <div class="form-group">

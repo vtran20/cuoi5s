@@ -18,13 +18,26 @@ public class AlbumImageDaoImpl extends GenericDaoImpl<AlbumImage, Long> implemen
         Query query = null;
         if (albumId > 0) {
             if (active) {
-                hql = "select n from AlbumImage n where n.album.id =:albumId and n.site.id =:siteId and n.active = 'Y' ";
+                hql = "select n from " + getPersistentClass().getName() + " n where n.album.id =:albumId and n.site.id =:siteId and n.active = 'Y' ";
             } else {
-                hql = "select n from AlbumImage n where n.album.id =:albumId and n.site.id =:siteId  ";
+                hql = "select n from " + getPersistentClass().getName() + " n where n.album.id =:albumId and n.site.id =:siteId  ";
             }
             if (StringUtils.isNotBlank(orderByAttr)) hql += " order by n." + orderByAttr;
             query = getSessionFactory().getCurrentSession().createQuery(hql)
                     .setLong("albumId", albumId)
+                    .setLong("siteId", siteId);
+            if (startPosition != null) query.setFirstResult(startPosition);
+            if (maxResult != null) query.setMaxResults(maxResult);
+
+            result = query.list();
+        } else {
+            if (active) {
+                hql = "select n from " + getPersistentClass().getName() + " n where n.site.id =:siteId and n.active = 'Y' ";
+            } else {
+                hql = "select n from " + getPersistentClass().getName() + " n where n.site.id =:siteId  ";
+            }
+            if (StringUtils.isNotBlank(orderByAttr)) hql += " order by n." + orderByAttr;
+            query = getSessionFactory().getCurrentSession().createQuery(hql)
                     .setLong("siteId", siteId);
             if (startPosition != null) query.setFirstResult(startPosition);
             if (maxResult != null) query.setMaxResults(maxResult);
@@ -36,7 +49,7 @@ public class AlbumImageDaoImpl extends GenericDaoImpl<AlbumImage, Long> implemen
 
     @Override
     public List<AlbumImage> getFirstImageOfAlbum(Long siteId) {
-        Query query = getSessionFactory().getCurrentSession().createQuery("select i from AlbumImage i where i.id in (select min(ii.id) from AlbumImage ii join ii.album a where a.active = 'Y' and ii.active = 'Y' and ii.site.id =:siteId group by ii.album.id)")
+        Query query = getSessionFactory().getCurrentSession().createQuery("select i from " + getPersistentClass().getName() + " i where i.id in (select min(ii.id) from " + getPersistentClass().getName() + " ii join ii.album a where a.active = 'Y' and ii.active = 'Y' and ii.site.id =:siteId group by ii.album.id)")
                     .setLong("siteId", siteId);
         return query.list();
     }
@@ -48,9 +61,9 @@ public class AlbumImageDaoImpl extends GenericDaoImpl<AlbumImage, Long> implemen
         Query query = null;
         if (albumId > 0) {
             if (active) {
-                hql = "select count(n) from AlbumImage n where n.album.id =:albumId and n.site.id =:siteId and n.active = 'Y' ";
+                hql = "select count(n) from " + getPersistentClass().getName() + " n where n.album.id =:albumId and n.site.id =:siteId and n.active = 'Y' ";
             } else {
-                hql = "select count(n) from AlbumImage n where n.album.id =:albumId and n.site.id =:siteId  ";
+                hql = "select count(n) from " + getPersistentClass().getName() + " n where n.album.id =:albumId and n.site.id =:siteId  ";
             }
             query = getSessionFactory().getCurrentSession().createQuery(hql)
                     .setLong("albumId", albumId)

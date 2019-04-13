@@ -344,6 +344,176 @@
         <js minimize="true">/themes/m3x/js/plugins/fancy-box.js</js>
         <js minimize="true">/themes/m3x/js/plugins/owl-carousel.js</js>
         <js minimize="true">/themes/m3x/js/custom.js</js>
+        <js>/admin/assets/admin_wpt/js/mustache.js</js>
+    </group>
+
+    <!--Template bootstrap m3x 1 page-->
+    <group name="m3x1p_css">
+        <!-- CSS Global Compulsory -->
+        <css minimize="false">/themes/m3x/plugins/bootstrap/css/bootstrap.min.css</css>
+        <css minimize="false">/themes/m3x1p/css/one.style.css</css>
+        <css minimize="false">/themes/m3x1p/css/app.css</css>
+        <css minimize="false">/themes/m3x1p/css/blocks.css</css>
+        <css minimize="false">/themes/m3x1p/css/plugins.css</css>
+        <css minimize="true">/themes/m3x/plugins/animate.css</css>
+        <css minimize="true">/themes/m3x1p/plugins/pace/pace-flash.css</css>
+        <css minimize="true">/themes/m3x/plugins/line-icons/line-icons.css</css>
+        <css minimize="false">/themes/m3x/plugins/font-awesome/css/font-awesome.min.css</css>
+        <css minimize="true">/themes/m3x/plugins/owl-carousel/owl-carousel/owl.carousel.css</css>
+        <css minimize="true">/themes/m3x/plugins/revolution-slider/rs-plugin/css/settings.css</css>
+
+        <!--<css minimize="true">/themes/m3x/plugins/brand-buttons/brand-buttons.css</css>-->
+        <!--<css minimize="true">/themes/m3x/plugins/brand-buttons/brand-buttons-inversed.css</css>-->
+        <!--<css minimize="true">/themes/m3x/plugins/parallax-slider/css/parallax-slider.css</css>-->
+        <!--<css minimize="true">/themes/m3x/plugins/noUiSlider/jquery.nouislider.css</css>-->
+        <!--<css minimize="true">/themes/m3x/plugins/jquery-steps/css/custom-jquery.steps.css</css>-->
+        <!--<css minimize="false">/themes/m3x/js/bootstrap-dialog/css/bootstrap-dialog.min.css</css>-->
+        <css minimize="false">/themes/m3x/plugins/multiselect/css/bootstrap-multiselect.css</css>
+
+        <!-- CSS Page -->
+        <css minimize="true">/themes/m3x/css/pages/portfolio-v2.css</css>
+        <css minimize="true">/themes/m3x/css/pages/page_search_inner.css</css>
+        <css minimize="true">/themes/m3x/css/pages/page_error3_404.css</css>
+        <css minimize="true">/themes/m3x/css/pages/page_error4_404.css</css>
+        <css minimize="true">/themes/m3x/css/pages/page_pricing.css</css>
+
+        <!--<css minimize="true">/themes/m3x/css/ie8.css</css>-->
+        <!--<css minimize="true">/themes/m3x/css/blocks.css</css>-->
+        <css minimize="true">/themes/m3x/css/plugins.css</css>
+        <!--<css minimize="true">/themes/m3x/css/app.css</css>-->
+        <!--<css minimize="true">/themes/m3x/css/shop.plugins.css</css>-->
+        <!--<css minimize="true">/themes/m3x/css/shop.blocks.css</css>-->
+        <!--<css minimize="true">/themes/m3x/css/style.css</css>-->
+        <!--<css minimize="true">/themes/m3x/css/shop.style.css</css>-->
+
+    </group>
+    <group name="m3x1p_red">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/red.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/red.css</css>
+    </group>
+    <group name="m3x1p_blue">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/blue.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/blue.css</css>
+    </group>
+    <group name="m3x1p_orange">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/orange.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/orange.css</css>
+    </group>
+    <group name="m3x1p_light">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/light.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/light.css</css>
+    </group>
+    <group name="m3x1p_purple">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/purple.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/purple.css</css>
+    </group>
+    <group name="m3x1p_aqua">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/aqua.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/aqua.css</css>
+    </group>
+    <group name="m3x1p_brown">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/brown.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/brown.css</css>
+    </group>
+    <group name="m3x1p_dark-blue">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/dark-blue.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/dark-blue.css</css>
+    </group>
+    <group name="m3x1p_light-green">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/light-green.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/light-green.css</css>
+    </group>
+    <group name="m3x1p_green">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/green.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/green.css</css>
+    </group>
+    <group name="m3x1p_dark-red">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/dark-red.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/dark-red.css</css>
+    </group>
+    <group name="m3x1p_teal">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-colors/teal.css</css>
+        <!-- CSS Shop Theme -->
+        <css minimize="true">/themes/m3x/css/theme-shopcolors/teal.css</css>
+    </group>
+    <group name="m3x1p_dark-skin">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m3x/css/theme-skins/dark.css</css>
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m3x/css/custom.css</css>
+    </group>
+    <group name="m3x1p_light-skin">
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m3x/css/custom.css</css>
+    </group>
+    <!--HEADER-->
+    <group name="m3x1p_header-default">
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m3x/css/headers/header-default.css</css>
+        <css minimize="true">/themes/m3x/css/headers/custom-header-default.css</css>
+    </group>
+    <!--FOOTER-->
+    <group name="m3x1p_footer-v1">
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m3x/css/footers/footer-v1.css</css>
+        <css minimize="true">/themes/m3x/css/footers/custom-footer-v1.css</css>
+    </group>
+
+    <group name="m3x1p_js">
+        <!-- JS Global Compulsory -->
+        <js minimize="false">/themes/m3x/plugins/jquery/jquery.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/jquery/jquery-migrate.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/bootstrap/js/bootstrap.min.js</js>
+        <!--Dialog popup confirm-->
+        <!--<js minimize="false">/themes/m3x/js/bootstrap-dialog/js/bootstrap-dialog.min.js</js>-->
+        <js minimize="false">/themes/m3x/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js</js>
+        <!-- JS Implementing Plugins -->
+        <js minimize="true">/themes/m3x1p/plugins/smoothScroll.js</js>
+        <js minimize="true">/themes/m3x1p/plugins/jquery.easing.min.js</js>
+        <js minimize="true">/themes/m3x1p/plugins/jquery.parallax.js</js>
+        <js minimize="true">/themes/m3x/plugins/back-to-top.js</js>
+        <js minimize="true">/themes/m3x/plugins/parallax-slider/js/modernizr.js</js>
+        <js minimize="true">/themes/m3x/plugins/parallax-slider/js/jquery.cslider.js</js>
+        <js minimize="false">/themes/m3x/plugins/backstretch/jquery.backstretch.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/noUiSlider/jquery.nouislider.full.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/jquery-steps/build/jquery.steps.min.js</js>
+        <js minimize="false">/themes/m3x/plugins/owl-carousel/owl-carousel/owl.carousel.min.js</js>
+        <js minimize="true">/themes/m3x/plugins/multiselect/js/bootstrap-multiselect.js</js>
+        <js minimize="true">/themes/m3x1p/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.tools.min.js</js>
+        <js minimize="true">/themes/m3x1p/plugins/revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js</js>
+
+
+        <!-- JS Page Level -->
+        <js minimize="true">/themes/m3x1p/js/one.app.js</js>
+        <js minimize="true">/themes/m3x/js/app.js</js>
+        <js minimize="true">/themes/m3x/js/pages/index.js</js>
+        <js minimize="true">/themes/m3x/js/plugins/fancy-box.js</js>
+        <js minimize="true">/themes/m3x/js/plugins/owl-carousel.js</js>
+        <js minimize="true">/themes/m3x/js/custom.js</js>
+        <js minimize="true">/themes/m3x1p/js/plugins/revolution-slider.js</js>
     </group>
 
 </groups>

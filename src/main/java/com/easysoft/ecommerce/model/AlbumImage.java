@@ -16,6 +16,7 @@ public class AlbumImage extends AbstractEntity {
     private String fileName;
     private String description;
     private String active;
+    private String crop;
     private Date updatedDate;
     private Album album;
 
@@ -89,4 +90,13 @@ public class AlbumImage extends AbstractEntity {
     public void setAlbum(Album album) {
         this.album = album;
     }
+    @Column(nullable = true, length = 20)
+    public String getCrop() {
+        return crop;
+    }
+
+    public void setCrop(String crop) {
+        this.crop = crop;
+    }
+
 }

@@ -39,7 +39,7 @@
 <c:if test="${!empty modalSize}">
     <c:set var="classSize" value="${modalSize}"/>
 </c:if>
-<div id="${modalForm}" class="modal" tabindex="-1">
+<div id="${modalForm}" class="modal">
     <div class="modal-dialog ${classSize}">
         <div class="modal-content">
             <div class="modal-header">

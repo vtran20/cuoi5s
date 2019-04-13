@@ -5,8 +5,6 @@
 <%--<app:cache key="${uri}">--%>
 <html>
 <c:set value="${fn:substring(uri, 1, fn:length(uri))}" var="uri"/>
-<%--<c:set value="${fn:split(temp,'/')}" var="ids"/>--%>
-<%--<c:set value="${ids[fn:length(ids)-1]}" var="id"/>--%>
 <spring:eval expression="serviceLocator.getNailStoreDao().findActiveByOrder('active', 'Y', null, site.id)" var="stores"/>
 <c:if test="${!empty stores && fn:length(stores) == 1}">
     <c:set var="store" value="${stores[0]}"/>
@@ -27,79 +25,79 @@
         position: inherit!important;
     }
 </style>
-<div class="breadcrumbs">
-    <div class="container">
-        <h1 class="pull-left">Booking</h1>
-        <ul class="pull-right breadcrumb">
-            <li><a href="index.html">Home</a></li>
-            <li class="active">Booking</li>
-        </ul>
+    <div class="breadcrumbs">
+        <div class="container">
+            <h1 class="pull-left">Booking</h1>
+            <ul class="pull-right breadcrumb">
+                <li><a href="index.html">Home</a></li>
+                <li class="active">Booking</li>
+            </ul>
+        </div>
     </div>
-</div>
 
-<div class="container content">
-    <div class="row booking-page">
-        <form class="margin-bottom-40" role="form" id="form">
-            <c:if test="${!empty stores && fn:length(stores) == 1}">
-                <c:set var="store" value="${stores[0]}"/>
-                <input type="hidden" name="storeId" id="storeId" value="${store.id}"/>
-            </c:if>
-            <c:if test="${!empty stores && fn:length(stores) >= 2}">
+    <div class="container content">
+        <div class="row booking-page">
+            <form class="margin-bottom-40" role="form" id="form">
+                <c:if test="${!empty stores && fn:length(stores) == 1}">
+                    <c:set var="store" value="${stores[0]}"/>
+                    <input type="hidden" name="storeId" id="storeId" value="${store.id}"/>
+                </c:if>
+                <c:if test="${!empty stores && fn:length(stores) >= 2}">
+                    <div class="col-md-4 col-xs-12">
+                        <div class="form-group">
+                            <label for="storeId">Location</label>
+                            <select name="storeId" class="form-control" id="storeId">
+                                <option value="">Select Location</option>
+                                <c:forEach items="${stores}" var="store">
+                                    <option value="${store.id}">${store.name}: ${store.address_1} ${store.city}, ${store.state} ${store.zipCode}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                </c:if>
                 <div class="col-md-4 col-xs-12">
                     <div class="form-group">
-                        <label for="storeId">Location</label>
-                        <select name="storeId" class="form-control" id="storeId">
-                            <option value="">Select Location</option>
-                            <c:forEach items="${stores}" var="store">
-                                <option value="${store.id}">${store.name}: ${store.address_1} ${store.city}, ${store.state} ${store.zipCode}</option>
+                        <label for="date">Select Date</label>
+                        <input type="date" name="date" class="form-control" id="date" placeholder="Select Date">
+                    </div>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <div class="form-group">
+                        <label for="employeeId">Select Technician</label>
+                        <select name="employeeId" class="form-control" id="employeeId">
+                            <option value="0">Any Technicians</option>
+                            <c:forEach items="${employees}" var="employee">
+                                <option value="${employee.id}">${employee.firstName} ${employee.lastName}</option>
                             </c:forEach>
                         </select>
                     </div>
                 </div>
-            </c:if>
-            <div class="col-md-4 col-xs-12">
-                <div class="form-group">
-                    <label for="date">Select Date</label>
-                    <input type="date" name="date" class="form-control" id="date" placeholder="Select Date">
+                <div class="col-md-4 col-xs-12">
+                    <div class="form-group">
+                        <label for="serviceId">Select Service</label>
+                        <select name="serviceId" class="form-control" id="serviceId" multiple="multiple">
+                            <%--<option value="">Select Service</option>--%>
+                            <c:forEach items="${groupServices}" var="group">
+                                <optgroup label="${group.name}">
+                                    <!--List service-->
+                                    <spring:eval expression="serviceLocator.getNailServiceDao().getServices(group.id, store.id)" var="services"/>
+                                    <c:forEach items="${services}" var="service">
+                                        <option value="${service.id}">${service.name}</option>
+                                    </c:forEach>
+                                </optgroup>
+                            </c:forEach>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4 col-xs-12">
-                <div class="form-group">
-                    <label for="employeeId">Select Technician</label>
-                    <select name="employeeId" class="form-control" id="employeeId">
-                        <option value="0">Any Technicians</option>
-                        <c:forEach items="${employees}" var="employee">
-                            <option value="${employee.id}">${employee.firstName} ${employee.lastName}</option>
-                        </c:forEach>
-                    </select>
+                <div class="col-md-12 col-xs-12">
+                    <button type="button" class="btn-u" id="search-timeslot-button">Search</button>
                 </div>
-            </div>
-            <div class="col-md-4 col-xs-12">
-                <div class="form-group">
-                    <label for="serviceId">Select Service</label>
-                    <select name="serviceId" class="form-control" id="serviceId" multiple="multiple">
-                        <%--<option value="">Select Service</option>--%>
-                        <c:forEach items="${groupServices}" var="group">
-                            <optgroup label="${group.name}">
-                                <!--List service-->
-                                <spring:eval expression="serviceLocator.getNailServiceDao().getServices(group.id, store.id)" var="services"/>
-                                <c:forEach items="${services}" var="service">
-                                    <option value="${service.id}">${service.name}</option>
-                                </c:forEach>
-                            </optgroup>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12">
-                <button type="button" class="btn-u" id="search-timeslot-button">Search</button>
-            </div>
-        </form>
-    </div><!--/booking-page-->
-    <div class="row col-md-12 margin-top-20" id="display-timeslot-result">
-    </div>
+            </form>
+        </div><!--/booking-page-->
+        <div class="row col-md-12 margin-top-20" id="display-timeslot-result">
+        </div>
 
-</div>
+    </div>
 
 <div class="modal fade" id="responsive-booking" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -265,10 +263,6 @@
             }
         });
 
-//        $('#form input[name="siteCode"]').blur(function () {
-//            $("p.help-block b").text($(this).attr("value"));
-//        });
-
         $('#search-timeslot-button').click(function() {
             if ($("#form").valid()) {
                 var storeId = $("#storeId").val()
@@ -306,18 +300,7 @@
                 var employeeId = $("#selectedEmployeeId").val()
                 var date = $("#selectedDate").val()
                 var time = $("#selectedTime").val()
-                console.log(storeId)
-                console.log(serviceId)
-                console.log(employeeId)
-                console.log(date)
-                console.log(time)
-                console.log($("#firstName").val())
-                console.log($("#lastName").val())
-                console.log($("#phone").val())
-                console.log($("#email").val())
-                console.log($("#message").val())
                 var formData = $("#formModal").serialize();
-                console.log(formData)
                 $.ajax({
                     type: "POST",
                     url: "/submit_appointment.html",

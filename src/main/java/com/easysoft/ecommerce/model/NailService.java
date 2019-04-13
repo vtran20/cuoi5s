@@ -94,7 +94,7 @@ public class NailService extends AbstractEntity  {
         this.group = group;
     }
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "group", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonIgnore
     public List<NailService> getServices() {
         return services;

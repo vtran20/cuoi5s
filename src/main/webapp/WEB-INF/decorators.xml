@@ -9,6 +9,8 @@
     <decorator name="m01" page="template/default/template_m01.jsp"/>
     <decorator name="m02" page="template/default/template_m02.jsp"/>
     <decorator name="m3x" page="template/default/template_3x.jsp"/>
+    <decorator name="m3x1p" page="template/default/template_3x1p.jsp"/>
+    <decorator name="m4x1p" page="template/default/template_4x1p.jsp"/>
     <decorator name="wpt" page="template/default/template_wpt.jsp"/>
 
     <decorator name="admin" page="admin/template.jsp"/>

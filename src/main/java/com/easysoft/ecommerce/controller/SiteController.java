@@ -3,6 +3,7 @@ package com.easysoft.ecommerce.controller;
 import com.easysoft.ecommerce.model.*;
 import com.easysoft.ecommerce.model.session.ItemMap;
 import com.easysoft.ecommerce.model.session.SessionObject;
+import com.easysoft.ecommerce.security.CSRFProtection;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.service.SiteService;
@@ -12,7 +13,6 @@ import com.easysoft.ecommerce.service.payment.Payment;
 import com.easysoft.ecommerce.util.*;
 import com.fasterxml.uuid.Generators;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.validator.EmailValidator;
 import org.expressme.openid.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -57,6 +57,7 @@ public class SiteController {
     public String action(@PathVariable String action) throws Exception {
         return "site/" + action;
     }
+
     @RequestMapping(value = "partner/{action}.html", method = RequestMethod.GET)
     public String actionPartner(@PathVariable String action) throws Exception {
         return "site/partner/" + action;
@@ -168,7 +169,7 @@ public class SiteController {
                 messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("login.forgot.captcha.error", null, LocaleContextHolder.getLocale()));
                 result.put("entity", request.getParameterMap());
             }
-            result.put("messages",messages);
+            result.put("messages", messages);
             return new ModelAndView("/site/login", result);
         }
 
@@ -221,6 +222,7 @@ public class SiteController {
         }
 
     }
+
     @RequestMapping(value = "kich-hoat.html", method = RequestMethod.GET)
     public ModelAndView activateAccount(@Valid String code) throws Exception {
         Map map = new HashMap();
@@ -261,7 +263,8 @@ public class SiteController {
      * @throws Exception
      */
     @RequestMapping(value = {"select-subdomain.json"}, method = {RequestMethod.GET, RequestMethod.POST})
-    public @ResponseBody
+    public
+    @ResponseBody
     Map selectSubDomain(@Valid String siteCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map result = new HashMap();
         if (StringUtils.isNotBlank(siteCode)) {
@@ -296,7 +299,7 @@ public class SiteController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = {"select-template.html","create-site.html"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"select-template.html", "create-site.html"}, method = RequestMethod.GET)
     //="+templateColorCode+"&="+skinColor+"&="+fullWide
     public ModelAndView selectTemplate(@Valid Long templateId,
                                        @RequestParam(value = "templateColorCode", required = false) String templateColorCode,
@@ -313,13 +316,14 @@ public class SiteController {
             so.set("fullWide", fullWide);
             return new ModelAndView("site/createsite");
         } else {
-            if (StringUtils.isNumeric(SessionUtil.load(request, response).get("templateId")+"")) {
+            if (StringUtils.isNumeric(SessionUtil.load(request, response).get("templateId") + "")) {
                 return new ModelAndView("site/createsite");
             } else {
                 return new ModelAndView("site/main");
             }
         }
     }
+
     /**
      * This method will be called when selecting a template for creating new site . It also be called when update template.
      *
@@ -374,6 +378,7 @@ public class SiteController {
         }
 
     }
+
     /**
      * This method will be called when selecting a template for creating new site . It also be called when update template.
      *
@@ -501,7 +506,7 @@ public class SiteController {
                             if (StringUtils.isEmpty(source)) {
                                 return new ModelAndView("redirect:/site/main.html");
                             } else {
-                                return new ModelAndView("redirect:"+source);
+                                return new ModelAndView("redirect:" + source);
                             }
                         } else if (serviceLocator.getUserService().isValidPassword(password, user.getTempPassword())) {
                             user.setTempPassword("");
@@ -623,7 +628,7 @@ public class SiteController {
             List<User> users = serviceLocator.getUserDao().findByUsername(userName);
             if (users != null) {
                 if (users.size() > 1) {
-                    LOGGER.error("UserName="+userName+" is duplicated");
+                    LOGGER.error("UserName=" + userName + " is duplicated");
                 }
                 User user = users.get(0);
                 String randomPassword = WebUtil.generateRandomPassword(10);
@@ -856,8 +861,8 @@ public class SiteController {
         Messages messages = new Messages();
         RunProcessComponent process = new RunProcessComponent();
         process.runProcessComponent(so, "checkout-basket", messages);
-        List <ItemMap>items = so.getOrder().getItems();
-        for (Iterator<ItemMap> iterator = items.iterator(); iterator.hasNext();) {
+        List<ItemMap> items = so.getOrder().getItems();
+        for (Iterator<ItemMap> iterator = items.iterator(); iterator.hasNext(); ) {
             ItemMap item = iterator.next();
             if (item.getLong("SITE_ID") == null || item.getLong("SITE_ID") <= 0) {
                 messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("message.product.is.invalid", new String[]{item.getName()}, null, LocaleContextHolder.getLocale()));
@@ -905,7 +910,7 @@ public class SiteController {
                 item.set("SITE_ID", thisSiteId);
                 so.getOrder().addItem(item);
                 List<Product> relatedProducts = this.serviceLocator.getProductDao().getAddedModules(site.getId(), thisSiteId);
-                for (Product relatedProduct: relatedProducts) {
+                for (Product relatedProduct : relatedProducts) {
                     item = new ItemMap();
                     item.setId(relatedProduct.getId());
                     item.setName(relatedProduct.getName());
@@ -933,8 +938,10 @@ public class SiteController {
         return new ModelAndView("/site/checkout/basket", "messages", messages);
     }
 
-    @RequestMapping(value = "checkout/addmoduletocart.html", method = {RequestMethod.POST}, produces="application/x-www-form-urlencoded; charset=UTF-8")
-    public @ResponseBody String  addModuleToCart(
+    @RequestMapping(value = "checkout/addmoduletocart.html", method = {RequestMethod.POST}, produces = "application/x-www-form-urlencoded; charset=UTF-8")
+    public
+    @ResponseBody
+    String addModuleToCart(
             @RequestParam(value = "thisSiteId", required = true) Long thisSiteId,
             @Valid AddToCartForm form,
             BindingResult result, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -982,7 +989,7 @@ public class SiteController {
                 }
                 //Difference between product and module is modules have parent_product_id
                 item.set("SITE_ID", thisSiteId);
-                Product parentProduct =  serviceLocator.getProductDao().getParentProduct(product.getId(), MODULE_RELATION_TYPE, "Y");
+                Product parentProduct = serviceLocator.getProductDao().getParentProduct(product.getId(), MODULE_RELATION_TYPE, "Y");
                 if (parentProduct != null) {
                     item.set("PARENT_PRODUCT_ID", parentProduct.getId());
                     item.set("RELATED_TYPE_ID", MODULE_RELATION_TYPE);
@@ -1056,8 +1063,10 @@ public class SiteController {
         return new ModelAndView("/site/modules", "messages", messages);
     }
 
-    @RequestMapping(value = "checkout/removemodulefromcart.html", method = {RequestMethod.POST}, produces="application/x-www-form-urlencoded; charset=UTF-8")
-    public @ResponseBody String  deleteModuleFromcart(
+    @RequestMapping(value = "checkout/removemodulefromcart.html", method = {RequestMethod.POST}, produces = "application/x-www-form-urlencoded; charset=UTF-8")
+    public
+    @ResponseBody
+    String deleteModuleFromcart(
             @RequestParam(value = "productId", required = true) Long productId,
             @RequestParam(value = "thisSiteId", required = true) Long thisSiteId,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -1128,7 +1137,7 @@ public class SiteController {
         boolean isUpdate = false;
         //Select hosting - diskspace
         if (StringUtils.isNotEmpty(data)) {
-            String []arr = data.split("-");
+            String[] arr = data.split("-");
             Long productId = 0l;
             Long productVariantId = 0l;
             Long thisSiteId = 0l;
@@ -1147,7 +1156,7 @@ public class SiteController {
 
         for (int i = 0; i < items.size(); i++) {
             ItemMap item = items.get(i);
-            String quantity = request.getParameter("quantity_" + item.getProductVariantId()+"_"+item.get("SITE_ID"));
+            String quantity = request.getParameter("quantity_" + item.getProductVariantId() + "_" + item.get("SITE_ID"));
             if (!StringUtils.isEmpty(quantity) && !item.isChildItem()) {
                 if (StringUtils.isNumeric(quantity)) {
                     Integer qty = Integer.valueOf(quantity);
@@ -1162,7 +1171,7 @@ public class SiteController {
                             } else {
                                 item.setQuantity(qty);
                                 List<ItemMap> relatedItems = SessionUtil.getRelatedProducts(items, product.getId(), MODULE_RELATION_TYPE, item.getLong("SITE_ID"));
-                                for (ItemMap childItem: relatedItems) {
+                                for (ItemMap childItem : relatedItems) {
                                     childItem.setQuantity(qty);
                                 }
                             }
@@ -1291,7 +1300,7 @@ public class SiteController {
 
     /**
      * Place Order
-     *
+     * <p/>
      * This method will place order. Here is what the method will do:
      * 1.  Create order on Order and Order_Session tables
      * 2.  Store the order status is New Order. (Notes: New Order: order just created, have not paid yet)
@@ -1390,16 +1399,17 @@ public class SiteController {
         Payment payment = (Payment) c.newInstance();
         String url = payment.createRequestUrl(so, serviceLocator.getSystemContext().getSite());
         if (StringUtils.isNotEmpty(url) && url.contains("?")) {
-            url += "&orderId="+order.getId();
+            url += "&orderId=" + order.getId();
         } else {
-            url += "?orderId="+order.getId();
+            url += "?orderId=" + order.getId();
         }
         so.setOrder(null);
         SessionUtil.save(so);
         return "redirect:/site" + url;
     }
 
-    /** This action will be called after make a payment. It will callback to this method.
+    /**
+     * This action will be called after make a payment. It will callback to this method.
      *
      * @param request
      * @param response
@@ -1457,9 +1467,11 @@ public class SiteController {
         }
     }
 
-    /*********************************************
+    /**
+     * ******************************************
      * Retailer
-     *********************************************/
+     * *******************************************
+     */
     @RequestMapping(value = {"partner/upgrade_business_partner.html"}, method = {RequestMethod.GET})
     public ModelAndView upgradeBusinessPartner(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (!SessionUtil.isLoggedIn(request, response)) {
@@ -1485,7 +1497,7 @@ public class SiteController {
                     contactUs.setFirstName(user.getFirstName());
                     contactUs.setLastName(user.getLastName());
                     contactUs.setSendersEmail(user.getUsername());
-                    contactUs.setMessage(user.getUsername()+" - Upgrade to Business Partner");
+                    contactUs.setMessage(user.getUsername() + " - Upgrade to Business Partner");
                     contactUs.setRead("N");
                     contactUs.setSite(site);
                     serviceLocator.getContactUsDao().persist(contactUs);
@@ -1497,7 +1509,7 @@ public class SiteController {
                     map.put("user", user);
                     map.put("siteParam", site.getSiteParamsMap());
                     EmailTemplate approveNotify = serviceLocator.getEmailTemplateDao().getEmailTemplate("approvedPartner", serviceLocator.getLocale().toString());
-                    String []bcc = null;
+                    String[] bcc = null;
                     if (!StringUtils.isEmpty(site.getSiteParam("CONTACT_US"))) {
                         bcc = site.getSiteParam("CONTACT_US").split(",");
                     }
@@ -1514,7 +1526,7 @@ public class SiteController {
                     map.put("user", user);
                     map.put("siteParam", site.getSiteParamsMap());
                     EmailTemplate emailTemplate = serviceLocator.getEmailTemplateDao().getEmailTemplate("registerPartnerConfirm", serviceLocator.getLocale().toString());
-                    String []bcc = null;
+                    String[] bcc = null;
                     if (!StringUtils.isEmpty(site.getSiteParam("CONTACT_US"))) {
                         bcc = site.getSiteParam("CONTACT_US").split(",");
                     }
@@ -1544,6 +1556,7 @@ public class SiteController {
             return new ModelAndView("/site/partner/partner", "messages", messages);
         }
     }
+
     @RequestMapping(value = {"partner/upgrade_personal_partner.html"}, method = {RequestMethod.GET})
     public ModelAndView upgradePersonalPartner(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if (!SessionUtil.isLoggedIn(request, response)) {
@@ -1569,7 +1582,7 @@ public class SiteController {
                 map.put("siteParam", site.getSiteParamsMap());
 
                 EmailTemplate emailTemplate = serviceLocator.getEmailTemplateDao().getEmailTemplate("registerPartnerConfirm", serviceLocator.getLocale().toString());
-                String []bcc = null;
+                String[] bcc = null;
                 if (!StringUtils.isEmpty(site.getSiteParam("CONTACT_US"))) {
                     bcc = site.getSiteParam("CONTACT_US").split(",");
                 }
@@ -1599,13 +1612,14 @@ public class SiteController {
             return new ModelAndView("/site/partner/partner", "messages", messages);
         }
     }
+
     @RequestMapping(value = {"partner/partner_register.html"}, method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView partnerRegister(@Valid User user, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         if (SessionUtil.isLoggedIn(request, response)) {
             return new ModelAndView("/site/partner/partner");
         } else if ("GET".equalsIgnoreCase(request.getMethod())) {
-                return new ModelAndView("site/partner/partner_login");
+            return new ModelAndView("site/partner/partner_login");
         } else {
             Site site = serviceLocator.getSystemContext().getSite();
 
@@ -1652,7 +1666,7 @@ public class SiteController {
                             map.put("siteParam", site.getSiteParamsMap());
 
                             EmailTemplate emailTemplate = serviceLocator.getEmailTemplateDao().getEmailTemplate("registerPartnerConfirm", serviceLocator.getLocale().toString());
-                            String []bcc = null;
+                            String[] bcc = null;
                             if (!StringUtils.isEmpty(site.getSiteParam("CONTACT_US"))) {
                                 bcc = site.getSiteParam("CONTACT_US").split(",");
                             }
@@ -1685,7 +1699,7 @@ public class SiteController {
                 messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("login.forgot.captcha.error", null, LocaleContextHolder.getLocale()));
                 result.put("entity", request.getParameterMap());
             }
-            result.put("messages",messages);
+            result.put("messages", messages);
             return new ModelAndView("/site/partner/partner_login", result);
         }
 
@@ -1695,4 +1709,379 @@ public class SiteController {
     public ModelAndView listModules(@Valid SearchForm form) throws Exception {
         return new ModelAndView("site/modules", "command", form);
     }
+
+    @RequestMapping(value = "data/general-information.html")
+    public ModelAndView generalInformation(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        SessionObject so = SessionUtil.load(request, response);
+        if (StringUtils.isNotEmpty(request.getParameter("thisSiteId"))) {
+            so.set("UPDATE_CURRENT_SITE_ID", request.getParameter("thisSiteId"));
+        } else if (StringUtils.isEmpty(so.getString("UPDATE_CURRENT_SITE_ID"))) {
+            return new ModelAndView("site/mysites");
+        }
+        return new ModelAndView("site/data/store");
+    }
+    @RequestMapping(value = "data/about-us.html")
+    public ModelAndView aboutUs(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        SessionObject so = SessionUtil.load(request, response);
+        if (StringUtils.isNotEmpty(request.getParameter("thisSiteId"))) {
+            so.set("UPDATE_CURRENT_SITE_ID", request.getParameter("thisSiteId"));
+        } else if (StringUtils.isEmpty(so.getString("UPDATE_CURRENT_SITE_ID"))) {
+            return new ModelAndView("site/mysites");
+        }
+        return new ModelAndView("site/data/aboutus");
+    }
+    @RequestMapping(value = "data/services.html")
+    public ModelAndView services(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        SessionObject so = SessionUtil.load(request, response);
+        if (StringUtils.isNotEmpty(request.getParameter("thisSiteId"))) {
+            so.set("UPDATE_CURRENT_SITE_ID", request.getParameter("thisSiteId"));
+        } else if (StringUtils.isEmpty(so.getString("UPDATE_CURRENT_SITE_ID"))) {
+            return new ModelAndView("site/mysites");
+        }
+        return new ModelAndView("site/data/services");
+    }
+    @RequestMapping(value = "data/gallery.html")
+    public ModelAndView gallery(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        SessionObject so = SessionUtil.load(request, response);
+        if (StringUtils.isNotEmpty(request.getParameter("thisSiteId"))) {
+            so.set("UPDATE_CURRENT_SITE_ID", request.getParameter("thisSiteId"));
+        } else if (StringUtils.isEmpty(so.getString("UPDATE_CURRENT_SITE_ID"))) {
+            return new ModelAndView("site/mysites");
+        }
+        return new ModelAndView("site/data/gallery");
+    }
+    @RequestMapping(value = "data/service_form.html")
+    public ModelAndView serviceForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return new ModelAndView("site/data/service_form");
+    }
+
+    @RequestMapping(value = "data/create-update-store.html", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView updateGeneralInformation(@Valid NailStore store, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if ("GET".equalsIgnoreCase(request.getMethod())) {
+            return new ModelAndView("site/data/store");
+        } else {
+            Messages messages = null;
+            Map result = new HashMap();
+            if (store.isEmptyId()) {
+                SessionObject so = SessionUtil.load(request, response);
+                String sSite = so.getString("UPDATE_CURRENT_SITE_ID");
+                if (StringUtils.isNumeric(sSite)) {
+                    Long siteId = Long.valueOf(sSite);
+                    Site thisSite = serviceLocator.getSiteDao().findById(siteId);
+                    store.setActive("Y");
+                    store.setSite(thisSite);
+                    String phone = store.getPhone();
+                    if (StringUtils.isNotEmpty(phone)) {
+                        phone = phone.replaceAll("\\(", "");
+                        phone = phone.replaceAll("\\)", "");
+                        phone = phone.replaceAll("-", "");
+                        phone = phone.replaceAll(" ", "");
+                    }
+                    store.setPhone(phone);
+                    //Store hours
+                    updateHours(request, store);
+                    serviceLocator.getNailStoreDao().persist(store);
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.error1", null, LocaleContextHolder.getLocale()));
+                }
+                result.put("store", store);
+            } else {
+                NailStore originalStore = serviceLocator.getNailStoreDao().findById(store.getId());
+                originalStore.setName(store.getName());
+                originalStore.setAddress_1(store.getAddress_1());
+                originalStore.setCity(store.getCity());
+                originalStore.setState(store.getState());
+                originalStore.setZipCode(store.getZipCode());
+                originalStore.setEmail(store.getEmail());
+                String phone = store.getPhone();
+                if (StringUtils.isNotEmpty(phone)) {
+                    phone = phone.replaceAll("\\(", "");
+                    phone = phone.replaceAll("\\)", "");
+                    phone = phone.replaceAll("-", "");
+                    phone = phone.replaceAll(" ", "");
+                }
+                originalStore.setPhone(phone);
+                updateHours(request, originalStore);
+                serviceLocator.getNailStoreDao().merge(originalStore);
+                result.put("store", originalStore);
+            }
+            messages = new Messages();
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
+            result.put("messages", messages);
+            return new ModelAndView("site/data/store", result);
+        }
+    }
+    @RequestMapping(value = "data/update_aboutus.html", method = {RequestMethod.POST, RequestMethod.GET})
+    public ModelAndView updateAboutUs(@Valid SiteMenuPartContent partContent, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if ("GET".equalsIgnoreCase(request.getMethod())) {
+            return new ModelAndView("site/data/aboutus");
+        } else {
+            Messages messages = null;
+            Map result = new HashMap();
+            if (partContent.isEmptyId()) {
+                //TODO: create menu if need, create row if need
+            } else {
+                SiteMenuPartContent originalPartContent = serviceLocator.getSiteMenuPartContentDao().findById(partContent.getId());
+                originalPartContent.setTitle(partContent.getTitle());
+                originalPartContent.setContent(partContent.getContent());
+                serviceLocator.getSiteMenuPartContentDao().merge(originalPartContent);
+            }
+            messages = new Messages();
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
+            result.put("messages", messages);
+            return new ModelAndView("site/data/aboutus", result);
+        }
+    }
+    @RequestMapping(value = "data/update_aboutus_image.html", method = {RequestMethod.GET})
+    public @ResponseBody String updateAboutUsImage(@Valid SiteMenuPartContent partContent, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (partContent.isEmptyId()) {
+            //TODO: create menu if need, create row if need
+            return "fail";
+        } else {
+            try {
+                SiteMenuPartContent originalPartContent = serviceLocator.getSiteMenuPartContentDao().findById(partContent.getId());
+                originalPartContent.setImgUrl(partContent.getImgUrl());
+                originalPartContent.setCrop(partContent.getCrop());
+                serviceLocator.getSiteMenuPartContentDao().merge(originalPartContent);
+                return "ok";
+            } catch (Exception e) {
+                return "fail";
+            }
+        }
+    }
+    @RequestMapping(value = "data/update_edit_group_service.html", method = {RequestMethod.POST, RequestMethod.GET}, produces="application/x-www-form-urlencoded; charset=UTF-8")
+    public @ResponseBody String updateGroupService(@Valid NailService service, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Messages messages = new Messages();
+        if ("GET".equalsIgnoreCase(request.getMethod())) {
+            return ("redirect:site/data/services.html");
+        } else {
+            String sGroupId = request.getParameter("groupId");
+            if (service.isEmptyId()) {
+                String sStoreId = request.getParameter("storeId");
+                Long storeId = 0l;
+                if (!StringUtils.isNumeric(sStoreId)) {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.store.error", null, LocaleContextHolder.getLocale()));
+                    return messages.toString();
+                } else {
+                    storeId = new Long(sStoreId);
+                }
+                NailStore store = serviceLocator.getNailStoreDao().findById(storeId);
+                service.setStore(store);
+                service.setActive("Y");
+                //This is a service
+                if (StringUtils.isNumeric(sGroupId)) {
+                    NailService group = serviceLocator.getNailServiceDao().findById(new Long(sGroupId));
+                    service.setGroup(group);
+                }
+                serviceLocator.getNailServiceDao().persist(service);
+            } else {
+                NailService originalService = serviceLocator.getNailServiceDao().findById(service.getId());
+                originalService.setName(service.getName());
+                //This is a service
+                if (StringUtils.isNumeric(sGroupId)) {
+                    NailService group = serviceLocator.getNailServiceDao().findById(new Long(sGroupId));
+                    originalService.setGroup(group);
+                    originalService.setMinutes(service.getMinutes());
+                    originalService.setPrice(service.getPrice());
+                }
+                serviceLocator.getNailServiceDao().merge(originalService);
+            }
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
+            return messages.toString();
+        }
+    }
+
+    @RequestMapping(value = "data/delete_service.html", method = {RequestMethod.GET})
+    public @ResponseBody String deleteService(@RequestParam Long id, @RequestParam Long storeId, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Messages messages = new Messages();
+        NailService service = serviceLocator.getNailServiceDao().findByIdByStore(id, storeId);
+        if (service != null) {
+            serviceLocator.getNailServiceDao().remove(service);
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.deleted.success", null, LocaleContextHolder.getLocale()));
+        } else {
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.no.data.changed", null, LocaleContextHolder.getLocale()));
+        }
+        return messages.toString();
+    }
+    /**
+     * This method is called when insert images to an album
+     * Note: Adding headers="Accept=*\/*\" for fixing HTTP Error 406 Not acceptable
+     */
+    @RequestMapping(value = "data/insert_gallery_image.html", headers="Accept=*/*", method = RequestMethod.GET)
+    public @ResponseBody Map uploadImages(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        AlbumImage albumImage;
+        String uri = request.getParameter("uri");
+        String imageServer = serviceLocator.getSystemContext().getGlobalConfig("image.server");
+        Map <String, Object>map = new HashMap<String, Object>();
+
+        String siteId = request.getParameter("siteId");
+        Site site = null;
+        if (StringUtils.isNumeric(siteId)) {
+            site = ServiceLocatorHolder.getServiceLocator().getSiteDao().findById(Long.valueOf(siteId));
+        }
+
+        if (!StringUtils.isEmpty(uri) && site != null) {
+            albumImage = new AlbumImage();
+            albumImage.setUri(uri);
+            albumImage.setActive("Y");
+            albumImage.setFileName(request.getParameter("imageName") != null ? request.getParameter("imageName") : "");
+            albumImage.setUpdatedDate(new Date());
+            albumImage.setAlbum(null);
+            albumImage.setSite(site);
+            serviceLocator.getAlbumImageDao().persist(albumImage);
+//            serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromAlbum(null, album.getId()));
+//            serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromGallery(null));
+            map.put("success", true);
+            map.put("id", albumImage.getId());
+            map.put("uri", albumImage.getUri());
+            map.put("delete_url", imageServer+"/images/remove.json?name="+albumImage.getUri()+"&key="+ URLEncoder.encode(WebUtil.encrypt(albumImage.getUri()), "UTF-8")+"&path="+site.getSiteCode());
+        } else {
+            map.put("success", false);
+        }
+        return map;
+    }
+
+    /**
+     * This method is called when update description to an album
+     */
+    @RequestMapping(value = "data/update_image.html", method = RequestMethod.POST, produces="application/x-www-form-urlencoded; charset=UTF-8")
+    public @ResponseBody String updateAlbumImage(HttpServletRequest request, AlbumImage entity) throws Exception {
+        Messages messages = new Messages();
+        String siteId = request.getParameter("siteId");
+        Site thisSite = null;
+        if (StringUtils.isNumeric(siteId)) {
+            thisSite = ServiceLocatorHolder.getServiceLocator().getSiteDao().findById(Long.valueOf(siteId));
+        }
+        boolean isChange = false;
+        if (entity != null && !entity.isEmptyId()) { // Update AlbumImage
+            AlbumImage originalAlbumImage =  serviceLocator.getAlbumImageDao().findById(entity.getId(), thisSite.getId());
+            if (originalAlbumImage != null) {
+                if ((originalAlbumImage.getDescription() == null && entity.getDescription() != null) ||
+                        (originalAlbumImage.getDescription() != null && entity.getDescription() != null && !originalAlbumImage.getDescription().equals(entity.getDescription()))) {
+                    originalAlbumImage.setDescription(entity.getDescription().trim());
+                    isChange = true;
+                }
+            }
+            if (isChange) {
+                serviceLocator.getAlbumImageDao().merge(originalAlbumImage);
+                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromAlbumImage(null, originalAlbumImage.getId()));
+                messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.saved.success", null, LocaleContextHolder.getLocale()));
+                return messages.toString();
+
+            }
+        }
+        messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.no.data.changed", null, LocaleContextHolder.getLocale()));
+        return messages.toString();
+    }
+
+    /**
+     * This will be called when delete a gallery image
+     */
+    @RequestMapping(value = "data/deleteimage.html", method = RequestMethod.GET)
+    public @ResponseBody String deleteImage(@Valid Long id, @Valid Long siteId) {
+        try {
+            Site site = ServiceLocatorHolder.getServiceLocator().getSiteDao().findById(Long.valueOf(siteId));
+            if (id > 0) {
+                AlbumImage albumImage = serviceLocator.getAlbumImageDao().findById(id, site.getId());
+                if (albumImage != null) {
+//                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromAlbumImage(null, albumImage.getId()));
+//                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromGallery(null));
+                    serviceLocator.getAlbumImageDao().remove(albumImage);
+                }
+                return "ok";
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return "fail";
+        }
+        return "fail";
+    }
+
+    /**
+     * This will be called when update gallery image
+     */
+    @RequestMapping(value = "data/update_image.html", method = RequestMethod.GET)
+    public @ResponseBody String updateImage(@Valid Long id, @Valid String crop) {
+        try {
+            if (id > 0) {
+                AlbumImage albumImage = serviceLocator.getAlbumImageDao().findById(id);
+                if (albumImage != null) {
+                    albumImage.setCrop(crop);
+                    serviceLocator.getAlbumImageDao().merge(albumImage);
+                }
+                return "ok";
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            return "fail";
+        }
+        return "fail";
+    }
+
+    private void updateHours (HttpServletRequest request, NailStore store) {
+        if (request.getParameter("mondayOpenHour") != null) {
+            if ("0".equals(request.getParameter("mondayOpenHour")) || "0".equals(request.getParameter("mondayCloseHour"))) {
+                store.setHourMon("0");
+            } else {
+                store.setHourMon(request.getParameter("mondayOpenHour")+"-"+request.getParameter("mondayCloseHour"));
+            }
+        } else {
+            store.setHourMon("0");
+        }
+        if (request.getParameter("tuesdayOpenHour") != null) {
+            if ("0".equals(request.getParameter("tuesdayOpenHour")) || "0".equals(request.getParameter("tuesdayCloseHour"))) {
+                store.setHourTue("0");
+            } else {
+                store.setHourTue(request.getParameter("tuesdayOpenHour")+"-"+request.getParameter("tuesdayCloseHour"));
+            }
+        } else {
+            store.setHourTue("0");
+        }
+        if (request.getParameter("wednesdayOpenHour") != null) {
+            if ("0".equals(request.getParameter("wednesdayOpenHour")) || "0".equals(request.getParameter("wednesdayCloseHour"))) {
+                store.setHourWed("0");
+            } else {
+                store.setHourWed(request.getParameter("wednesdayOpenHour")+"-"+request.getParameter("wednesdayCloseHour"));
+            }
+        } else {
+            store.setHourWed("0");
+        }
+        if (request.getParameter("thursdayOpenHour") != null) {
+            if ("0".equals(request.getParameter("thursdayOpenHour")) || "0".equals(request.getParameter("thursdayCloseHour"))) {
+                store.setHourThu("0");
+            } else {
+                store.setHourThu(request.getParameter("thursdayOpenHour")+"-"+request.getParameter("thursdayCloseHour"));
+            }
+        } else {
+            store.setHourThu("0");
+        }
+        if (request.getParameter("fridayOpenHour") != null) {
+            if ("0".equals(request.getParameter("fridayOpenHour")) || "0".equals(request.getParameter("fridayCloseHour"))) {
+                store.setHourFri("0");
+            } else {
+                store.setHourFri(request.getParameter("fridayOpenHour")+"-"+request.getParameter("fridayCloseHour"));
+            }
+        } else {
+            store.setHourFri("0");
+        }
+        if (request.getParameter("saturdayOpenHour") != null) {
+            if ("0".equals(request.getParameter("saturdayOpenHour")) || "0".equals(request.getParameter("saturdayCloseHour"))) {
+                store.setHourSat("0");
+            } else {
+                store.setHourSat(request.getParameter("saturdayOpenHour")+"-"+request.getParameter("saturdayCloseHour"));
+            }
+        } else {
+            store.setHourSat("0");
+        }
+        if (request.getParameter("sundayOpenHour") != null) {
+            if ("0".equals(request.getParameter("sundayOpenHour")) || "0".equals(request.getParameter("sundayCloseHour"))) {
+                store.setHourSun("0");
+            } else {
+                store.setHourSun(request.getParameter("sundayOpenHour")+"-"+request.getParameter("sundayCloseHour"));
+            }
+        } else {
+            store.setHourSun("0");
+        }
+    }
+
 }

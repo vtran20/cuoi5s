@@ -79,7 +79,7 @@
                         <h:frontendmessage _messages="${messages}"/>
                         <input name="templateId" type="hidden" value="${sessionObject.templateId}">
                         <div class="form-group">
-                            <label for="siteCode" class="col-lg-3 control-label"><fmt:message key="site.register.sitecode"/></label>
+                            <label for="siteCode" class="col-lg-3 control-label"><fmt:message key="site.register.subdomain"/></label>
                             <div class="col-lg-9">
                                 <input type="text" class="form-control" name="siteCode" id="siteCode" maxlength="50" placeholder='<fmt:message key="site.subdomain.example"/>' value="${sessionObject.siteCode}" autofocus>
                                 <spring:eval expression="site.getSiteParam('FREE_SITE_DOMAIN')" var="siteUrl"/>

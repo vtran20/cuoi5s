@@ -89,7 +89,7 @@
     });
 </script>
 <c:if test="${not empty site}">
-    <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(T(java.lang.Long).valueOf(menuId), 'false')" var="menuRows"/>
+    <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(T(java.lang.Long).valueOf(menuId), 'N')" var="menuRows"/>
 </c:if>
 
 <div class="row">

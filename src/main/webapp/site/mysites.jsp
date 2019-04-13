@@ -28,7 +28,7 @@
 <div class="col-md-9">
     <div class="panel panel-red margin-bottom-40">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-globe"></i> Danh Sách Các Website</h3>
+            <h3 class="panel-title"><i class="fa fa-globe"></i> <fmt:message key="site.website.list"/></h3>
         </div>
         <c:if test="${!empty sessionObject.USER_ID}">
             <spring:eval expression="serviceLocator.siteDao.getSitesByUser(T(java.lang.Long).valueOf(sessionObject.USER_ID))" var="sites" />
@@ -67,6 +67,7 @@
                                     <spring:eval expression="site.siteParamsMap.get('DATE_FORMAT')" var="dateFormat"/>
                                     <fmt:formatDate pattern="${dateFormat}" value="${thisSite.current.endDate}"/>
                                     <div class="btn-group hidden-sm hidden-md hidden-lg">
+                                        <a class="btn-u btn-u-small margin-bottom-5" href="/site/data/general-information.html?thisSiteId=${thisSite.current.id}">Update Website</a><br>
                                         <button data-toggle="dropdown" class="btn-u dropdown-toggle" type="button" aria-expanded="true">
                                             Action
                                             <i class="fa fa-angle-down"></i>
@@ -80,6 +81,9 @@
                                     </div>
                                 </td>
                                 <td class="hidden-xs">
+                                    <div class="btn-group">
+                                        <a class="btn-u btn-u-small" href="/site/data/general-information.html?thisSiteId=${thisSite.current.id}">Update Website</a>
+                                    </div>
                                     <div class="btn-group">
                                         <button data-toggle="dropdown" class="btn-u dropdown-toggle" type="button" aria-expanded="true">
                                             Action

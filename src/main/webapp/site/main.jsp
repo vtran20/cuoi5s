@@ -12,6 +12,8 @@
 
 <body>
 <h:authenticate request="${pageContext.request}" response="${pageContext.response}"/>
+<%--TODO: redirect to create a new site--%>
+<c:redirect url = "/site/select-template.html?templateId=64" />
 <div class="breadcrumbs">
     <div class="container">
         <h1 class="pull-left"><fmt:message key="site.create.new.website"/></h1>
@@ -26,8 +28,9 @@
 
 <!-- Begin Content -->
 <div class="col-md-9">
+    <a href="" type="button" class="btn-u btn-u-red">Create A New Website</a>
     <!-- Thumbnails v1 -->
-    <h:sitetemplates column="3"/>
+    <%--<h:sitetemplates column="3"/>--%>
     <!-- End Thumbnails v1 -->
 
 </div>
