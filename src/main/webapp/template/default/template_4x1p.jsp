@@ -1,6 +1,5 @@
 <%@ page language="java" isELIgnored="false" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" %>
 <%@include file="/common.jspf" %>
-
 <!DOCTYPE html>
 <html lang="en">
 <%--Store information--%>
