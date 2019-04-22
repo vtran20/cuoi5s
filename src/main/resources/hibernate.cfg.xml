@@ -7,13 +7,13 @@
     <session-factory>
 
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8</property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password"></property>
+        <!--<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8</property>-->
+        <!--<property name="hibernate.connection.username">root</property>-->
+        <!--<property name="hibernate.connection.password"></property>-->
 
-        <!--<property name="hibernate.connection.url">jdbc:mysql://cuoi5s.cxdk077pos3m.us-east-1.rds.amazonaws.com:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8</property>-->
-        <!--<property name="hibernate.connection.username">cuoi5s</property>-->
-        <!--<property name="hibernate.connection.password">TranQuang2007</property>-->
+        <property name="hibernate.connection.url">jdbc:mysql://cuoi5s.cxdk077pos3m.us-east-1.rds.amazonaws.com:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8</property>
+        <property name="hibernate.connection.username">cuoi5s</property>
+        <property name="hibernate.connection.password">TranQuang2007</property>
 
         <!--<property name="hibernate.connection.url">jdbc:mysql://192.168.2.3:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull</property>-->
         <!--<property name="hibernate.connection.username">root</property>-->
