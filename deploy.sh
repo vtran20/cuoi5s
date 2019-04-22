@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 sudo /usr/local/tomcat7-01/bin/shutdown.sh
 
 sudo cp /usr/local/sites/cuoi5s/target/cuoi5s.war /usr/local/tomcat7-01/webapps/ROOT.war
