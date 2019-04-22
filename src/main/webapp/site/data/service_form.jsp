@@ -17,7 +17,25 @@
     </c:if>
 </c:if>
 <spring:eval expression="serviceLocator.getNailServiceDao().getGroupServices(T(java.lang.Long).valueOf(storeId))" var="groups"/>
-
+<style>
+    /*.form-group div.row {*/
+        /*width: 84px;*/
+        /*height: 44px;*/
+        /*float: left;*/
+        /*border: 2px solid #fff;*/
+        /*margin: 2px 2px 2px 2px;*/
+        /*text-align: center;*/
+    /*}*/
+    .form-group div.row img {
+        border: 2px solid #fff;
+    }
+    .form-group div.row img:hover {
+        border: 2px solid red;
+    }
+    .form-group div.row img.select-active {
+        border: solid 2px red;
+    }
+</style>
 <div class="row">
     <div id="modal_message_alert"></div>
     <form class="margin-bottom-0" role="form" id="formGroup" action="#">
@@ -63,6 +81,24 @@
                         <label for="name"><fmt:message key="site.data.group.name"/></label>
                         <input type="text" class="form-control required" name="name" id="name" value="${service.name}" placeholder="<fmt:message key="site.data.group.name"/>"/>
                     </div>
+                    <div class="form-group">
+                        <label for="imageUrl"><fmt:message key="site.data.group.image"/></label>
+                        <input type="hidden" class="form-control required" name="imageUrl" id="imageUrl" value="${service.imageUrl}"/>
+                        <input type="hidden" class="" name="crop" id="crop" value="${service.crop}"/>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/3aa7796e-6141-4f97-9d59-85ad6ed736f2.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/3aa7796e-6141-4f97-9d59-85ad6ed736f2.jpg?op=crop|0,17,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/3aa7796e-6141-4f97-9d59-85ad6ed736f2.jpg" data-crop="0,17,2200,1432"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/e9534284-9bf9-48f2-ad87-76add14fb181.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/e9534284-9bf9-48f2-ad87-76add14fb181.jpg?op=crop|15,0,1954,1272&op=scale|400x" data-img="http://image.mangchiase.com/get/e9534284-9bf9-48f2-ad87-76add14fb181.jpg" data-crop="15,0,1954,1272"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/7eadc87a-c819-428a-804d-f38ae742409a.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/7eadc87a-c819-428a-804d-f38ae742409a.jpg?op=crop|0,20,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/7eadc87a-c819-428a-804d-f38ae742409a.jpg" data-crop="0,20,2200,1432"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/9c2e026d-43e2-493a-a0d8-005a9b2f43db.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/9c2e026d-43e2-493a-a0d8-005a9b2f43db.jpg?op=crop|2,37,2198,1430&op=scale|400x" data-img="http://image.mangchiase.com/get/9c2e026d-43e2-493a-a0d8-005a9b2f43db.jpg" data-crop="2,37,2198,1430"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/25b24315-8936-40f2-9e87-34e143ccd62d.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/25b24315-8936-40f2-9e87-34e143ccd62d.jpg?op=crop|0,19,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/25b24315-8936-40f2-9e87-34e143ccd62d.jpg" data-crop="0,19,2200,1432"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/c1a9485b-5b50-487d-aee3-c0baf7b81f0e.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/c1a9485b-5b50-487d-aee3-c0baf7b81f0e.jpg?op=crop|0,1183,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/c1a9485b-5b50-487d-aee3-c0baf7b81f0e.jpg" data-crop="0,1183,2200,1432"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/741dedc3-d1f3-468b-b5ff-32d423c99491.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/741dedc3-d1f3-468b-b5ff-32d423c99491.jpg?op=crop|0,223,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/741dedc3-d1f3-468b-b5ff-32d423c99491.jpg" data-crop="0,223,2200,1432"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/836c0f8f-658f-48db-8361-bb2e6c53081e.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/836c0f8f-658f-48db-8361-bb2e6c53081e.jpg?op=crop|0,24,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/836c0f8f-658f-48db-8361-bb2e6c53081e.jpg" data-crop="0,24,2200,1432"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/f7ece3f3-5725-449a-b805-d4b671a94510.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/f7ece3f3-5725-449a-b805-d4b671a94510.jpg?op=crop|0,18,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/f7ece3f3-5725-449a-b805-d4b671a94510.jpg" data-crop="0,18,2200,1432"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/58477533-79dd-4825-acb9-61f5960c1b5d.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/58477533-79dd-4825-acb9-61f5960c1b5d.jpg?op=crop|0,27,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/58477533-79dd-4825-acb9-61f5960c1b5d.jpg" data-crop="0,27,2200,1432"/></div>
+                            <div class="col-lg-4 col-md-4 col-sm-6"><img class="img-responsive margin-bottom-5 ${service.imageUrl =='http://image.mangchiase.com/get/e84bc993-08b8-4ba0-b4d5-19dda918d1f7.jpg'? 'select-active' : ''}" src="http://image.mangchiase.com/get/e84bc993-08b8-4ba0-b4d5-19dda918d1f7.jpg?op=crop|0,19,2200,1432&op=scale|400x" data-img="http://image.mangchiase.com/get/e84bc993-08b8-4ba0-b4d5-19dda918d1f7.jpg" data-crop="0,19,2200,1432"/></div>
+                        </div>
+                    </div>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -75,10 +111,13 @@
 <script type="text/javascript">
     $(function () {
         $("#formGroup").validate({
-            rules:{
-                minutes: 'number'
-            },
             messages:{
+                name:"<fmt:message key="common.required"/>",
+                imageUrl:"<fmt:message key="common.select.image.required"/>"
+            },
+            ignore:"", //To allow validation of hidden elements, override the ignore and set it to empty string:
+            rules: {
+                minutes: 'number'
             },
             //ignore:"", //To allow validation of hidden elements, override the ignore and set it to empty string:
             highlight:function (label) {
@@ -123,5 +162,14 @@
                 return false; // avoid to execute the actual submit of the form.
             }
         })
+        //Select Widget Template
+        $(".form-group div.row img").on('click',function() {
+            var object = $(this);
+            $("input#imageUrl").val($(this).data("img"));
+            $("input#crop").val($(this).data("crop"));
+            $(".form-group div.row img").removeClass("select-active");
+            object.addClass("select-active");
+        });
+
     })
 </script>

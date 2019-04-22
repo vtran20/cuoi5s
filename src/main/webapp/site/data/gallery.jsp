@@ -10,8 +10,6 @@
     <meta name="decorator" content="${template.templateCode}"/>
 </head>
 <body>
-<link  href="https://cdn.rawgit.com/fengyuanchen/cropper/v2.1.0/dist/cropper.min.css" rel="stylesheet">
-<script src="https://cdn.rawgit.com/fengyuanchen/cropper/v2.1.0/dist/cropper.min.js"></script>
 <style>
     .ace-thumbnails {
         list-style: none;
@@ -231,6 +229,53 @@
 
         <!-- Begin Content -->
         <div class="col-md-9">
+            <spring:eval expression="serviceLocator.menuDao.getMenu(thisSite, 'gallery.html', 'Y')" var="galleryMenu"/>
+            <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(galleryMenu.id, 'Y')" var="menuRows"/>
+            <c:forEach var="row" items="${menuRows}">
+                <c:if test="${fn:contains(row.title, 'Gallery')}">
+                    <c:set var="galleryRow" value="${row}"/>
+                    <spring:eval expression="serviceLocator.siteMenuPartContentDao.getContentParts(galleryRow.id, 'Y')" var="partContents"/>
+                    <c:if test="${fn:length(partContents) > 0}">
+                        <c:set var="galleryContent" value="${partContents[0]}"/>
+                    </c:if>
+                </c:if>
+            </c:forEach>
+            <div class="row">
+                <!-- Begin Sidebar Menu -->
+                <div class="col-md-12">
+                    <div class="panel panel-red margin-bottom-40">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="site.data.gallery"/></h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" action="/site/data/update_gallery.html" id="form" method="post">
+                                <input name="menuId" type="hidden" value="${galleryMenu.id}">
+                                <input name="rowId" type="hidden" value="${galleryRow.id}">
+                                <input name="id" type="hidden" value="${galleryContent.id}">
+                                <h:frontendmessage _messages="${messages}"/>
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-3 control-label"><fmt:message key="site.data.headline"/></label>
+                                    <div class="col-lg-9">
+                                        <input id="title" type="text" placeholder="<fmt:message key="site.data.headline"/>" name="title" class="form-control" value="${galleryContent.title}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="content" class="col-lg-3 control-label"><fmt:message key="site.data.gallery.description"/></label>
+                                    <div class="col-lg-9">
+                                        <textarea name="content" id="content" rows="2" class="form-control" placeholder="<fmt:message key="site.data.gallery.description"/>">${galleryContent.content}</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-offset-3 col-lg-9">
+                                        <button type="submit" class="btn-u btn-u-red"><fmt:message key="common.save.changes"/></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row margin-bottom-20">
                 <div class="col-md-12">
                     <a class="btn btn-success" id="upload-image-button">
@@ -270,7 +315,7 @@
                                         <c:param name="path" value="${thisSite.siteCode}"/>
                                         <c:param name="name" value="${image.uri}"/>
                                     </c:url>
-                                    <a href="#image-modal-form" data-id="${image.id}" data-img="${imageServer}/get/${image.uri}.jpg" data-crop="${empty image.crop? '' : image.crop}" data-ratio="${dataRatio}" role="button" data-toggle="modal" data-target="#image-modal-form">
+                                    <a href="#image-modal-form" data-id="${image.id}" data-img="${imageServer}/get/${image.uri}.jpg" data-crop="${empty image.crop? '' : image.crop}" data-ratio="${dataRatio}" role="button" data-toggle="modal" data-target="#image-modal-form"  data-backdrop="static" data-keyboard="false">
                                         <i class="ace-icon fa fa-pencil"></i>
                                     </a>
                                     <a class="delete-album-image" lang='<fmt:message key="common.doyouwanttodeletethiscontent"/>'
@@ -302,100 +347,65 @@
         $("#upload-image-file").change(function () {
             uploadImages($("#upload-image-button"), this.files);
         });
+
         function uploadImages(currElement, files) {
             //show spinner
             var parent = currElement.parent();
-            parent.append("<img src='/themes/editor/img/spinner.gif' id='spinner-gif'>");
             var i = 0, len = files.length;
-            var _URL = window.URL || window.webkitURL;
+            parent.append("<img src='/themes/editor/img/spinner.gif' id='spinner-gif'>");
             for (; i < len; i++) {
-                console.log(files[i])
-                //Check image size before upload
-                var file, img;
-                if ((file = files[i])) {
-                    img = new Image();
-                    img.src = _URL.createObjectURL(file);
-                    img.onload = function() {
-                        wh = dataRatio.split("x")
-                        if (this.width < wh[0] && this.height < wh[1]) {
-                            console.log(wh)
-                            console.log(file.name)
-                            console.log(this.width + " " + this.height);
-                            $("#message_alert").html("<div class='alert alert-danger'><fmt:message key='common.image.smaller.size.ignore'/><button type='button' class='close' data-dismiss='alert'>x</button></div>")
-                            //remove spinner if any
-                            if (parent.find("#spinner-gif")) {
-                                parent.find("#spinner-gif").remove();
-                            }
-                        } else {
-                            var res = new FormData();
-                            res.append('path', '${thisSite.siteCode}');
-                            res.append('imagesPathOverride', '${thisSite.siteCode}');
-                            res.append('generateName', 'on');
-                            res.append('skipOptimization', 'on');
-                            res.append('files[]', file);
+                var res = new FormData();
+                res.append('path', '${thisSite.siteCode}');
+                res.append('imagesPathOverride', '${thisSite.siteCode}');
+                res.append('generateName', 'on');
+                res.append('skipOptimization', 'on');
+                res.append('files[]', files[i]);
 
-                            $.ajax({
-                                type: "POST",
-                                xhrFields: {withCredentials: false},
-                                url: '${imageServer}/images/uploads.json',
-                                data: res,
-                                dataType: 'json',
-                                contentType: false,
-                                processData: false,
-                                success: function (res) {
-                                    //remove spinner
-                                    if (parent.find("#spinner-gif")) {
-                                        parent.find("#spinner-gif").remove();
-                                    }
-                                    for (var i = 0; i < res.length; i++) {
-                                        //$.each(res, function(index, element) {
-                                        if (res[i].error) {
-                                        } else {
-                                            //Insert into AlbumImage
-                                            $.ajax({
-                                                type: 'GET',
-                                                contentType: "application/json; charset=utf-8",
-                                                dataType: "json",
-                                                url: '/site/data/insert_gallery_image.html',
-                                                data: { uri: res[i].uri, imageName: res[i].name, siteId:${thisSite.id}, albumId: null },
-                                                success: function (result) {
-                                                    //Render html from data return and append to the current page
-                                                    var temp = $("#album_image_mustache").html();
-                                                    var newImage = Mustache.render(temp, result);
-                                                    $(".ace-thumbnails").append(newImage);
-                                                },
-                                                error: function (result) {
-                                                }
-                                            });
-
-                                        }
-                                    }
-                                },
-                                error: function (result) {
-                                    //remove spinner
-                                    if (parent.find("#spinner-gif")) {
-                                        parent.find("#spinner-gif").remove();
-                                    }
-                                }
-                            });
-                        }
-                    };
-                    img.onerror = function() {
+                $.ajax({
+                    type: "POST",
+                    xhrFields: {withCredentials: false},
+                    url: '${imageServer}/images/uploads.json',
+                    data: res,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
                         //remove spinner
                         if (parent.find("#spinner-gif")) {
                             parent.find("#spinner-gif").remove();
                         }
-                        console.log( "not a valid file: " + file.type);
-                    };
-                }
+                        for (var i = 0; i < res.length; i++) {
+                            //$.each(res, function(index, element) {
+                            if (res[i].error) {
+                            } else {
+                                //Insert into AlbumImage
+                                $.ajax({
+                                    type: 'GET',
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    url: '/site/data/insert_gallery_image.html',
+                                    data: { uri: res[i].uri, imageName: res[i].name, siteId:${thisSite.id}, albumId: null },
+                                    success: function (result) {
+                                        //Render html from data return and append to the current page
+                                        var temp = $("#album_image_mustache").html();
+                                        var newImage = Mustache.render(temp, result);
+                                        $(".ace-thumbnails").append(newImage);
+                                    },
+                                    error: function (result) {
+                                    }
+                                });
+
+                            }
+                        }
+                    },
+                    error: function (result) {
+                        //remove spinner
+                        if (parent.find("#spinner-gif")) {
+                            parent.find("#spinner-gif").remove();
+                        }
+                    }
+                });
             }
-            $("#message_alert").fadeTo(10000, 500).slideUp(500, function(){
-                $("#message_alert").alert('close');
-                //don't want reload when the modal closed
-                //$('#modal_message_alert').html("");
-                //release modal
-                $('#modal-form').removeData('bs.modal');
-            });
         }
 
         //Delegated events have the advantage that they can process events from descendant elements that are added to the document at a later time.
@@ -445,6 +455,45 @@
             });
         });
 
+//TODO: use this code for testing bad quality images
+//        $("#upload-image-file").change(function () {
+//            fileList = [];
+//            var _URL = window.URL || window.webkitURL;
+//            //var file, img;
+//            var hasInvalidImage = false
+//            for (var i = 0; i < this.files.length; i++) {
+//                file = this.files[i]
+//                img = new Image();
+//                img.src = _URL.createObjectURL(file);
+//                img.onload = function() {
+//                    wh = dataRatio.split("x")
+//                    if (this.width < wh[0] && this.height < wh[1]) {
+//                        console.log(wh)
+//                        console.log(file.name)
+//                        console.log(this.width + " " + this.height);
+//                        hasInvalidImage = true
+//                    } else {
+//                        fileList.push(file);
+//                    }
+//                };
+//                img.onerror = function() {
+//                    console.log( "not a valid file: " + file.type);
+//                };
+//                console.log(fileList)
+//            }
+//            console.log("fileList")
+//            console.log(fileList)
+////            uploadImages($("#upload-image-button"), this.files);
+//        });
+
+//            $("#message_alert").fadeTo(10000, 500).slideUp(500, function(){
+//                $("#message_alert").alert('close');
+//                //don't want reload when the modal closed
+//                //$('#modal_message_alert').html("");
+//                //release modal
+//                $('#modal-form').removeData('bs.modal');
+//            });
+
     });
 
     function callbackFromImageModal (image, button) {
@@ -488,7 +537,7 @@
         </a>
 
         <div class="tools tools-bottom">
-            <a href="#image-modal-form" data-id="{{id}}" data-img="${imageServer}/get/{{uri}}.jpg" data-crop="" data-ratio="${dataRatio}" role="button" data-toggle="modal" data-target="#image-modal-form">
+            <a href="#image-modal-form" data-id="{{id}}" data-img="${imageServer}/get/{{uri}}.jpg" data-crop="" data-ratio="${dataRatio}" role="button" data-toggle="modal" data-target="#image-modal-form"   data-backdrop="static" data-keyboard="false">
                 <i class="ace-icon fa fa-pencil"></i>
             </a>
             <a class="delete-album-image" lang='<fmt:message key="common.doyouwanttodeletethiscontent"/>'
@@ -499,6 +548,6 @@
     </li>
 </script>
 <h:form_modal/>
-<h:image_modal_front/>
+<h:image_modal_front thisSite="${thisSite}"/>
 </body>
 </html>

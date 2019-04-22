@@ -3,7 +3,6 @@ package com.easysoft.ecommerce.controller;
 import com.easysoft.ecommerce.model.*;
 import com.easysoft.ecommerce.model.session.ItemMap;
 import com.easysoft.ecommerce.model.session.SessionObject;
-import com.easysoft.ecommerce.security.CSRFProtection;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.service.SiteService;
@@ -1740,6 +1739,16 @@ public class SiteController {
         }
         return new ModelAndView("site/data/services");
     }
+    @RequestMapping(value = "data/employees.html")
+    public ModelAndView employees(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        SessionObject so = SessionUtil.load(request, response);
+        if (StringUtils.isNotEmpty(request.getParameter("thisSiteId"))) {
+            so.set("UPDATE_CURRENT_SITE_ID", request.getParameter("thisSiteId"));
+        } else if (StringUtils.isEmpty(so.getString("UPDATE_CURRENT_SITE_ID"))) {
+            return new ModelAndView("site/mysites");
+        }
+        return new ModelAndView("site/data/employees");
+    }
     @RequestMapping(value = "data/gallery.html")
     public ModelAndView gallery(HttpServletRequest request, HttpServletResponse response) throws Exception {
         SessionObject so = SessionUtil.load(request, response);
@@ -1750,9 +1759,24 @@ public class SiteController {
         }
         return new ModelAndView("site/data/gallery");
     }
+    @RequestMapping(value = "data/setting.html")
+    public ModelAndView setting(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        SessionObject so = SessionUtil.load(request, response);
+        if (StringUtils.isNotEmpty(request.getParameter("thisSiteId"))) {
+            so.set("UPDATE_CURRENT_SITE_ID", request.getParameter("thisSiteId"));
+        } else if (StringUtils.isEmpty(so.getString("UPDATE_CURRENT_SITE_ID"))) {
+            return new ModelAndView("site/mysites");
+        }
+        return new ModelAndView("site/data/setting");
+    }
     @RequestMapping(value = "data/service_form.html")
     public ModelAndView serviceForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return new ModelAndView("site/data/service_form");
+    }
+
+    @RequestMapping(value = "data/employee_form.html")
+    public ModelAndView employeeForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        return new ModelAndView("site/data/employee_form");
     }
 
     @RequestMapping(value = "data/create-update-store.html", method = {RequestMethod.POST, RequestMethod.GET})
@@ -1792,6 +1816,9 @@ public class SiteController {
                 originalStore.setCity(store.getCity());
                 originalStore.setState(store.getState());
                 originalStore.setZipCode(store.getZipCode());
+                originalStore.setCountry(store.getCountry());
+                originalStore.setLatitude(store.getLatitude());
+                originalStore.setLongitude(store.getLongitude());
                 originalStore.setEmail(store.getEmail());
                 String phone = store.getPhone();
                 if (StringUtils.isNotEmpty(phone)) {
@@ -1811,10 +1838,16 @@ public class SiteController {
             return new ModelAndView("site/data/store", result);
         }
     }
-    @RequestMapping(value = "data/update_aboutus.html", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = {"data/update_aboutus.html", "data/update_services.html", "data/update_gallery.html"}, method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView updateAboutUs(@Valid SiteMenuPartContent partContent, HttpServletRequest request, HttpServletResponse response) throws Exception {
         if ("GET".equalsIgnoreCase(request.getMethod())) {
-            return new ModelAndView("site/data/aboutus");
+            if (request.getRequestURI().contains("update_aboutus.html")) {
+                return new ModelAndView("site/data/aboutus");
+            } else if (request.getRequestURI().contains("update_gallery.html")) {
+                return new ModelAndView("site/data/gallery");
+            } else {
+                return new ModelAndView("site/data/services");
+            }
         } else {
             Messages messages = null;
             Map result = new HashMap();
@@ -1829,7 +1862,13 @@ public class SiteController {
             messages = new Messages();
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
             result.put("messages", messages);
-            return new ModelAndView("site/data/aboutus", result);
+            if (request.getRequestURI().contains("update_aboutus.html")) {
+                return new ModelAndView("site/data/aboutus", result);
+            } else if (request.getRequestURI().contains("update_gallery.html")) {
+                return new ModelAndView("site/data/gallery", result);
+            } else {
+                return new ModelAndView("site/data/services", result);
+            }
         }
     }
     @RequestMapping(value = "data/update_aboutus_image.html", method = {RequestMethod.GET})
@@ -1847,6 +1886,62 @@ public class SiteController {
             } catch (Exception e) {
                 return "fail";
             }
+        }
+    }
+    @RequestMapping(value = "data/update_site_param.html", method = {RequestMethod.GET})
+    public @ResponseBody String updateSiteParam(@Valid Long siteId, @Valid String key, @Valid String value, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            SiteParam siteParam = serviceLocator.getSiteParamDao().findUniqueBy("key", key, siteId);
+            if (siteParam != null) {
+                siteParam.setValue(value);
+                serviceLocator.getSiteParamDao().merge(siteParam);
+            } else {
+                siteParam = new SiteParam();
+                siteParam.setKey(key);
+                siteParam.setValue(value);
+                siteParam.setSiteId(siteId);
+                serviceLocator.getSiteParamDao().persist(siteParam);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "fail";
+        }
+        return "ok";
+    }
+    @RequestMapping(value = "data/update_logo_image.html", method = {RequestMethod.GET})
+    public @ResponseBody String updateLogoImage(@Valid Long id, @Valid String crop, @Valid String imgUrl, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            Site thisSite = serviceLocator.getSiteDao().findUniqueBy("id", id);//get persist entity
+            SiteParam siteParam = serviceLocator.getSiteParamDao().findUniqueBy("key", "LOGO_IMAGE", id);
+            if (siteParam != null) {
+                siteParam.setValue(imgUrl);
+                serviceLocator.getSiteParamDao().merge(siteParam);
+            } else {
+                siteParam = new SiteParam();
+                siteParam.setKey("LOGO_IMAGE");
+                siteParam.setValue(imgUrl);
+                siteParam.setSiteId(thisSite.getId());
+                serviceLocator.getSiteParamDao().persist(siteParam);
+            }
+
+            siteParam = serviceLocator.getSiteParamDao().findUniqueBy("key", "LOGO_CROP", id);
+            if (siteParam != null) {
+                siteParam.setValue(crop);
+                serviceLocator.getSiteParamDao().merge(siteParam);
+            } else {
+                siteParam = new SiteParam();
+                siteParam.setKey("LOGO_CROP");
+                siteParam.setValue(crop);
+                siteParam.setSiteId(thisSite.getId());
+                serviceLocator.getSiteParamDao().persist(siteParam);
+            }
+            //Remove site param cache for the site.
+            serviceLocator.getCacheData().removeCommonCache(thisSite.getSubDomain());
+            serviceLocator.getCacheData().removeCommonCache(thisSite.getDomain());
+            return "ok";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "fail";
         }
     }
     @RequestMapping(value = "data/update_edit_group_service.html", method = {RequestMethod.POST, RequestMethod.GET}, produces="application/x-www-form-urlencoded; charset=UTF-8")
@@ -1877,6 +1972,8 @@ public class SiteController {
             } else {
                 NailService originalService = serviceLocator.getNailServiceDao().findById(service.getId());
                 originalService.setName(service.getName());
+                originalService.setImageUrl(service.getImageUrl());
+                originalService.setCrop(service.getCrop());
                 //This is a service
                 if (StringUtils.isNumeric(sGroupId)) {
                     NailService group = serviceLocator.getNailServiceDao().findById(new Long(sGroupId));
@@ -1897,6 +1994,58 @@ public class SiteController {
         NailService service = serviceLocator.getNailServiceDao().findByIdByStore(id, storeId);
         if (service != null) {
             serviceLocator.getNailServiceDao().remove(service);
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.deleted.success", null, LocaleContextHolder.getLocale()));
+        } else {
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.no.data.changed", null, LocaleContextHolder.getLocale()));
+        }
+        return messages.toString();
+    }
+    @RequestMapping(value = "data/update_employee.html", method = {RequestMethod.POST, RequestMethod.GET}, produces="application/x-www-form-urlencoded; charset=UTF-8")
+    public @ResponseBody String updateEmployee(@Valid NailEmployee employee, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Messages messages = new Messages();
+        if ("GET".equalsIgnoreCase(request.getMethod())) {
+            return ("redirect:site/data/employees.html");
+        } else {
+            if (employee.isEmptyId()) {
+                String sStoreId = request.getParameter("storeId");
+                Long storeId = 0l;
+                if (!StringUtils.isNumeric(sStoreId)) {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.store.error", null, LocaleContextHolder.getLocale()));
+                    return messages.toString();
+                } else {
+                    storeId = new Long(sStoreId);
+                }
+                NailStore store = serviceLocator.getNailStoreDao().findById(storeId);
+                employee.setStore(store);
+                employee.setActive("Y");
+                serviceLocator.getNailEmployeeDao().persist(employee);
+            } else {
+                NailEmployee originalEmployee = serviceLocator.getNailEmployeeDao().findById(employee.getId());
+                originalEmployee.setFirstName(employee.getFirstName());
+                originalEmployee.setLastName(employee.getLastName());
+                originalEmployee.setEmail(employee.getEmail());
+                originalEmployee.setActive(employee.getActive());
+                String phone = employee.getPhone();
+                if (StringUtils.isNotEmpty(phone)) {
+                    phone = phone.replaceAll("\\(", "");
+                    phone = phone.replaceAll("\\)", "");
+                    phone = phone.replaceAll("-", "");
+                    phone = phone.replaceAll(" ", "");
+                }
+                originalEmployee.setPhone(phone);
+                serviceLocator.getNailEmployeeDao().merge(originalEmployee);
+            }
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
+            return messages.toString();
+        }
+    }
+
+    @RequestMapping(value = "data/delete_employee.html", method = {RequestMethod.GET})
+    public @ResponseBody String deleteEmployee(@RequestParam Long id, @RequestParam Long storeId, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Messages messages = new Messages();
+        NailEmployee employee = serviceLocator.getNailEmployeeDao().findByIdByStore(id, storeId);
+        if (employee != null) {
+            serviceLocator.getNailEmployeeDao().remove(employee);
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.deleted.success", null, LocaleContextHolder.getLocale()));
         } else {
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.no.data.changed", null, LocaleContextHolder.getLocale()));

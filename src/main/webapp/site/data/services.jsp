@@ -38,13 +38,59 @@
     <spring:eval expression="sessionObject.getString('UPDATE_CURRENT_SITE_ID')" var="siteId"/>
     <fmt:parseNumber var = "siteId" type = "number" value = "${siteId}" integerOnly = "true" />
     <spring:eval expression="serviceLocator.getSiteDao().findById(siteId)" var="thisSite"/>
+    <spring:eval expression="serviceLocator.menuDao.getMenu(thisSite, 'services.html', 'Y')" var="servicesMenu"/>
+    <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(servicesMenu.id, 'Y')" var="menuRows"/>
+    <c:forEach var="row" items="${menuRows}">
+        <c:if test="${fn:contains(row.title, 'Services')}">
+            <c:set var="servicesRow" value="${row}"/>
+            <spring:eval expression="serviceLocator.siteMenuPartContentDao.getContentParts(servicesRow.id, 'Y')" var="partContents"/>
+            <c:if test="${fn:length(partContents) > 0}">
+                <c:set var="servicesContent" value="${partContents[0]}"/>
+            </c:if>
+        </c:if>
+    </c:forEach>
 
     <!-- Begin Content -->
 <div class="col-md-9">
+    <div class="row">
+        <!-- Begin Sidebar Menu -->
+        <div class="col-md-12">
+            <div class="panel panel-red margin-bottom-40">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="site.data.services"/></h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="form" action="/site/data/update_services.html" id="form" method="post">
+                        <input name="menuId" type="hidden" value="${servicesMenu.id}">
+                        <input name="rowId" type="hidden" value="${servicesRow.id}">
+                        <input name="id" type="hidden" value="${servicesContent.id}">
+                        <h:frontendmessage _messages="${messages}"/>
+                        <div class="form-group">
+                            <label for="title" class="col-lg-3 control-label"><fmt:message key="site.data.headline"/></label>
+                            <div class="col-lg-9">
+                                <input id="title" type="text" placeholder="<fmt:message key="site.data.headline"/>" name="title" class="form-control" value="${servicesContent.title}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="content" class="col-lg-3 control-label"><fmt:message key="site.data.services.description"/></label>
+                            <div class="col-lg-9">
+                                <textarea name="content" id="content" rows="2" class="form-control" placeholder="<fmt:message key="site.data.services.description"/>">${servicesContent.content}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-offset-3 col-lg-9">
+                                <button type="submit" class="btn-u btn-u-red"><fmt:message key="common.save.changes"/></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row margin-bottom-20">
         <div class="col-md-12">
-            <button type="button" class="btn-u btn-u-blue" data-toggle="modal" data-target="#modal-form" data-title="<fmt:message key="site.data.add.edit.group"/>" data-page="/site/data/service_form.html?storeId=${store.id}"><i class="fa fa-plus"></i> <fmt:message key="site.data.add.group"/></button>
-            <button type="button" class="btn-u btn-u-light-green"  data-toggle="modal" data-target="#modal-form" data-title="<fmt:message key="site.data.add.edit.service"/>" data-page="/site/data/service_form.html?storeId=${store.id}&isService=true"><i class="fa fa-plus"></i> <fmt:message key="site.data.add.service"/></button>
+            <button type="button" class="btn-u btn-u-blue" data-toggle="modal" data-target="#modal-form" data-title="<fmt:message key="site.data.add.group"/>" data-page="/site/data/service_form.html?storeId=${store.id}"><i class="fa fa-plus"></i> <fmt:message key="site.data.add.group"/></button>
+            <button type="button" class="btn-u btn-u-light-green"  data-toggle="modal" data-target="#modal-form" data-title="<fmt:message key="site.data.add.service"/>" data-page="/site/data/service_form.html?storeId=${store.id}&isService=true"><i class="fa fa-plus"></i> <fmt:message key="site.data.add.service"/></button>
         </div>
     </div>
     <div class="row">
@@ -78,7 +124,7 @@
                             <tbody>
                             <c:forEach items="${services}" var="service" varStatus="item">
                                 <tr>
-                                    <td>${item.index}</td>
+                                    <td>${item.index + 1}</td>
                                     <td>${service.name}</td>
                                     <spring:eval
                                             expression="T(com.easysoft.ecommerce.util.Money).valueOf((service.price/100),thisSite.siteParamsMap.get('CURRENCY'), thisSite.siteParamsMap.get('CURRENCY_FORMAT')).getMoneyValue()"

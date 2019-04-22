@@ -51,7 +51,7 @@
     <%--<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/1/daterangepicker.js"></script>--%>
     <%--<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/1/daterangepicker-bs3.css" />--%>
     <spring:eval expression="serviceLocator.getSiteTemplateDao().findUniqueBy('site.id', site.id)" var="template"/>
-    <meta name="decorator" content="${template.templateCode}"/>
+    <%--<meta name="decorator" content="${template.templateCode}"/>--%>
 
 </head>
 
@@ -129,65 +129,62 @@
 //
 //
     RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
-    StringReader reader = new StringReader("" +
-            "<div class=\"container content\">\n" +
-            "    #if ($row.title && $row.showTitle == 'Y') <div class=\"headline\"><h2>${row.title}</h2></div> #end\n" +
-            "    <div class=\"illustration-v2\">\n" +
-            "        <ul class=\"list-inline owl-slider\">\n" +
-            "            #foreach( $content in $contents )\n" +
-            "            #set($productImage = false)\n" +
-            "            <li class=\"item\">\n" +
-            "                <div class=\"product-img\">\n" +
-            "                    #set($productImage = $priceMap[$content.id].productImage)\n" +
-            "                    #set($imageUrl = \"/assets/images/no_image.png\")\n" +
-            "                    #if ($productImage)\n" +
-            "                    #if ($productImage.crop && $productImage.crop != '')\n" +
-            "                    #set($imageUrl = \"${imageServer}/get/${productImage.uri}.jpg?op=crop|$productImage.crop&op=scale|$widgetTemplate.imageSize\")\n" +
-            "                    #else\n" +
-            "                    #set($imageUrl = \"${imageServer}/get/${productImage.uri}.jpg?op=scale|262x328&op=crop|0,0,262,328\")\n" +
-            "                    #end\n" +
-            "                    #end\n" +
-            "                    <a href=\"/product/${content.uri}-${content.id}.html\"><img class=\"full-width img-responsive\" src=\"${imageUrl}\" alt=\"\"></a>\n" +
-            "                    <a class=\"product-review\" href=\"/product/${content.uri}-${content.id}.html\">Quick review</a>\n" +
-            "                    #if ($content.newProduct == 'Y')<div class=\"shop-rgba-dark-green rgba-banner\">Sản Phẩm Mới</div>#end\n" +
-            "                </div>\n" +
-            "                <div class=\"product-description product-description-brd\">\n" +
-            "                    <div class=\"overflow-h margin-bottom-5\">\n" +
-            "                        <div class=\"pull-left\">\n" +
-            "                            <h4 class=\"title-price\"><a href=\"/product/${content.uri}-${content.id}.html\">${content.name}</a></h4>\n" +
-            "                        </div>\n" +
+    StringReader reader = new StringReader("#set( $rowTitle = \"About Us\" )\n" +
+            "#if ($row.title && $row.showTitle == 'Y') #set( $rowTitle = $row.title ) #end\n" +
+            "#foreach( $content in $contents )\n" +
+            "#set( $crop = \"\" )\n" +
+            "#if ($content.crop && $content.crop != '')\n" +
+            "#set( $crop = \"?op=crop|$content.crop\" )\n" +
+            "#end\n" +
+            "#set( $imageUrl = \"http://image.mangchiase.com/get/49318030-7047-409c-92c9-7aa62946522d.jpg\")\n" +
+            "#if ($content.imgUrl && $content.imgUrl != '')\n" +
+            "#set( $imageUrl = \"$content.imgUrl?op=crop|$content.crop&op=scale|1200\" )\n" +
+            "#end\n" +
+            "#set( $contentTitle = \"\" )\n" +
+            "#if ($content.title) #set( $contentTitle = $content.title ) #end\n" +
+            "#set( $contentContent = \"\" )\n" +
+            "#if ($content.content) #set( $contentContent = $content.content) #end\n" +
+            "\n" +
+            "<section id=\"about\" class=\"g-pb-80\">\n" +
+            "    <div class=\"container-fluid px-0\">\n" +
+            "        <div class=\"row no-gutters\">\n" +
+            "            <div class=\"col-md-6 g-bg-img-hero g-min-height-400\" style=\"background-image: url($imageUrl);\"></div>\n" +
+            "            <div class=\"col-md-6 d-flex align-items-center text-center g-pa-50\">\n" +
+            "                <div class=\"w-100\">\n" +
+            "                    <div class=\"g-mb-25\">\n" +
+            "                        <h4 class=\"g-font-weight-700 g-font-size-20 g-theme-h-v1 g-color-primary g-mb-25\">$rowTitle</h4>\n" +
+            "                        <h2 class=\"text-uppercase g-font-weight-600 g-font-size-22 mb-0\">$contentTitle</h2>\n" +
             "                    </div>\n" +
-            "                    <div class=\"overflow-h margin-bottom-5\">\n" +
-            "                        <div class=\"product-price\">\n" +
-            "                            #set($money = $priceMap[$content.id].money)\n" +
-            "                            #set($promo = $priceMap[$content.id].promo)\n" +
-            "                            #if ($promo && $promo != '')\n" +
-            "                            #if ($promo == $money)\n" +
-            "                            <span class=\"title-price\">${money}</span>\n" +
-            "                            #end\n" +
-            "                            #if ($promo != $money)\n" +
-            "                            <span class=\"title-price\">${promo}</span>\n" +
-            "                            <span class=\"title-price line-through\">${money}</span>\n" +
-            "                            #end\n" +
-            "                            #else\n" +
-            "                            <span class=\"title-price\">${money}</span>\n" +
-            "                            #end\n" +
-            "                        </div>\n" +
+            "\n" +
+            "                    <p class=\"g-mb-35\">$contentContent</p>\n" +
+            "                </div>\n" +
+            "            </div>\n" +
+            "        </div>\n" +
+            "        <div class=\"row no-gutters\">\n" +
+            "            <div class=\"col-md-6\">\n" +
+            "                <img class=\"img-fluid\" src=\"http://image.mangchiase.com/get/25b24315-8936-40f2-9e87-34e143ccd62d.jpg?op=scale|1200\" alt=\"Image description\">\n" +
+            "            </div>\n" +
+            "            <div class=\"col-md-6\">\n" +
+            "                <div class=\"js-carousel\"\n" +
+            "                     data-infinite=\"true\"\n" +
+            "                     data-arrows-classes=\"u-arrow-v1 g-absolute-centered--y g-width-45 g-height-55 g-font-size-12 g-theme-color-gray-dark-v1 g-bg-white g-mt-minus-10\"\n" +
+            "                     data-arrow-left-classes=\"fa fa-chevron-left g-left-0\"\n" +
+            "                     data-arrow-right-classes=\"fa fa-chevron-right g-right-0\">\n" +
+            "                    <div class=\"js-slide\">\n" +
+            "                        <img class=\"img-fluid\" src=\"http://image.mangchiase.com/get/082cc9a4-a605-489c-a192-d796336b531d.jpg?op=scale|1200\" alt=\"Image description\">\n" +
+            "                    </div>\n" +
+            "                    <div class=\"js-slide\">\n" +
+            "                        <img class=\"img-fluid\" src=\"http://image.mangchiase.com/get/939f8d93-73b0-4063-9b01-931bdad6697c.jpg?op=scale|1200\" alt=\"Image description\">\n" +
+            "                    </div>\n" +
+            "                    <div class=\"js-slide\">\n" +
+            "                        <img class=\"img-fluid\" src=\"http://image.mangchiase.com/get/9c2e026d-43e2-493a-a0d8-005a9b2f43db.jpg?op=scale|1200\" alt=\"Image description\">\n" +
             "                    </div>\n" +
             "                </div>\n" +
-            "            </li>\n" +
-            "            #end\n" +
-            "        </ul>\n" +
+            "            </div>\n" +
+            "        </div>\n" +
             "    </div>\n" +
-            "</div>\n" +
-            "<script type=\"text/javascript\">\n" +
-            "    jQuery(document).ready(function() {\n" +
-            "        OwlCarousel.initOwlCarousel();\n" +
-            "    });\n" +
-            "</script>\n" +
-            "" +
-            "" +
-            "");
+            "</section>\n" +
+            "#end");
     SimpleNode node = null;
     try {
         node = runtimeServices.parse(reader, "test");
@@ -202,10 +199,10 @@
     template.setEncoding("UTF-8");
 
     StringWriter writer = new StringWriter();
-//    List<SiteMenuPartContent> contentParts = ServiceLocatorHolder.getServiceLocator().getSiteMenuPartContentDao().getContentParts(20l);
-    List<Product> contentParts = ServiceLocatorHolder.getServiceLocator().getSiteMenuPartContentDao().getProductContentParts(19l);
+    List<SiteMenuPartContent> contentParts = ServiceLocatorHolder.getServiceLocator().getSiteMenuPartContentDao().getContentParts(169l);
+//    List<Product> contentParts = ServiceLocatorHolder.getServiceLocator().getSiteMenuPartContentDao().getProductContentParts(19l);
 //    List<News> contentParts = ServiceLocatorHolder.getServiceLocator().getSiteMenuPartContentDao().getNewsContentParts(107l);
-    Row row = ServiceLocatorHolder.getServiceLocator().getRowDao().findById(19l);
+    Row row = ServiceLocatorHolder.getServiceLocator().getRowDao().findById(169l);
     WidgetTemplate widgetTemplate = ServiceLocatorHolder.getServiceLocator().getSiteMenuPartContentDao().getWidgetTemplate(row.getId());
 
     Map priceMap = new HashMap();
@@ -510,6 +507,80 @@
 <div class="da-img"><img src="${content.imgUrl}?op=crop|$content.crop&op=scale|$widgetTemplate.imageSize" alt="" /></div>
 #else
 <div class="da-img"><img src="${content.imgUrl}?op=scale|600&op=crop|0,0,550,290" alt="" /></div>
+#end
+
+#foreach( $content in $contents )
+#set( $crop = "" )
+#if ($content.crop && $content.crop != '')
+#set( $crop = "?op=crop|$content.crop" )
+#end
+<section id="home" class="u-bg-overlay g-height-100vh g-min-height-600 g-bg-img-hero g-bg-black-opacity-0_3--after" style="background-image: url($content.imgUrl$crop);">
+    <div class="u-bg-overlay__inner g-absolute-centered--y w-100">
+        <div class="container text-center g-max-width-750">
+            #if ($content.title && $content.title != '')
+            <h1 class="g-line-height-1_5 g-font-weight-700 g-font-size-50 g-color-white g-mb-15">$content.title</h1>
+            #end
+            <a class="btn btn-md text-uppercase u-btn-primary g-font-weight-700 g-font-size-11 g-brd-none rounded-0 g-py-10 g-px-25" href="#booking">Make Appointment</a>
+        </div>
+    </div>
+</section>
+#end
+
+#set( $rowTitle = "About Us" )
+#if ($row.title && $row.showTitle == 'Y') #set( $rowTitle = $row.title ) #end
+#foreach( $content in $contents )
+#set( $crop = "" )
+#if ($content.crop && $content.crop != '')
+#set( $crop = "?op=crop|$content.crop" )
+#end
+#set( $imageUrl = "http://image.mangchiase.com/get/49318030-7047-409c-92c9-7aa62946522d.jpg")
+#if ($content.imgUrl && $content.imgUrl != '')
+#set( $imageUrl = "$content.imgUrl?op=crop|$content.crop&op=scale|1200" )
+#end
+#set( $contentTitle = "" )
+#if ($content.title) #set( $contentTitle = $content.title ) #end
+#set( $contentContent = "" )
+#if ($content.content) #set( $contentContent = $content.content) #end
+
+<section id="about" class="g-pb-80">
+    <div class="container-fluid px-0">
+        <div class="row no-gutters">
+            <div class="col-md-6 g-bg-img-hero g-min-height-400" style="background-image: url($imageUrl);"></div>
+            <div class="col-md-6 d-flex align-items-center text-center g-pa-50">
+                <div class="w-100">
+                    <div class="g-mb-25">
+                        <h4 class="g-font-weight-700 g-font-size-20 g-theme-h-v1 g-color-primary g-mb-25">$rowTitle</h4>
+                        <h2 class="text-uppercase g-font-weight-600 g-font-size-22 mb-0">$contentTitle</h2>
+                    </div>
+
+                    <p class="g-mb-35">$contentContent</p>
+                </div>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-md-6">
+                <img class="img-fluid" src="http://image.mangchiase.com/get/25b24315-8936-40f2-9e87-34e143ccd62d.jpg?op=scale|1200" alt="Image description">
+            </div>
+            <div class="col-md-6">
+                <div class="js-carousel"
+                     data-infinite="true"
+                     data-arrows-classes="u-arrow-v1 g-absolute-centered--y g-width-45 g-height-55 g-font-size-12 g-theme-color-gray-dark-v1 g-bg-white g-mt-minus-10"
+                     data-arrow-left-classes="fa fa-chevron-left g-left-0"
+                     data-arrow-right-classes="fa fa-chevron-right g-right-0">
+                    <div class="js-slide">
+                        <img class="img-fluid" src="http://image.mangchiase.com/get/082cc9a4-a605-489c-a192-d796336b531d.jpg?op=scale|1200" alt="Image description">
+                    </div>
+                    <div class="js-slide">
+                        <img class="img-fluid" src="http://image.mangchiase.com/get/939f8d93-73b0-4063-9b01-931bdad6697c.jpg?op=scale|1200" alt="Image description">
+                    </div>
+                    <div class="js-slide">
+                        <img class="img-fluid" src="http://image.mangchiase.com/get/9c2e026d-43e2-493a-a0d8-005a9b2f43db.jpg?op=scale|1200" alt="Image description">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 #end
 
 </body>

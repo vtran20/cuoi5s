@@ -11,8 +11,6 @@
 </head>
 
 <body>
-<link  href="https://cdn.rawgit.com/fengyuanchen/cropper/v2.1.0/dist/cropper.min.css" rel="stylesheet">
-<script src="https://cdn.rawgit.com/fengyuanchen/cropper/v2.1.0/dist/cropper.min.js"></script>
 <h:authenticate request="${pageContext.request}" response="${pageContext.response}"/>
 <div class="breadcrumbs">
     <div class="container">
@@ -36,20 +34,15 @@
     <spring:eval expression="sessionObject.getString('UPDATE_CURRENT_SITE_ID')" var="siteId"/>
     <fmt:parseNumber var = "siteId" type = "number" value = "${siteId}" integerOnly = "true" />
     <spring:eval expression="serviceLocator.getSiteDao().findById(siteId)" var="thisSite"/>
-    <spring:eval expression="serviceLocator.menuDao.getRootMenus(thisSite, 'N', 'N')" var="menus"/>
-    <c:forEach items="${menus}" var="menu">
-        <c:if test="${fn:contains(menu.name, 'Home')}">
-            <c:set var="homeMenu" value="${menu}"/>
-            <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(menu.id, 'Y')" var="menuRows"/>
-            <c:forEach var="row" items="${menuRows}">
-                <c:if test="${fn:contains(row.title, 'About Us')}">
-                    <c:set var="aboutUsRow" value="${row}"/>
-                    <spring:eval expression="serviceLocator.siteMenuPartContentDao.getContentParts(aboutUsRow.id, 'Y')" var="partContents"/>
-                    <c:if test="${fn:length(partContents) > 0}">
-                        <c:set var="aboutUsContent" value="${partContents[0]}"/>
-                    </c:if>
-                </c:if>
-            </c:forEach>
+    <spring:eval expression="serviceLocator.menuDao.getMenu(thisSite, '', 'Y')" var="homeMenu"/>
+    <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(homeMenu.id, 'Y')" var="menuRows"/>
+    <c:forEach var="row" items="${menuRows}">
+        <c:if test="${fn:contains(row.title, 'About Us')}">
+            <c:set var="aboutUsRow" value="${row}"/>
+            <spring:eval expression="serviceLocator.siteMenuPartContentDao.getContentParts(aboutUsRow.id, 'Y')" var="partContents"/>
+            <c:if test="${fn:length(partContents) > 0}">
+                <c:set var="aboutUsContent" value="${partContents[0]}"/>
+            </c:if>
         </c:if>
     </c:forEach>
 <!-- Begin Content -->
@@ -68,19 +61,19 @@
                         <input name="id" type="hidden" value="${aboutUsContent.id}">
                         <h:frontendmessage _messages="${messages}"/>
                         <div class="form-group">
-                            <label for="title" class="col-lg-3 control-label"><fmt:message key="site.data.headline"/></label>
-                            <div class="col-lg-9">
+                            <div class="col-lg-12">
+                                <label for="title" class="control-label"><fmt:message key="site.data.headline"/></label>
                                 <input id="title" type="text" placeholder="<fmt:message key="site.data.headline"/>" name="title" class="form-control" value="${aboutUsContent.title}">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="content" class="col-lg-3 control-label"><fmt:message key="site.data.about.us"/></label>
-                            <div class="col-lg-9">
+                            <div class="col-lg-12">
+                                <label for="content" class="control-label"><fmt:message key="site.data.about.us"/></label>
                                 <textarea name="content" id="content" rows="15" class="form-control required" placeholder="<fmt:message key="site.data.about.us"/>">${aboutUsContent.content}</textarea>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-lg-offset-3 col-lg-9">
+                            <div class="col-lg-12">
                                 <button type="submit" class="btn-u btn-u-red"><fmt:message key="common.save.changes"/></button>
                             </div>
                         </div>
@@ -97,7 +90,7 @@
                     <%--<a href="#image-modal-form" class="btn btn-info" id="image-cropper-upload" name="loadImage" type="button" href="#image-modal-form" data-id="${image.id}" data-img="${imageServer}/get/${image.uri}.jpg" data-crop="${empty image.crop? '' : image.crop}" data-ratio="1200x781" role="button" data-toggle="modal" data-target="#image-modal-form">Upload Image</a>--%>
                     <%--<img/>--%>
 
-                    <a class="btn btn-success hidden-sm hidden-xs margin-bottom-20" href="#image-modal-form" data-id="${aboutUsContent.id}" data-img="${aboutUsContent.imgUrl}" data-crop="${aboutUsContent.crop}" data-ratio="1200x781" role="button" data-toggle="modal" data-target="#image-modal-form">
+                    <a class="btn btn-success hidden-sm hidden-xs margin-bottom-20" href="#image-modal-form" data-id="${aboutUsContent.id}" data-img="${aboutUsContent.imgUrl}" data-crop="${aboutUsContent.crop}" data-ratio="1200x781" role="button" data-toggle="modal" data-target="#image-modal-form" data-backdrop="static" data-keyboard="false">
                         <i class="fa fa-cloud-upload"></i> <fmt:message key="images.upload.images"/>
                     </a>
                     <label class="caption margin-bottom-20">
@@ -123,6 +116,9 @@
         jQuery(this).toggleClass('active');
     });
     $(function () {
+
+        $('#content').summernote();
+
         $("#form").validate({
             rules:{
                 content:"required"
@@ -150,8 +146,6 @@
     function callbackFromImageModal (image, button, imageUrl) {
         console.log(imageUrl)
         $(button).data("crop", Math.round(image.x)+','+Math.round(image.y)+','+Math.round(image.width)+','+Math.round(image.height))
-        console.log($(button).data("crop"))
-        console.log('/site/data/update_aboutus_image.html?id=${aboutUsContent.id}&crop='+$(button).data("crop")+'&imgUrl='+imageUrl)
         //Update crop data for the image if any or insert if it is the new one
         //Update/Insert crop image into database
         $.ajax({
@@ -162,7 +156,7 @@
                 if (data == "ok") {
                     var newImageUrl = $(button).data("img")+'?op=scale|220'
                     //rebuild a new url with crop
-                    $("#aboutus-image").html("<img src="+newImageUrl+"/>")
+                    $("#aboutus-image").html('<img src="'+newImageUrl+'"/>')
                 }
             }
         });
@@ -170,6 +164,6 @@
     }
 
 </script>
-<h:image_modal_front uploadable="true"/>
+<h:image_modal_front uploadable="true" thisSite="${thisSite}"/>
 </body>
 </html>

@@ -19,6 +19,8 @@ public class NailStore extends AbstractEntity {
     private String city;
     private String state;
     private String zipCode;
+    private String latitude;
+    private String longitude;
     private String country;
     private String phone;
     private String email;
@@ -230,5 +232,23 @@ public class NailStore extends AbstractEntity {
 
     public void setHourSat(String hourSat) {
         this.hourSat = hourSat;
+    }
+
+    @Column(nullable = true, length = 50)
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    @Column(nullable = true, length = 50)
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 }

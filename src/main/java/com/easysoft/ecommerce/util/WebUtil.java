@@ -754,79 +754,93 @@ public class WebUtil {
         return endTime;
     }
 
+    public static String convertHours2AMPM (String input, String format) {
+        if (StringUtils.isEmpty(format)) {
+            format = "hh:mm";
+        }
+        String toFormat = "h:ma";
+        if (!StringUtils.isEmpty(input)) {
+            if(input.endsWith(":00")) {
+                toFormat = "ha";
+            }
+            Date date = stringToDate(input, format);
+            return dateToString(date, toFormat).toLowerCase();
+        }
+        return "";
+    }
     public static void main(String[] args) {
 
-        ////Get day of week/////
-        Calendar dateOfWeek = Calendar.getInstance();
-        System.out.println(WebUtil.dateToString(dateOfWeek.getTime(), "EEE"));
-        ////Timeslot processing/////
-        Calendar startTime = WebUtil.getCurrentStartDate();
-        startTime.set(Calendar.HOUR_OF_DAY, 10); //start time
-
-        Calendar endTime = WebUtil.getCurrentStartDate();
-        endTime.set(Calendar.HOUR_OF_DAY, 21); //end time
-
-        List<NailCustomerAppointment> appointments = new ArrayList<NailCustomerAppointment>();
-
-        NailCustomerAppointment appointment = new NailCustomerAppointment();
-        Calendar startAppointment = WebUtil.getCurrentStartDate();
-        startAppointment.set(Calendar.HOUR_OF_DAY, 10);
-        startAppointment.set(Calendar.MINUTE, 15);
-        Calendar endAppointment = WebUtil.getCurrentStartDate();
-        endAppointment.set(Calendar.HOUR_OF_DAY, 11);
-        endAppointment.set(Calendar.MINUTE, 15);
-        appointment.setStartTime(startAppointment.getTime());
-        appointment.setEndTime(endAppointment.getTime());
-        appointments.add(appointment);
-
-        appointment = new NailCustomerAppointment();
-        startAppointment = WebUtil.getCurrentStartDate();
-        startAppointment.set(Calendar.HOUR_OF_DAY, 12);
-        startAppointment.set(Calendar.MINUTE, 0);
-        endAppointment = WebUtil.getCurrentStartDate();
-        endAppointment.set(Calendar.HOUR_OF_DAY, 13);
-        endAppointment.set(Calendar.MINUTE, 0);
-        appointment.setStartTime(startAppointment.getTime());
-        appointment.setEndTime(endAppointment.getTime());
-        appointments.add(appointment);
-
-        //all available timeslots
-        Set <Date> timeslots = new LinkedHashSet<Date>();
-        while (!startTime.after(endTime)) {
-            timeslots.add(startTime.getTime());
-            startTime.add(Calendar.MINUTE, 15);
-        }
-
-        //remove booked timeslots
-        for (NailCustomerAppointment appt : appointments) {
-            Calendar time = Calendar.getInstance();
-            time.setTime(appt.getStartTime());
-            while (timeslots.contains(time.getTime()) && time.getTime().before(appt.getEndTime())) {
-                timeslots.remove(time.getTime());
-                time.add(Calendar.MINUTE, 15);
-            }
-        }
-
-        //remove timeslots that cannot book because is not enough time range. Start at a timeslot, if ahead of time have 1 hour available, then the timeslot is valid
-        Set <Date> timeslotsClone = new LinkedHashSet<Date>(timeslots);
-        //available slot if enough 1 hour
-        int slotSteps = 3;
-        for (Date date : timeslotsClone) {
-            Calendar time = Calendar.getInstance();
-            time.setTime(date);
-            for (int i = 0; i < slotSteps; i++) {
-                time.add(Calendar.MINUTE, 15);
-                if (timeslots.contains(time.getTime())) {
-                    //do nothing
-                } else {
-                    timeslots.remove(date);
-                }
-            }
-        }
-
-        //print remain timeslots
-        for (Date ts : timeslots) {
-            System.out.println(dateToString(ts, "HH:mm a"));
-        }
+//        ////Get day of week/////
+//        Calendar dateOfWeek = Calendar.getInstance();
+//        System.out.println(WebUtil.dateToString(dateOfWeek.getTime(), "EEE"));
+//        ////Timeslot processing/////
+//        Calendar startTime = WebUtil.getCurrentStartDate();
+//        startTime.set(Calendar.HOUR_OF_DAY, 10); //start time
+//
+//        Calendar endTime = WebUtil.getCurrentStartDate();
+//        endTime.set(Calendar.HOUR_OF_DAY, 21); //end time
+//
+//        List<NailCustomerAppointment> appointments = new ArrayList<NailCustomerAppointment>();
+//
+//        NailCustomerAppointment appointment = new NailCustomerAppointment();
+//        Calendar startAppointment = WebUtil.getCurrentStartDate();
+//        startAppointment.set(Calendar.HOUR_OF_DAY, 10);
+//        startAppointment.set(Calendar.MINUTE, 15);
+//        Calendar endAppointment = WebUtil.getCurrentStartDate();
+//        endAppointment.set(Calendar.HOUR_OF_DAY, 11);
+//        endAppointment.set(Calendar.MINUTE, 15);
+//        appointment.setStartTime(startAppointment.getTime());
+//        appointment.setEndTime(endAppointment.getTime());
+//        appointments.add(appointment);
+//
+//        appointment = new NailCustomerAppointment();
+//        startAppointment = WebUtil.getCurrentStartDate();
+//        startAppointment.set(Calendar.HOUR_OF_DAY, 12);
+//        startAppointment.set(Calendar.MINUTE, 0);
+//        endAppointment = WebUtil.getCurrentStartDate();
+//        endAppointment.set(Calendar.HOUR_OF_DAY, 13);
+//        endAppointment.set(Calendar.MINUTE, 0);
+//        appointment.setStartTime(startAppointment.getTime());
+//        appointment.setEndTime(endAppointment.getTime());
+//        appointments.add(appointment);
+//
+//        //all available timeslots
+//        Set <Date> timeslots = new LinkedHashSet<Date>();
+//        while (!startTime.after(endTime)) {
+//            timeslots.add(startTime.getTime());
+//            startTime.add(Calendar.MINUTE, 15);
+//        }
+//
+//        //remove booked timeslots
+//        for (NailCustomerAppointment appt : appointments) {
+//            Calendar time = Calendar.getInstance();
+//            time.setTime(appt.getStartTime());
+//            while (timeslots.contains(time.getTime()) && time.getTime().before(appt.getEndTime())) {
+//                timeslots.remove(time.getTime());
+//                time.add(Calendar.MINUTE, 15);
+//            }
+//        }
+//
+//        //remove timeslots that cannot book because is not enough time range. Start at a timeslot, if ahead of time have 1 hour available, then the timeslot is valid
+//        Set <Date> timeslotsClone = new LinkedHashSet<Date>(timeslots);
+//        //available slot if enough 1 hour
+//        int slotSteps = 3;
+//        for (Date date : timeslotsClone) {
+//            Calendar time = Calendar.getInstance();
+//            time.setTime(date);
+//            for (int i = 0; i < slotSteps; i++) {
+//                time.add(Calendar.MINUTE, 15);
+//                if (timeslots.contains(time.getTime())) {
+//                    //do nothing
+//                } else {
+//                    timeslots.remove(date);
+//                }
+//            }
+//        }
+//
+//        //print remain timeslots
+//        for (Date ts : timeslots) {
+//            System.out.println(dateToString(ts, "HH:mm a"));
+//        }
     }
 }

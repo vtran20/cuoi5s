@@ -3,6 +3,10 @@
 <%@ tag language="java" isELIgnored="false" pageEncoding="UTF-8" %>
 <%@ include file="common.tagf" %>
 <%@ attribute name="uploadable" required="false" rtexprvalue="true" type="java.lang.String"%>
+<%@ attribute name="thisSite" required="false" rtexprvalue="true" type="com.easysoft.ecommerce.model.Site"%>
+<c:if test="${empty thisSite}">
+    <c:set value="${site}" var="thisSite"/>
+</c:if>
 <style type="text/css">
     /*.modal-body {*/
         /*min-height: 300px;*/
@@ -42,6 +46,7 @@
                         <div id="y"></div>
                         <div id="width"></div>
                         <div id="height"></div>
+                        <div id="uri_uuid"></div>
                     </div>
                 </div>
             </div>
@@ -68,10 +73,10 @@
             minContainerHeight: 375,
             crop: function(e) {
                 // Output the result data for cropping image.
-//                $("#x").html(e.x);
-//                $("#y").html(e.y);
-//                $("#width").html(e.width);
-//                $("#height").html(e.height);
+                $("#x").html(e.x);
+                $("#y").html(e.y);
+                $("#width").html(e.width);
+                $("#height").html(e.height);
             }
         };
         var button;
@@ -169,7 +174,7 @@
 //            }
 //        });
         $("button[name=approveImage]").on("click", function () {
-            console.log ($image.attr("src"))
+            console.log ($image)
             if ($image.attr("src")) {
                 var image = $image.cropper('getData');
                 console.log(Math.round(image.x));
@@ -179,7 +184,7 @@
                 // Make sure the callback is a function​
                 if (typeof callbackFromImageModal === "function") {
                     // Call it, since we have confirmed it is callable​
-                    callbackFromImageModal(image, button, $image.attr('src'));
+                    callbackFromImageModal(image, button, $image.attr('src'), $("#uri_uuid").html());
                 }
                 $('#image-modal-form').modal('hide');
             } else {
@@ -222,8 +227,8 @@
                     } else {
                         var data = new FormData();
                         data.append('file', file);
-                        data.append('path','${site.siteCode}');
-                        data.append('imagesPathOverride','${site.siteCode}');
+                        data.append('path','${thisSite.siteCode}');
+                        data.append('imagesPathOverride','${thisSite.siteCode}');
                         data.append('generateName','on');
                         data.append('skipOptimization','on');
                         var uploadImageUrl;
@@ -245,6 +250,7 @@
                                         console.log("${imageServer}"+"/get/"+element.name+".jpg");
                                         uploadImageUrl = "${imageServer}"+"/get/"+element.name+".jpg";
                                         $image.cropper('destroy').cropper(options).cropper('replace', uploadImageUrl);
+                                        $("#uri_uuid").html(element.name);
                                     }
                                 });
                             }

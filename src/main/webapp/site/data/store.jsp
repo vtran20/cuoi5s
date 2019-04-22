@@ -12,6 +12,11 @@
 
 <body>
 <h:authenticate request="${pageContext.request}" response="${pageContext.response}"/>
+<spring:eval expression="sessionObject.getString('UPDATE_CURRENT_SITE_ID')" var="siteId"/>
+<fmt:parseNumber var = "siteId" type = "number" value = "${siteId}" integerOnly = "true" />
+<spring:eval expression="serviceLocator.getSiteDao().findById(siteId)" var="thisSite"/>
+<spring:eval expression="systemContext.getGlobalConfig('image.server')" var="imageServer"/>
+
 <div class="breadcrumbs">
     <div class="container">
         <h1 class="pull-left"><fmt:message key="site.data.general.info"/></h1>
@@ -42,13 +47,14 @@
             <form class="form-horizontal" role="form" action="/site/data/create-update-store.html" id="form" method="post">
                 <%--<input type="hidden" name="siteId" value="${sessionObject.UPDATE_CURRENT_SITE_ID}">--%>
                 <input name="id" type="hidden" value="${store.id}">
+                <input name="country" type="hidden" value="US">
                 <h:frontendmessage _messages="${messages}"/>
                 <div class="col-md-6">
                     <div class="headline"><h4><fmt:message key="site.data.salon.infor"/></h4></div>
                     <div class="form-group">
                         <label for="name" class="col-lg-3 control-label"><fmt:message key="site.data.salon.name"/></label>
                         <div class="col-lg-9">
-                            <input id="name" type="text" placeholder="<fmt:message key="site.data.salon.name"/>" name="name" class="form-control required" value="${store.name}">
+                            <input id="name" type="text" placeholder="<fmt:message key="site.data.salon.name"/>" name="name" class="form-control required" value="${store.name}" maxlength="60">
                         </div>
                     </div>
                     <div class="form-group">
@@ -75,6 +81,30 @@
                             <input id="zipCode" type="text" placeholder="<fmt:message key="site.data.address.zipcode"/>" name="zipCode" class="form-control required" value="${store.zipCode}">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="latitude" class="col-lg-3 control-label"><fmt:message key="site.data.address.latitude"/></label>
+                        <div class="col-lg-9">
+                            <input id="latitude" type="text" placeholder="<fmt:message key="site.data.address.latitude"/>" name="latitude" class="form-control required" value="${store.latitude}">
+                            <small class="form-text text-muted"><fmt:message key="site.data.lat.long"/></small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="longitude" class="col-lg-3 control-label"><fmt:message key="site.data.address.longitude"/></label>
+                        <div class="col-lg-9">
+                            <input id="longitude" type="text" placeholder="<fmt:message key="site.data.address.longitude"/>" name="longitude" class="form-control required" value="${store.longitude}">
+                            <small class="form-text text-muted"><fmt:message key="site.data.lat.long"/></small>
+                        </div>
+                    </div>
+                    <%--<div class="form-group">--%>
+                        <%--<label for="country" class="col-lg-3 control-label"><fmt:message key="site.data.address.country"/></label>--%>
+                        <%--<div class="col-lg-9">--%>
+                            <%--&lt;%&ndash;<input id="country" type="text" placeholder="<fmt:message key="site.data.address.country"/>" name="country" class="form-control required" value="${store.country}">&ndash;%&gt;--%>
+                            <%--<select id="country" class="form-control required" name="country">--%>
+                                <%--<option value="US" ${store.country == 'US'? 'selected' : ''}>USA</option>--%>
+                                <%--<option value="CA" ${store.country == 'CA'? 'selected' : ''}>Canada</option>--%>
+                            <%--</select>--%>
+                        <%--</div>--%>
+                    <%--</div>--%>
                     <div class="headline"><h4>Contact Us</h4></div>
                     <div class="form-group">
                         <label for="phone" class="col-lg-3 control-label"><fmt:message key="site.data.address.phone"/></label>
@@ -107,6 +137,24 @@
 
                 </div>
                 <div class="col-md-6">
+                    <div class="headline"><h4><fmt:message key="images.upload.logo"/></h4></div>
+                    <spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_IMAGE', thisSite.id)" var="logoImg"/>
+                    <spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_CROP', thisSite.id)" var="logoCrop"/>
+                    <div class="col-md-6">
+                        <a class="btn btn-success hidden-sm hidden-xs margin-bottom-20" href="#image-modal-form" data-id="${thisSite.id}" data-img="${logoImg.value}" data-crop="${logoCrop.value}" role="button" data-toggle="modal" data-target="#image-modal-form" data-backdrop="static" data-keyboard="false">
+                            <i class="fa fa-cloud-upload"></i> <fmt:message key="images.upload.logo"/>
+                        </a>
+                        <label class="caption margin-bottom-20">
+                            <input id=fileupload type="file" name="content-image" class="btn btn-xs btn-success hidden-md hidden-lg">
+                        </label>
+                    </div>
+                    <div id="logo-image" class="col-md-6">
+                        <c:if test="${!empty logoImg.value}">
+                            <c:if test="${! empty logoCrop.value}"><c:set value="op=crop|${logoCrop.value}" var="opCrop"/></c:if>
+                            <img src="${imageServer}/get/${logoImg.value}.png?${opCrop}&op=scale|x60"/>
+                        </c:if>
+                    </div>
+
                     <div class="headline"><h4>Opening Hours</h4></div>
                     <div class="form-group">
                         <label class="col-lg-3 control-label">
@@ -278,8 +326,27 @@
                 $(label).closest('.form-group').addClass('has-success');
             }
         });
-
     })
+    function callbackFromImageModal (image, button, imageUrl, imageUri) {
+        console.log(imageUrl)
+        $(button).data("crop", Math.round(image.x)+','+Math.round(image.y)+','+Math.round(image.width)+','+Math.round(image.height))
+        //Update crop data for the image if any or insert if it is the new one
+        //Update/Insert crop image into database
+        $.ajax({
+            type: "GET",
+            url: '/site/data/update_logo_image.html?id=${thisSite.id}&crop='+$(button).data("crop")+'&imgUrl='+imageUri,
+            success: function(data)
+            {
+                if (data == "ok") {
+                    var newImageUrl = $(button).data("img")+'?op=scale|220'
+                    //rebuild a new url with crop
+                    $("#logo-image").html('<img src="'+newImageUrl+'"/>')
+                }
+            }
+        });
+
+    }
 </script>
+<h:image_modal_front uploadable="true" thisSite="${thisSite}"/>
 </body>
 </html>

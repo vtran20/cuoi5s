@@ -9,6 +9,15 @@
     line-height: 15px;
     color: #a94442;
 }
+.form-group em.save-success {
+    display: block;
+    margin-top: 6px;
+    padding: 0 1px;
+    font-style: normal;
+    /*font-size: 11px;*/
+    line-height: 15px;
+    color: green;
+}
 
 /*body global*/
 .content {

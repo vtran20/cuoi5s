@@ -15,8 +15,3 @@
 <spring:eval expression="serviceLocator.systemContext" var="systemContext" />
 <spring:eval expression="systemContext.site" var="site" />
 <spring:eval expression="site.siteTemplate" var="template" />
-
-<%--<spring:eval expression="T(com.easysoft.ecommerce.controller.Constants).NUMBER_VIDEO_RETURN" var="numberVideos" />--%>
-<%--<spring:eval expression="T(com.easysoft.ecommerce.controller.Constants).NUMBER_VIDEO_LOAD_MORE" var="numberVideosMore" />--%>
-<%--<spring:eval expression="T(com.easysoft.ecommerce.controller.Constants).NUMBER_VIDEO_RETURN_RIGHT_COLUMN" var="numberVideosRightColumn" />--%>
-<%--<spring:eval expression="T(com.easysoft.ecommerce.controller.Constants).NUMBER_VIDEO_LOAD_MORE_RIGHT_COLUMN" var="numberVideosRightColumnMore" />--%>

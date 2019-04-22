@@ -90,7 +90,7 @@ public class AlbumImage extends AbstractEntity {
     public void setAlbum(Album album) {
         this.album = album;
     }
-    @Column(nullable = true, length = 20)
+    @Column(nullable = true, length = 30)
     public String getCrop() {
         return crop;
     }

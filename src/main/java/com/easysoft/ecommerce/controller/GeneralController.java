@@ -192,6 +192,40 @@ public class GeneralController {
         }
         return new ModelAndView("/contactus", "messages", messages);
     }
+
+    @RequestMapping(value = "ajax/contact-us.html", method = RequestMethod.POST)
+    public @ResponseBody String contactUsSubmitAjax(@Valid ContactUs entity, HttpServletRequest request) throws Exception {
+        Messages messages = new Messages();
+        Site site = serviceLocator.getSystemContext().getSite();
+        String recaptchaResponse = request.getParameter("g-recaptcha-response");
+        String secretParameter = serviceLocator.getSystemContext().getGlobalConfig("CAPTCHA_GOOGLE_SECRET_KEY");
+        if (entity.isEmptyId()) {
+            Date date = new Date();
+            //Create menu record
+            entity.setCreatedDate(date);
+            entity.setSite(site);
+            serviceLocator.getContactUsDao().persist(entity);
+            //send email
+            String contactEmail = site.getSiteParam("CONTACT_US");
+            String sStoreId = request.getParameter("storeId");
+            if (StringUtils.isNumeric(sStoreId)) {
+                NailStore store = ServiceLocatorHolder.getServiceLocator().getNailStoreDao().findById(Long.valueOf(sStoreId), site.getId());
+                if (store != null && StringUtils.isNotEmpty(store.getEmail())) {
+                    contactEmail = store.getEmail();
+                }
+            }
+            if (!StringUtils.isEmpty(contactEmail)) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("contact", entity);
+                map.put("siteParam", site.getSiteParamsMap());
+                EmailTemplate emailTemplate = serviceLocator.getEmailTemplateDao().getEmailTemplate("contact_us_message", serviceLocator.getLocale().toString());
+                serviceLocator.getMailService().sendEmailFromTemplateContent(ServiceLocatorHolder.getServiceLocator().getSystemContext().getGlobalConfig("global.email"), contactEmail, null, null, emailTemplate.getSubject(), map, emailTemplate.getTemplateContent());
+            }
+            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("content.is.sent.successful", null, LocaleContextHolder.getLocale()));
+        }
+        return messages.toString();
+    }
+
     /***************************************************************************
      Implement Question and Answer Page.
     ***************************************************************************/
@@ -253,20 +287,25 @@ public class GeneralController {
                 if ("0".equals(hours)) {
                     return null;
                 } else {
+                    //09:30-19:00
                     String startEnd[] = hours.split("-");
                     if (startEnd.length == 2) {
-                        int startDay = Integer.valueOf(startEnd[0]).intValue();
-                        int endTDay = Integer.valueOf(startEnd[1]).intValue();
+                        String startDay = startEnd[0]; //09:30
+                        String endDay = startEnd[1];  //19:00
 
                         Calendar startTime = WebUtil.getStartDate(date);
-                        startTime.set(Calendar.HOUR_OF_DAY, startDay); //start time
+                        String startDateTime[] = startDay.split(":");
+                        startTime.set(Calendar.HOUR_OF_DAY, Integer.valueOf(startDateTime[0])); //start hour
+                        startTime.set(Calendar.MINUTE, Integer.valueOf(startDateTime[1])); //start minutes
                         if (currentDate.after(startTime)) {
                             startTime.set(Calendar.HOUR_OF_DAY, currentDate.get(Calendar.HOUR_OF_DAY));
                             startTime.add(Calendar.HOUR_OF_DAY, 2); //only make appointment next 2 hours
                         }
 
                         Calendar endTime = WebUtil.getStartDate(date);
-                        endTime.set(Calendar.HOUR_OF_DAY, endTDay); //end time
+                        String endDateTime[] = endDay.split(":");
+                        endTime.set(Calendar.HOUR_OF_DAY, Integer.valueOf(endDateTime[0])); //start hour
+                        endTime.set(Calendar.MINUTE, Integer.valueOf(endDateTime[1])); //start minutes
 
                         Long employeeId = 0l;
                         if (StringUtils.isNotEmpty(request.getParameter("employeeId"))) {

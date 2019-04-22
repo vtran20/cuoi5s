@@ -61,7 +61,7 @@ public class NailEmployee extends AbstractEntity  {
     }
 
     public void setActive(String active) {
-        this.active = active;
+        this.active = convertActiveFlag(active);
     }
 
     @ManyToOne (fetch = FetchType.LAZY)

@@ -17,6 +17,8 @@ public class NailService extends AbstractEntity  {
     private int minutes;
     private String active;
     private float sequence;
+    private String imageUrl;
+    private String crop;
 
     private NailStore store;
     private NailService group;
@@ -45,7 +47,7 @@ public class NailService extends AbstractEntity  {
     }
 
     public void setActive(String active) {
-        this.active = active;
+        this.active = convertActiveFlag(active);
     }
 
     public String getDescription() {
@@ -110,6 +112,22 @@ public class NailService extends AbstractEntity  {
 
     public void setSequence(float sequence) {
         this.sequence = sequence;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getCrop() {
+        return crop;
+    }
+
+    public void setCrop(String crop) {
+        this.crop = crop;
     }
 
     /////////Transient attribute///////////
