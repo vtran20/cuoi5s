@@ -65,6 +65,14 @@
         <h1 class="pull-left"><fmt:message key="site.register.subdomain"/></h1>
     </div>
 </div>
+<c:choose>
+    <c:when test="${!empty sessionObject.templateId}">
+        <spring:eval expression="serviceLocator.getTemplateDao().findById(T(java.lang.Long).valueOf(sessionObject.templateId))" var="sampleTemplate"/>
+    </c:when>
+    <c:otherwise>
+        <spring:eval expression="serviceLocator.getTemplateDao().findUniqueBy('templateModel', 'M001P', site.id)" var="sampleTemplate"/>
+    </c:otherwise>
+</c:choose>
 <div class="container content">
     <div class="row">
         <jsp:include page="leftnav.jsp"/>
@@ -91,7 +99,6 @@
                         </div>
                         <div class="form-group">
                             <label class="col-lg-3 control-label"><fmt:message key="site.register.templateCode"/></label>
-                            <spring:eval expression="serviceLocator.getTemplateDao().findById(T(java.lang.Long).valueOf(sessionObject.templateId))" var="sampleTemplate"/>
                             <div class="col-lg-9">
                                 <p class="help-block"><b>${sampleTemplate.templateModel}</b></p>
                             </div>

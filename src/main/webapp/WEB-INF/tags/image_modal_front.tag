@@ -181,10 +181,18 @@
                 console.log(Math.round(image.y));
                 console.log(Math.round(image.width));
                 console.log(Math.round(image.height));
+                console.log(button)
+                console.log($image.attr('src'))
+                console.log($("#uri_uuid").html())
                 // Make sure the callback is a function​
                 if (typeof callbackFromImageModal === "function") {
                     // Call it, since we have confirmed it is callable​
-                    callbackFromImageModal(image, button, $image.attr('src'), $("#uri_uuid").html());
+                    uriUUID = $("#uri_uuid").html()
+                    if (uriUUID === '') {
+                        str = $image.attr('src')
+                        uriUUID = str.substring(str.lastIndexOf("/") + 1, str.lastIndexOf("."));
+                    }
+                    callbackFromImageModal(image, button, $image.attr('src'), uriUUID);
                 }
                 $('#image-modal-form').modal('hide');
             } else {

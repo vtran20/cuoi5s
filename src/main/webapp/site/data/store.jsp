@@ -138,10 +138,12 @@
                 </div>
                 <div class="col-md-6">
                     <div class="headline"><h4><fmt:message key="images.upload.logo"/></h4></div>
-                    <spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_IMAGE', thisSite.id)" var="logoImg"/>
-                    <spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_CROP', thisSite.id)" var="logoCrop"/>
+                    <%--<spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_IMAGE', thisSite.id)" var="logoImg"/>--%>
+                    <%--<spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_CROP', thisSite.id)" var="logoCrop"/>--%>
+                    <spring:eval expression="serviceLocator.siteHeaderFooterDao.findUniqueBy('site.id', site.id)" var="siteHeaderFooter"/>
                     <div class="col-md-6">
-                        <a class="btn btn-success hidden-sm hidden-xs margin-bottom-20" href="#image-modal-form" data-id="${thisSite.id}" data-img="${logoImg.value}" data-crop="${logoCrop.value}" role="button" data-toggle="modal" data-target="#image-modal-form" data-backdrop="static" data-keyboard="false">
+                        <c:if test="${!empty siteHeaderFooter.logoImg}"><c:set var="logoImage" value="${imageServer}/get/${siteHeaderFooter.logoImg}.png"/> </c:if>
+                        <a class="btn btn-success hidden-sm hidden-xs margin-bottom-20" href="#image-modal-form" data-id="${thisSite.id}" data-img="${logoImage}" data-crop="${logoCrop.value}" role="button" data-toggle="modal" data-target="#image-modal-form" data-backdrop="static" data-keyboard="false">
                             <i class="fa fa-cloud-upload"></i> <fmt:message key="images.upload.logo"/>
                         </a>
                         <label class="caption margin-bottom-20">
@@ -149,12 +151,12 @@
                         </label>
                     </div>
                     <div id="logo-image" class="col-md-6">
-                        <c:if test="${!empty logoImg.value}">
-                            <c:if test="${! empty logoCrop.value}"><c:set value="op=crop|${logoCrop.value}" var="opCrop"/></c:if>
-                            <img src="${imageServer}/get/${logoImg.value}.png?${opCrop}&op=scale|x60"/>
+                        <c:if test="${!empty siteHeaderFooter.logoImg}">
+                            <c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop|${siteHeaderFooter.crop}" var="opCrop"/></c:if>
+                            <img src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}"/>
                         </c:if>
                     </div>
-
+                    <div class="clear-both"></div>
                     <div class="headline"><h4>Opening Hours</h4></div>
                     <div class="form-group">
                         <label class="col-lg-3 control-label">
@@ -338,7 +340,13 @@
             success: function(data)
             {
                 if (data == "ok") {
-                    var newImageUrl = $(button).data("img")+'?op=scale|220'
+                    var newImageUrl
+                    if ($(button).data("img")) {
+                        newImageUrl = $(button).data("img")+'?op=scale|220'
+                    } else {
+                        newImageUrl = '${imageServer}/get/'+imageUri+'.png?op=crop|'+$(button).data("crop")
+                        $(button).data("img", '${imageServer}/get/'+imageUri+'.png')
+                    }
                     //rebuild a new url with crop
                     $("#logo-image").html('<img src="'+newImageUrl+'"/>')
                 }

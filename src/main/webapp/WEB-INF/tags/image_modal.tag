@@ -3,9 +3,9 @@
 <%@ tag language="java" isELIgnored="false" pageEncoding="UTF-8" %>
 <%@ include file="common.tagf" %>
 <style type="text/css">
-    .modal-body {
-        min-height: 300px;
-    }
+    /*.modal-body {*/
+        /*min-height: 300px;*/
+    /*}*/
     .img-container {
         min-height: 375px;
         max-height: 375px

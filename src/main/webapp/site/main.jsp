@@ -12,14 +12,12 @@
 
 <body>
 <h:authenticate request="${pageContext.request}" response="${pageContext.response}"/>
-<%--TODO: redirect to create a new site--%>
-<c:redirect url = "/site/select-template.html?templateId=64" />
 <div class="breadcrumbs">
     <div class="container">
         <h1 class="pull-left"><fmt:message key="site.create.new.website"/></h1>
     </div>
 </div>
-
+<spring:eval expression="serviceLocator.templateDao.findActiveByOrder('site.id', site.id, 'sequence')" var="templates"/>
 <div class="container content">
 <div class="row">
 <!-- Begin Sidebar Menu -->
@@ -28,9 +26,16 @@
 
 <!-- Begin Content -->
 <div class="col-md-9">
-    <a href="" type="button" class="btn-u btn-u-red">Create A New Website</a>
     <!-- Thumbnails v1 -->
-    <%--<h:sitetemplates column="3"/>--%>
+    <c:choose>
+        <c:when test="${fn:length(templates) == 1}">
+            <c:set value="${templates[0]}" var="template"/>
+            <c:redirect url="/site/select-template.html?templateId=${template.id}"/>
+        </c:when>
+        <c:otherwise>
+            <h:sitetemplates column="3"/>
+        </c:otherwise>
+    </c:choose>
     <!-- End Thumbnails v1 -->
 
 </div>

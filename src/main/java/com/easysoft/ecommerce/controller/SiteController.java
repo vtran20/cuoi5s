@@ -90,7 +90,7 @@ public class SiteController {
     public ModelAndView registerPost(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         if (SessionUtil.isLoggedIn(request, response)) {
-            return new ModelAndView("/site/main");
+            return new ModelAndView("redirect:/site/main.html");
         } else if ("GET".equalsIgnoreCase(request.getMethod())) {
             return new ModelAndView("/site/login");
         } else {
@@ -298,7 +298,7 @@ public class SiteController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = {"select-template.html", "create-site.html"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"select-template.html"}, method = RequestMethod.GET)
     //="+templateColorCode+"&="+skinColor+"&="+fullWide
     public ModelAndView selectTemplate(@Valid Long templateId,
                                        @RequestParam(value = "templateColorCode", required = false) String templateColorCode,
@@ -331,8 +331,11 @@ public class SiteController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "create-site.html", method = RequestMethod.POST)
+    @RequestMapping(value = "create-site.html", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView createWebsite(@Valid Long templateId, @Valid String siteCode, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getMethod().equalsIgnoreCase("GET")) {
+            return new ModelAndView("/site/createsite");
+        }
         Messages messages = null;
         Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
         String recaptchaResponse = request.getParameter("g-recaptcha-response");
@@ -1912,32 +1915,23 @@ public class SiteController {
     public @ResponseBody String updateLogoImage(@Valid Long id, @Valid String crop, @Valid String imgUrl, HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             Site thisSite = serviceLocator.getSiteDao().findUniqueBy("id", id);//get persist entity
-            SiteParam siteParam = serviceLocator.getSiteParamDao().findUniqueBy("key", "LOGO_IMAGE", id);
-            if (siteParam != null) {
-                siteParam.setValue(imgUrl);
-                serviceLocator.getSiteParamDao().merge(siteParam);
+            SiteHeaderFooter header = serviceLocator.getSiteHeaderFooterDao().findUniqueBy("site.id", id);
+            if (header != null) {
+                header.setCrop(crop);
+                header.setLogoImg(imgUrl);
+                header.setUseLogoImg("Y");
+                serviceLocator.getSiteHeaderFooterDao().merge(header);
             } else {
-                siteParam = new SiteParam();
-                siteParam.setKey("LOGO_IMAGE");
-                siteParam.setValue(imgUrl);
-                siteParam.setSiteId(thisSite.getId());
-                serviceLocator.getSiteParamDao().persist(siteParam);
+                header = new SiteHeaderFooter();
+                header.setCrop(crop);
+                header.setLogoImg(imgUrl);
+                header.setUseLogoImg("Y");
+                header.setSite(thisSite);
+                serviceLocator.getSiteHeaderFooterDao().merge(header);
             }
 
-            siteParam = serviceLocator.getSiteParamDao().findUniqueBy("key", "LOGO_CROP", id);
-            if (siteParam != null) {
-                siteParam.setValue(crop);
-                serviceLocator.getSiteParamDao().merge(siteParam);
-            } else {
-                siteParam = new SiteParam();
-                siteParam.setKey("LOGO_CROP");
-                siteParam.setValue(crop);
-                siteParam.setSiteId(thisSite.getId());
-                serviceLocator.getSiteParamDao().persist(siteParam);
-            }
-            //Remove site param cache for the site.
-            serviceLocator.getCacheData().removeCommonCache(thisSite.getSubDomain());
-            serviceLocator.getCacheData().removeCommonCache(thisSite.getDomain());
+            //TODO: Remove cache for the headerFooter.
+//            serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateHeaderCacheKey());
             return "ok";
         } catch (Exception e) {
             e.printStackTrace();
@@ -2113,7 +2107,7 @@ public class SiteController {
             }
             if (isChange) {
                 serviceLocator.getAlbumImageDao().merge(originalAlbumImage);
-                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromAlbumImage(null, originalAlbumImage.getId()));
+//                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromAlbumImage(null, originalAlbumImage.getId()));
                 messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.saved.success", null, LocaleContextHolder.getLocale()));
                 return messages.toString();
 

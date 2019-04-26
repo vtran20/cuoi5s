@@ -11,8 +11,6 @@
 <div class="page-header">
     <h4><fmt:message key="admin.design.web.page"/></h4>
 </div><!-- /.page-header -->
-<style>
-</style>
 <script>
     var remoteTabsPluginLoaded;
     $('.design-partcontent').click(function (e) {

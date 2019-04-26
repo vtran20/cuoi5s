@@ -43,6 +43,7 @@
 <body class="${skinColor} ${boxLayout}">
 <div class="wrapper">
 <!--=== Header ===-->
+<spring:eval expression="systemContext.getGlobalConfig('image.server')" var="imageServer"/>
 <div class="header">
     <div class="container">
         <app:cache key="header_cuoi5s">
@@ -51,8 +52,9 @@
             <spring:eval expression="serviceLocator.siteHeaderFooterDao.findUniqueBy('site.id', site.id)" var="siteHeaderFooter"/>
             <c:choose>
                 <c:when test="${fn:startsWith(siteHeaderFooter.useLogoImg, 'Y')}">
-                    <img class="hidden-xs" id="logo-header" src="${fn:replace(siteHeaderFooter.logoImg, ".jpg", ".png")}?op=scale|x70" alt="${site.name}">
-                    <img class="hidden-sm hidden-md hidden-lg" id="logo-header" src="${fn:replace(siteHeaderFooter.logoImg, ".jpg", ".png")}?op=scale|x50" alt="${site.name}">
+                    <c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop|${siteHeaderFooter.crop}" var="opCrop"/></c:if>
+                    <img class="hidden-xs" id="logo-header" src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale|x70" alt="${site.name}">
+                    <img class="hidden-sm hidden-md hidden-lg" id="logo-header" src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale|x50" alt="${site.name}">
                 </c:when>
                 <c:otherwise>
                     ${siteHeaderFooter.logoText}

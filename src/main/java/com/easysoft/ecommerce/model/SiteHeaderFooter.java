@@ -13,6 +13,7 @@ public class SiteHeaderFooter extends AbstractEntity {
     String logoText;
     String sloganText;
     String logoImg;
+    String crop;
     String logoAltImg;
     String useLogoImg;
     String footerHeaderDisplay;
@@ -60,6 +61,14 @@ public class SiteHeaderFooter extends AbstractEntity {
 
     public void setLogoImg(String logoImg) {
         this.logoImg = logoImg;
+    }
+
+    public String getCrop() {
+        return crop;
+    }
+
+    public void setCrop(String crop) {
+        this.crop = crop;
     }
 
     @Column(name = "logo_alt_img", length = 300)

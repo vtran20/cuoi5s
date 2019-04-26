@@ -39,8 +39,6 @@ public class GeneralController {
         Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
         if (site.getSiteType() == 1 || site.getSiteType() == 3) {
             return "/wpt";
-        } else if (site.getSiteType() == 4) { // 1 page template
-            return "/content/onepage";
         } else { //2
             return "/content/page";
         }
