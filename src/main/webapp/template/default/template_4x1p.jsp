@@ -23,15 +23,16 @@
 <spring:eval expression="serviceLocator.getNailServiceDao().getGroupServices(store.id)" var="groups"/>
 <spring:eval expression="serviceLocator.albumImageDao.findAlbumImages(0, 0, 100, 'id', site.id, true)" var="galleryImages"/>
 <%--Logo--%>
-<spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_IMAGE', site.id)" var="logoImg"/>
-<spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_CROP', site.id)" var="logoCrop"/>
-<c:if test="${!empty logoImg.value}">
+<spring:eval expression="serviceLocator.siteHeaderFooterDao.findUniqueBy('site.id', site.id)" var="siteHeaderFooter"/>
+<c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop|${siteHeaderFooter.crop}" var="opCrop"/></c:if>
+
+<c:if test="${!empty siteHeaderFooter}">
     <c:choose>
-        <c:when test="${! empty logoCrop.value}">
-            <c:set value="${imageServer}/get/${logoImg.value}.png?op=crop|${logoCrop.value}&op=scale|x60" var="logoUrl"/>
+        <c:when test="${! empty siteHeaderFooter.crop}">
+            <c:set value="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale|x60" var="logoUrl"/>
         </c:when>
         <c:otherwise>
-            <c:set value="${imageServer}/get/${logoImg.value}.png?op=scale|x60" var="logoUrl"/>
+            <c:set value="${imageServer}/get/${siteHeaderFooter.logoImg}.png?op=scale|x60" var="logoUrl"/>
         </c:otherwise>
     </c:choose>
 </c:if>
@@ -276,9 +277,11 @@
                             <a href="#services" class="nav-link p-0">Services</a>
                         </li>
                         </c:if>
-                        <li class="nav-item g-mx-12--lg g-mb-7 g-mb-0--lg">
-                            <a href="#booking" class="nav-link p-0">Make Appointment</a>
-                        </li>
+                        <c:if test="${!empty groups}">
+                            <li class="nav-item g-mx-12--lg g-mb-7 g-mb-0--lg">
+                                <a href="#booking" class="nav-link p-0">Make Appointment</a>
+                            </li>
+                        </c:if>
                         <c:if test="${!empty galleryImages}">
                             <li class="nav-item g-mx-12--lg g-mb-7 g-mb-0--lg">
                                 <a href="#gallery" class="nav-link p-0">Gallery</a>
@@ -442,126 +445,122 @@
 <%--<decorator:body/>--%>
 
 <!-- Booking -->
-<spring:eval expression="serviceLocator.getNailStoreDao().findActiveByOrder('active', 'Y', null, site.id)" var="stores"/>
-<c:if test="${!empty stores && fn:length(stores) == 1}">
-    <c:set var="store" value="${stores[0]}"/>
-    <spring:eval expression="serviceLocator.getNailEmployeeDao().findAllByStore(store.id)" var="employees"/>
-</c:if>
-
-<section id="booking" class="g-py-70">
-    <div class="container text-center g-width-590 g-mb-50">
-        <div class="g-mb-25">
-            <h4 class="g-font-weight-700 g-font-size-20 g-theme-h-v1 g-color-primary g-mb-25">Making Appointment</h4>
-            <%--<h2 class="text-uppercase g-font-weight-600 g-font-size-22 mb-0">Get in touch</h2>--%>
-        </div>
-        <p class="mb-0">Please fill out the information and submit your appointment.</p>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 g-mb-40 g-mb-0--md">
-                <form id="form">
-                    <c:if test="${!empty stores && fn:length(stores) == 1}">
-                        <c:set var="store" value="${stores[0]}"/>
-                        <input type="hidden" name="storeId" id="storeId" value="${store.id}"/>
-                    </c:if>
-                    <c:if test="${!empty stores && fn:length(stores) >= 2}">
-                        <%--<div class="col-md-4 col-xs-12">--%>
-                        <%--<div class="form-group">--%>
-                        <%--<label for="storeId">Location</label>--%>
-                        <%--<select name="storeId" class="form-control" id="storeId">--%>
-                        <%--<option value="">Select Location</option>--%>
-                        <%--<c:forEach items="${stores}" var="store">--%>
-                        <%--<option value="${store.id}">${store.name}: ${store.address_1} ${store.city}, ${store.state} ${store.zipCode}</option>--%>
-                        <%--</c:forEach>--%>
-                        <%--</select>--%>
-                        <%--</div>--%>
-                        <%--</div>--%>
-                    </c:if>
-                    <div class="form-group row g-mb-50">
-                        <div class="col-md-4">
-                            <label for="date">Select Date</label>
-                            <input  type="date" placeholder="Select Date" name="date" id="date" class="form-control h-60 g-color-gray-dark-v5 g-placeholder-inherit g-theme-bg-gray-light-v1 g-brd-none rounded-0 g-pa-12">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="employeeId">Select Technician</label>
-                            <select name="employeeId"  id="employeeId" class="form-control h-60 g-color-gray-dark-v5 g-placeholder-inherit g-theme-bg-gray-light-v1 g-brd-none rounded-0 g-pa-12">
-                                <option value="0">Any Technicians</option>
-                                <c:forEach items="${employees}" var="employee">
-                                    <option value="${employee.id}">${employee.firstName} ${employee.lastName}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="serviceId">Select Service</label>
-                            <select name="serviceId" id="serviceId" multiple="multiple" class="form-control h-60 g-color-gray-dark-v5 g-placeholder-inherit g-theme-bg-gray-light-v1 g-brd-none rounded-0 g-py-5">
-                                <c:forEach items="${groups}" var="group">
-                                    <optgroup label="${group.name}">
-                                        <!--List service-->
-                                        <spring:eval expression="serviceLocator.getNailServiceDao().getServices(group.id, store.id)" var="services"/>
-                                        <c:forEach items="${services}" var="service">
-                                            <option value="${service.id}">${service.name}</option>
-                                        </c:forEach>
-                                    </optgroup>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn btn-md text-uppercase btn-block u-btn-outline-primary g-font-weight-700 g-font-size-11 g-brd-2 rounded-0 g-py-19 g-px-20" type="button" role="button" id="search-timeslot-button">Search Time Slots</button>
-                </form>
+<c:if test="${!empty groups}">
+    <section id="booking" class="g-py-70">
+        <div class="container text-center g-width-590 g-mb-50">
+            <div class="g-mb-25">
+                <h4 class="g-font-weight-700 g-font-size-20 g-theme-h-v1 g-color-primary g-mb-25">Making Appointment</h4>
+                    <%--<h2 class="text-uppercase g-font-weight-600 g-font-size-22 mb-0">Get in touch</h2>--%>
             </div>
-            <div class="col-md-12 g-my-30" id="display-timeslot-result"></div>
-            <%--<h2 class="text-uppercase g-font-weight-600 g-font-size-22 mb-0" id="display-timeslot-result"></h2>--%>
+            <p class="mb-0">Please fill out the information and submit your appointment.</p>
         </div>
-    </div>
-</section>
 
-<div class="modal fade" id="responsive-booking" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel4">Make Appointment</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="container">
-                    <div  id="modal_message_alert"></div>
-                    <form class="margin-bottom-40" role="form" id="formModal">
-                        <input type="hidden" name="selectedStoreId" id="selectedStoreId" value=""/>
-                        <input type="hidden" name="selectedDate" id="selectedDate" value=""/>
-                        <input type="hidden" name="selectedTime" id="selectedTime" value=""/>
-                        <input type="hidden" name="selectedServiceId" id="selectedServiceId" value=""/>
-                        <input type="hidden" name="selectedEmployeeId" id="selectedEmployeeId" value=""/>
-                        <div class="form-group">
-                            <label for="firstName"><fmt:message key="site.register.firstName"/></label>
-                            <input type="text" class="form-control" name="firstName" id="firstName" value="" placeholder="<fmt:message key="site.register.firstName"/>"/>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 g-mb-40 g-mb-0--md">
+                    <form id="form">
+                        <c:if test="${!empty stores && fn:length(stores) == 1}">
+                            <c:set var="store" value="${stores[0]}"/>
+                            <input type="hidden" name="storeId" id="storeId" value="${store.id}"/>
+                        </c:if>
+                        <c:if test="${!empty stores && fn:length(stores) >= 2}">
+                            <%--<div class="col-md-4 col-xs-12">--%>
+                            <%--<div class="form-group">--%>
+                            <%--<label for="storeId">Location</label>--%>
+                            <%--<select name="storeId" class="form-control" id="storeId">--%>
+                            <%--<option value="">Select Location</option>--%>
+                            <%--<c:forEach items="${stores}" var="store">--%>
+                            <%--<option value="${store.id}">${store.name}: ${store.address_1} ${store.city}, ${store.state} ${store.zipCode}</option>--%>
+                            <%--</c:forEach>--%>
+                            <%--</select>--%>
+                            <%--</div>--%>
+                            <%--</div>--%>
+                        </c:if>
+                        <div class="form-group row g-mb-50">
+                            <div class="col-md-4">
+                                <label for="date">Select Date</label>
+                                <input  type="date" placeholder="Select Date" name="date" id="date" class="form-control h-60 g-color-gray-dark-v5 g-placeholder-inherit g-theme-bg-gray-light-v1 g-brd-none rounded-0 g-pa-12">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="employeeId">Select Technician</label>
+                                <select name="employeeId"  id="employeeId" class="form-control h-60 g-color-gray-dark-v5 g-placeholder-inherit g-theme-bg-gray-light-v1 g-brd-none rounded-0 g-pa-12">
+                                    <option value="0">Any Technicians</option>
+                                    <c:forEach items="${employees}" var="employee">
+                                        <option value="${employee.id}">${employee.firstName} ${employee.lastName}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="serviceId">Select Service</label>
+                                <select name="serviceId" id="serviceId" multiple="multiple" class="form-control h-60 g-color-gray-dark-v5 g-placeholder-inherit g-theme-bg-gray-light-v1 g-brd-none rounded-0 g-py-5">
+                                    <c:forEach items="${groups}" var="group">
+                                        <optgroup label="${group.name}">
+                                            <!--List service-->
+                                            <spring:eval expression="serviceLocator.getNailServiceDao().getServices(group.id, store.id)" var="services"/>
+                                            <c:forEach items="${services}" var="service">
+                                                <option value="${service.id}">${service.name}</option>
+                                            </c:forEach>
+                                        </optgroup>
+                                    </c:forEach>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="lastName"><fmt:message key="site.register.lastName"/></label>
-                            <input type="text" class="form-control" name="lastName" id="lastName" value="" placeholder="<fmt:message key="site.register.lastName"/>"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone"><fmt:message key="site.register.phone"/></label>
-                            <input type="text" class="form-control" name="phone" id="phone" value="" placeholder="(xxx) xxx-xxxx"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="email"><fmt:message key="site.register.email"/></label>
-                            <input type="text" class="form-control" name="email" id="email" value="" placeholder="<fmt:message key="site.register.email"/>"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="message"><fmt:message key="booking.message.content"/></label>
-                            <textarea class="form-control" id="message" name="message" rows="2" placeholder="<fmt:message key="booking.message.content"/>" maxlength="999"></textarea>
-                        </div>
+                        <button class="btn btn-md text-uppercase btn-block u-btn-outline-primary g-font-weight-700 g-font-size-11 g-brd-2 rounded-0 g-py-19 g-px-20" type="button" role="button" id="search-timeslot-button">Search Time Slots</button>
                     </form>
                 </div>
+                <div class="col-md-12 g-my-30" id="display-timeslot-result"></div>
+                    <%--<h2 class="text-uppercase g-font-weight-600 g-font-size-22 mb-0" id="display-timeslot-result"></h2>--%>
             </div>
-            <div class="modal-footer">
-                <%--<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>--%>
-                <button type="button" id="submit-appointment" class="btn btn-primary">Save changes</button>
+        </div>
+    </section>
+    <div class="modal fade" id="responsive-booking" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel4">Make Appointment</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div  id="modal_message_alert"></div>
+                        <form class="margin-bottom-40" role="form" id="formModal">
+                            <input type="hidden" name="selectedStoreId" id="selectedStoreId" value=""/>
+                            <input type="hidden" name="selectedDate" id="selectedDate" value=""/>
+                            <input type="hidden" name="selectedTime" id="selectedTime" value=""/>
+                            <input type="hidden" name="selectedServiceId" id="selectedServiceId" value=""/>
+                            <input type="hidden" name="selectedEmployeeId" id="selectedEmployeeId" value=""/>
+                            <div class="form-group">
+                                <label for="firstName"><fmt:message key="site.register.firstName"/></label>
+                                <input type="text" class="form-control" name="firstName" id="firstName" value="" placeholder="<fmt:message key="site.register.firstName"/>"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName"><fmt:message key="site.register.lastName"/></label>
+                                <input type="text" class="form-control" name="lastName" id="lastName" value="" placeholder="<fmt:message key="site.register.lastName"/>"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone"><fmt:message key="site.register.phone"/></label>
+                                <input type="text" class="form-control" name="phone" id="phone" value="" placeholder="(xxx) xxx-xxxx"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="email"><fmt:message key="site.register.email"/></label>
+                                <input type="text" class="form-control" name="email" id="email" value="" placeholder="<fmt:message key="site.register.email"/>"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="message"><fmt:message key="booking.message.content"/></label>
+                                <textarea class="form-control" id="message" name="message" rows="2" placeholder="<fmt:message key="booking.message.content"/>" maxlength="999"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                        <%--<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>--%>
+                    <button type="button" id="submit-appointment" class="btn btn-primary">Save changes</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</c:if>
+<spring:eval expression="serviceLocator.getNailEmployeeDao().findAllByStore(store.id)" var="employees"/>
 <%--Booking End--%>
 
 <%--Gallery--%>
@@ -844,9 +843,11 @@
                     <a class="g-color-gray-dark-v5 g-color-primary--hover g-text-underline--none--hover" href="#services">Services</a>
                 </li>
             </c:if>
-            <li class="list-inline-item g-px-12--md">
-                <a class="g-color-gray-dark-v5 g-color-primary--hover g-text-underline--none--hover" href="#booking">Make Appointment</a>
-            </li>
+            <c:if test="${!empty groups}">
+                <li class="list-inline-item g-px-12--md">
+                    <a class="g-color-gray-dark-v5 g-color-primary--hover g-text-underline--none--hover" href="#booking">Make Appointment</a>
+                </li>
+            </c:if>
             <c:if test="${!empty galleryImages}">
             <li class="list-inline-item g-px-12--md">
                 <a class="g-color-gray-dark-v5 g-color-primary--hover g-text-underline--none--hover" href="#gallery">Gallery</a>

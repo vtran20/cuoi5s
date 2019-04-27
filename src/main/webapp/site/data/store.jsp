@@ -72,7 +72,7 @@
                     <div class="form-group">
                         <label class="col-lg-3 control-label" for="state"><fmt:message key="site.data.address.state"/></label>
                         <div class="col-lg-9">
-                            <h:stringparamselector name="state" stringParam="USA_STATE" defaultValue="${store.state}" includeTitle="Select State" styleClass="form-control required"/>
+                            <h:stringparamselector name="state" stringParam="USA_STATE" lang="en_US" defaultValue="${store.state}" includeTitle="Select State" styleClass="form-control required"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -84,14 +84,14 @@
                     <div class="form-group">
                         <label for="latitude" class="col-lg-3 control-label"><fmt:message key="site.data.address.latitude"/></label>
                         <div class="col-lg-9">
-                            <input id="latitude" type="text" placeholder="<fmt:message key="site.data.address.latitude"/>" name="latitude" class="form-control required" value="${store.latitude}">
+                            <input id="latitude" type="text" placeholder="<fmt:message key="site.data.address.latitude"/>" name="latitude" class="form-control" value="${store.latitude}">
                             <small class="form-text text-muted"><fmt:message key="site.data.lat.long"/></small>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="longitude" class="col-lg-3 control-label"><fmt:message key="site.data.address.longitude"/></label>
                         <div class="col-lg-9">
-                            <input id="longitude" type="text" placeholder="<fmt:message key="site.data.address.longitude"/>" name="longitude" class="form-control required" value="${store.longitude}">
+                            <input id="longitude" type="text" placeholder="<fmt:message key="site.data.address.longitude"/>" name="longitude" class="form-control" value="${store.longitude}">
                             <small class="form-text text-muted"><fmt:message key="site.data.lat.long"/></small>
                         </div>
                     </div>
@@ -138,9 +138,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="headline"><h4><fmt:message key="images.upload.logo"/></h4></div>
-                    <%--<spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_IMAGE', thisSite.id)" var="logoImg"/>--%>
-                    <%--<spring:eval expression="serviceLocator.getSiteParamDao().findUniqueBy('key', 'LOGO_CROP', thisSite.id)" var="logoCrop"/>--%>
-                    <spring:eval expression="serviceLocator.siteHeaderFooterDao.findUniqueBy('site.id', site.id)" var="siteHeaderFooter"/>
+                    <spring:eval expression="serviceLocator.siteHeaderFooterDao.findUniqueBy('site.id', thisSite.id)" var="siteHeaderFooter"/>
                     <div class="col-md-6">
                         <c:if test="${!empty siteHeaderFooter.logoImg}"><c:set var="logoImage" value="${imageServer}/get/${siteHeaderFooter.logoImg}.png"/> </c:if>
                         <a class="btn btn-success hidden-sm hidden-xs margin-bottom-20" href="#image-modal-form" data-id="${thisSite.id}" data-img="${logoImage}" data-crop="${logoCrop.value}" role="button" data-toggle="modal" data-target="#image-modal-form" data-backdrop="static" data-keyboard="false">

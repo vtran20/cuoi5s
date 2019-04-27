@@ -39,17 +39,18 @@
     <fmt:parseNumber var = "siteId" type = "number" value = "${siteId}" integerOnly = "true" />
     <spring:eval expression="serviceLocator.getSiteDao().findById(siteId)" var="thisSite"/>
     <spring:eval expression="serviceLocator.menuDao.getMenu(thisSite, 'services.html', 'Y')" var="servicesMenu"/>
-    <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(servicesMenu.id, 'Y')" var="menuRows"/>
-    <c:forEach var="row" items="${menuRows}">
-        <c:if test="${fn:contains(row.title, 'Services')}">
-            <c:set var="servicesRow" value="${row}"/>
-            <spring:eval expression="serviceLocator.siteMenuPartContentDao.getContentParts(servicesRow.id, 'Y')" var="partContents"/>
-            <c:if test="${fn:length(partContents) > 0}">
-                <c:set var="servicesContent" value="${partContents[0]}"/>
+    <c:if test="${!empty servicesMenu}">
+        <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(servicesMenu.id, 'Y')" var="menuRows"/>
+        <c:forEach var="row" items="${menuRows}">
+            <c:if test="${fn:contains(row.title, 'Services')}">
+                <c:set var="servicesRow" value="${row}"/>
+                <spring:eval expression="serviceLocator.siteMenuPartContentDao.getContentParts(servicesRow.id, 'Y')" var="partContents"/>
+                <c:if test="${fn:length(partContents) > 0}">
+                    <c:set var="servicesContent" value="${partContents[0]}"/>
+                </c:if>
             </c:if>
-        </c:if>
-    </c:forEach>
-
+        </c:forEach>
+    </c:if>
     <!-- Begin Content -->
 <div class="col-md-9">
     <div class="row">

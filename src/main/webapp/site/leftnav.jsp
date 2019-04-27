@@ -2,7 +2,7 @@
 <%@ page language="java" isELIgnored="false" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" %>
 <%@include file="/common.jspf" %>
 <spring:eval expression="T(com.easysoft.ecommerce.web.filter.RewrittenURIHolder).getURI()" var="uri"/>
-<c:if test="${uri == '/site/main.html' || uri == '/site/select-template.html'}"><c:set var="main" value="active"/></c:if>
+<c:if test="${uri == '/site/main.html' || uri == '/site/select-template.html' || uri == '/site/create-site.html'}"><c:set var="main" value="active"/></c:if>
 <c:if test="${fn:startsWith(uri, '/site/select-template.html')}"><c:set var="selectTemplate" value="active"/></c:if>
 <c:if test="${uri == '/site/mysites.html'}"><c:set var="mysite" value="active"/></c:if>
 <c:if test="${fn:contains('/site/myprofile.html,/site/update_account.html', uri)}"><c:set var="myprofile" value="active"/></c:if>

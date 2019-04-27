@@ -3,12 +3,16 @@
 
 <%@ attribute name="name" required="true" rtexprvalue="true" type="java.lang.String"%>
 <%@ attribute name="stringParam" required="true" rtexprvalue="true" type="java.lang.String"%>
+<%@ attribute name="lang" required="false" rtexprvalue="true" type="java.lang.String"%>
 <%@ attribute name="defaultValue" required="false" rtexprvalue="true" type="java.lang.String"%>
 <%@ attribute name="includeTitle" required="false" rtexprvalue="true" type="java.lang.String"%>
 <%@ attribute name="styleClass" required="false" rtexprvalue="true" type="java.lang.String"%>
 <%@ attribute name="tabindex" required="false" rtexprvalue="true" type="java.lang.String"%>
 <%@ attribute name="isMultiSelect" required="false" rtexprvalue="true" type="java.lang.String"%>
-<spring:eval expression="serviceLocator.getStringParamValueDao().getStringParamValues(stringParam, serviceLocator.locale)" var="stringParamValues"/>
+<c:if test="${empty lang}">
+    <c:set var="lang" value="${serviceLocator.locale}"/>
+</c:if>
+<spring:eval expression="serviceLocator.getStringParamValueDao().getStringParamValues(stringParam, lang)" var="stringParamValues"/>
 <spring:eval expression="serviceLocator.getStringParamDao().findBy('key', stringParam)" var="sParam"/>
 <c:if test="${!empty tabindex}">
     <c:set var="tabInd" value="tabindex='${tabindex}'"/>

@@ -484,6 +484,64 @@ public class SiteServiceImpl implements SiteService {
                 serviceLocator.getSiteSupportDao().persist(newSiteSupport);
             }
 
+            //Adding Nails parts
+            //Store
+            List<NailStore> stores = serviceLocator.getNailStoreDao().findByOrder(null, null, null, siteSample.getId());
+            for (NailStore store : stores) {
+                NailStore newStore = new NailStore();
+                try {
+                    BeanUtils.copyProperties(newStore, store);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+                newStore.setId(null);
+                newStore.setSite(newSite);
+                newStore.setCreatedDate(now.getTime());
+                serviceLocator.getNailStoreDao().persist(newStore);
+
+                //Groups and Services
+                try {
+                    List <NailService> groups = serviceLocator.getNailServiceDao().getGroupServices(store.getId());
+                    for (NailService group : groups) {
+                        //Copy group
+                        NailService newGroup = new NailService();
+                        try {
+                            BeanUtils.copyProperties(newGroup, group);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        newGroup.setId(null);
+                        newGroup.setStore(newStore);
+                        newGroup.setCreatedDate(now.getTime());
+                        serviceLocator.getNailServiceDao().persist(newGroup);
+
+                        List <NailService> services = serviceLocator.getNailServiceDao().getServices(group.getId(), store.getId());
+                        for (NailService service : services) {
+                            //Copy service
+                            NailService newService = new NailService();
+                            try {
+                                BeanUtils.copyProperties(newService, service);
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            } catch (InvocationTargetException e) {
+                                e.printStackTrace();
+                            }
+                            newService.setId(null);
+                            newService.setStore(newStore);
+                            newService.setGroup(newGroup);
+                            newService.setCreatedDate(now.getTime());
+                            serviceLocator.getNailServiceDao().persist(newService);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
 
         messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("create.new.site.successfully", null, LocaleContextHolder.getLocale()));

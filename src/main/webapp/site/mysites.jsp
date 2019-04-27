@@ -4,7 +4,7 @@
 
 <html>
 <head>
-    <title><fmt:message key="billing.shipping.info"/></title>
+    <title><fmt:message key="site.site.list"/></title>
     <meta name="description" content=""/>
     <meta name="keywords" content=""/>
     <meta name="decorator" content="${template.templateCode}"/>
