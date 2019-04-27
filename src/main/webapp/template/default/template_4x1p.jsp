@@ -862,7 +862,7 @@
             <%--<small class="d-block g-font-size-default g-mr-10 g-mb-10 g-mb-0--md">2019 © All Rights Reserved.</small>--%>
             <ul class="u-list-inline">
                 <li class="list-inline-item">
-                    Design by <a class="" href="http://webphattai.com">WebPhatTai.com</a>
+                    Design by <a class="" href="http://quanlytiemnail.com">quanlytiemnail.com</a>
                 </li>
             </ul>
         </div>
