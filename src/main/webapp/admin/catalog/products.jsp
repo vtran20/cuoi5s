@@ -54,7 +54,6 @@
             // properties to animate
         }, 300, function () {
             $('#search-product').click();
-            alert($('#search-product'));
         });
     });
 

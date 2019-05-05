@@ -83,9 +83,76 @@ public class OrderServiceImpl implements OrderService {
         orderDao.persist(order);
         orderSessionDao.createOrUpdateOrderSession(sessionObject, order);
 
+        //Update service end date if order was paid.
+        if ("PAID".equalsIgnoreCase(order.getStatus())) {
+            updateServiceDate(sessionObject);
+        }
         return order;
     }
 
+    private boolean updateServiceDate (SessionObject sessionObject) {
+        boolean isUpdate = false;
+        List<ItemMap> items = sessionObject.getOrder().getItems();
+
+        for (ItemMap item: items) {
+            Long varId = item.getProductVariantId();
+            if (varId != null && varId > 0 && !item.isChildItem()) {
+                ProductVariant variant = ServiceLocatorHolder.getServiceLocator().getProductVariantDao().findById(varId);
+                if (variant != null) {
+                    Long thisSiteId = item.getLong("SITE_ID");
+                    if (thisSiteId > 0) {
+                        Site thisSite = serviceLocator.getSiteDao().findById(thisSiteId);
+                        Long productId = item.getId();
+                        SiteProductService service = serviceLocator.getSiteProductServiceDao().getSiteProductService(productId, thisSiteId);
+                        if (service == null) {
+                            //Create new service
+                            service = new SiteProductService();
+                            service.setStartDate(thisSite.getStartDate());
+                            //calculate endDate, get the endDate from site table
+                            Integer years = item.getQuantity();
+                            Calendar endDate = Calendar.getInstance();
+                            endDate.setTime(thisSite.getEndDate());
+                            endDate.add(Calendar.YEAR, years);
+                            service.setEndDate(endDate.getTime());
+                            service.setActive("Y");
+                            service.setProductVariant(variant);
+                            service.setSite(thisSite);
+                            Product product = ServiceLocatorHolder.getServiceLocator().getProductDao().findById(productId);
+                            service.setProduct(product);
+                            serviceLocator.getSiteProductServiceDao().persist(service);
+                            //update thisSite
+                            thisSite.setEndDate(service.getEndDate());
+                            thisSite.setUpdatedDate(new Date());
+                            serviceLocator.getSiteDao().merge(thisSite);
+
+                        } else {
+                            //update service
+                            service.setStartDate(thisSite.getStartDate());
+                            //calculate endDate, get the endDate from site table
+                            Integer years = item.getQuantity();
+                            Calendar endDate = Calendar.getInstance();
+                            endDate.setTime(thisSite.getEndDate());
+                            endDate.add(Calendar.YEAR, years);
+                            service.setEndDate(endDate.getTime());
+                            service.setActive("Y");
+                            service.setProductVariant(variant);
+                            service.setSite(thisSite);
+                            Product product = ServiceLocatorHolder.getServiceLocator().getProductDao().findById(productId);
+                            service.setProduct(product);
+                            serviceLocator.getSiteProductServiceDao().merge(service);
+                            //update thisSite
+                            thisSite.setEndDate(service.getEndDate());
+                            thisSite.setUpdatedDate(new Date());
+                            serviceLocator.getSiteDao().merge(thisSite);
+                        }
+                    }
+                }
+            }
+        }
+        isUpdate = true;
+
+        return isUpdate;
+    }
     @Override
     public boolean changeOrderStatus(Order order, String orderStatus, Long orderId) throws IOException, ClassNotFoundException {
         boolean isUpdate = false;
@@ -421,7 +488,13 @@ public class OrderServiceImpl implements OrderService {
         order.setPhoneShipping(sessionObject.getAddresses().getShippingAddress().getPhone());
 
         order.setEmail(sessionObject.getAddresses().getBillingAddress().getEmail());
-        order.setStatus("NEW_ORDER");
+        String thirdPartyOrderNumber = sessionObject.getOrder().getString("THIRD_PARTY_ORDER_NUMBER");
+        if (StringUtils.isNotEmpty(thirdPartyOrderNumber)) {
+            order.setStatus("PAID");
+            order.setThirdPartyOrderNumber(thirdPartyOrderNumber);
+        } else {
+            order.setStatus("NEW_ORDER");
+        }
         order.setTotalPrice(sessionObject.getOrder().getTotalPrice());
         order.setUpdatedDate(new Date());
         order.setSite(ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite());

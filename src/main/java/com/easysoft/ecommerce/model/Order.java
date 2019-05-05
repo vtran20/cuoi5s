@@ -3,10 +3,7 @@ package com.easysoft.ecommerce.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -58,6 +55,7 @@ public class Order extends AbstractEntity  {
     private Integer orderType;
     private Long commission;
     private Site site;
+    private String thirdPartyOrderNumber;
 
     public Order() {
         super();
@@ -296,5 +294,14 @@ public class Order extends AbstractEntity  {
 
     public void setCommission(Long commission) {
         this.commission = commission;
+    }
+
+    @Column(nullable = true, length = 50)
+    public String getThirdPartyOrderNumber() {
+        return thirdPartyOrderNumber;
+    }
+
+    public void setThirdPartyOrderNumber(String thirdPartyOrderNumber) {
+        this.thirdPartyOrderNumber = thirdPartyOrderNumber;
     }
 }

@@ -76,7 +76,7 @@
                             <li class=""><a href="/site/checkout/basket.html"><i class="fa fa-shopping-cart fa-2x"></i> (${totalItemsInCart})</a></li>
                             <li class="topbar-devider"></li>
                         </c:if>
-                        <li class="hidden-xs"><a href="/site/main.html">Hi, ${sessionObject.USER_NAME}</a></li>
+                        <li class="hidden-xs"><a href="/site/main.html"><fmt:message key="site.my.account"/></a></li>
                         <li class="hidden-sm hidden-md hidden-lg"><a href="/site/main.html"><i class="fa fa-user fa-2x"></i></a></li>
                         <li class="topbar-devider"></li>
                         <li class="hidden-xs"><a href="/site/dang-xuat.html"><fmt:message key="site.logout"/></a></li>

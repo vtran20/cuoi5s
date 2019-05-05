@@ -46,10 +46,12 @@
                                     <%--<span>--%>
                                     <%--<button type="button" class="btn-u" data-toggle="modal" data-target=".bs-example-modal-lg"><fmt:message key="product.add.modules"/></button>--%>
                                     <%--</span>--%>
-                                    <a class="btn btn-xs btn-info" title="<fmt:message key="product.add.modules"/>" href="#modal-form" role="button" data-toggle="modal" data-title="<fmt:message key="product.add.modules"/>" data-page="/site/modal_modules.html?thisSiteId=${item.current.SITE_ID}" data-target="#modal-form">
-                                        <i class="fa fa-plus"></i> <fmt:message key="product.add.modules"/>
-                                    </a>
-
+                                    <spring:eval expression="serviceLocator.getProductDao().getNotAddedModules(site.id, item.current.SITE_ID)" var="notAddedProducts" />
+                                    <c:if test="${!empty notAddedProducts}">
+                                        <a class="btn btn-xs btn-info" title="<fmt:message key="product.add.modules"/>" href="#modal-form" role="button" data-toggle="modal" data-title="<fmt:message key="product.add.modules"/>" data-page="/site/modal_modules.html?thisSiteId=${item.current.SITE_ID}" data-target="#modal-form">
+                                            <i class="fa fa-plus"></i> <fmt:message key="product.add.modules"/>
+                                        </a>
+                                    </c:if>
                                 </c:if>
                             </div>
                         </td>
@@ -104,7 +106,7 @@
                                     <input type='text' class="quantity-field" name='quantity_${item.current.ITEM_VARIANT_ID}' value="${item.current.QUANTITY}" disabled/>
                                 </c:otherwise>
                             </c:choose>
-                            &nbsp;&nbsp;<fmt:message key="basket.month"/>
+                            &nbsp;&nbsp;<fmt:message key="basket.year"/>
                         </td>
                         <td class="shop-red"  style="width: 20%;">
                             <c:set var="price" value="${item.current.FINAL_PRICE_ITEM}"/>
@@ -188,7 +190,7 @@
                                                 <%--<input type='text' class="quantity-field" name='quantity_${item.current.ITEM_VARIANT_ID}' value="${item.current.QUANTITY}" disabled/>--%>
                                                 <%--</c:otherwise>--%>
                                                 <%--</c:choose>--%>
-                                                <%--&nbsp;&nbsp;<fmt:message key="basket.month"/>--%>
+                                                <%--&nbsp;&nbsp;<fmt:message key="basket.year"/>--%>
                                                 <%--</td>--%>
                                             <td class="shop-red"  style="width: 20%;">
                                                 <c:set var="price" value="${item.current.FINAL_PRICE_ITEM}"/>

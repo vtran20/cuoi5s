@@ -86,7 +86,7 @@ public class SiteController {
         }
     }
 
-    @RequestMapping(value = {"dang-ky.html"}, method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = {"dang-ky.html", "signup.html"}, method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView registerPost(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         if (SessionUtil.isLoggedIn(request, response)) {
@@ -1306,19 +1306,23 @@ public class SiteController {
      * <p/>
      * This method will place order. Here is what the method will do:
      * 1.  Create order on Order and Order_Session tables
-     * 2.  Store the order status is New Order. (Notes: New Order: order just created, have not paid yet)
+     * 2.  Store the order status is PAID. (Notes: New Order: order just created, have not paid yet)
      * 3.  Process update expired date for the service (base on each service)
      * 4.  Redirect to Payment Provider
      * 5.  Send email to the client said that order was created. But not make a payment.
      *
+     * @param info
      * @param request
      * @param response
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/checkout/payment.html")
-    public String payment(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(value = "/checkout/payment.html", method = {RequestMethod.POST, RequestMethod.GET})
+    public String payment(@RequestBody Map info, HttpServletRequest request, HttpServletResponse response) throws Exception {
         SessionObject so = SessionUtil.load(request, response);
+        if (info != null && info.get("orderID") != null) {
+            so.getOrder().set("THIRD_PARTY_ORDER_NUMBER", info.get("orderID")+"");
+        }
         if (so.getOrder().getItems() == null || so.getOrder().getItems().isEmpty()) {
             return "/site/checkout/basket";
         } else if ("GET".equalsIgnoreCase(request.getMethod())) {
@@ -1398,11 +1402,16 @@ public class SiteController {
 
         Long providerId = so.getOrder().getPaymentMethod();
         PaymentProvider paymentProvider = serviceLocator.getPaymentProviderDao().getPaymentProviderSelected(providerId);//PaymentUtil.getProvider(providerId);
-        Class c = Class.forName(paymentProvider.getProviderClass());
-        Payment payment = (Payment) c.newInstance();
-        String url = payment.createRequestUrl(so, serviceLocator.getSystemContext().getSite());
-        if (StringUtils.isNotEmpty(url) && url.contains("?")) {
-            url += "&orderId=" + order.getId();
+        String url = "/checkout/receipt.html";
+        if (paymentProvider != null) {
+            Class c = Class.forName(paymentProvider.getProviderClass());
+            Payment payment = (Payment) c.newInstance();
+            url = payment.createRequestUrl(so, serviceLocator.getSystemContext().getSite());
+            if (StringUtils.isNotEmpty(url) && url.contains("?")) {
+                url += "&orderId=" + order.getId();
+            } else {
+                url += "?orderId=" + order.getId();
+            }
         } else {
             url += "?orderId=" + order.getId();
         }
@@ -1430,11 +1439,6 @@ public class SiteController {
             SessionObject orderSessionObject = serviceLocator.getOrderSessionDao().getOrderSession(order.getId(), so.getUserId(), ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite());
             boolean flag = false; //
             if (order.getStatus().equals(Order.NEW_ORDER)) {
-                //Payment provider call back after successfully payment.
-                Long providerId = orderSessionObject.getOrder().getPaymentMethod();
-                PaymentProvider paymentProvider = serviceLocator.getPaymentProviderDao().getPaymentProviderForSite(providerId, site.getId());
-                Class c = Class.forName(paymentProvider.getProviderClass());
-                Payment payment = (Payment) c.newInstance();
                 Map map = request.getParameterMap();
                 Map mapResponse = new HashMap();
                 if (map != null) {
@@ -1460,9 +1464,16 @@ public class SiteController {
                     }
                 }
 
-                //flag = true, mean you complete payment.
-                orderSessionObject.getOrder().set("ORDER_ID", orderId);
-                payment.verifyResponseUrl(orderSessionObject, mapResponse, serviceLocator.getSystemContext().getSite());
+                //Payment provider call back after successfully payment.
+                Long providerId = orderSessionObject.getOrder().getPaymentMethod();
+                PaymentProvider paymentProvider = serviceLocator.getPaymentProviderDao().getPaymentProviderForSite(providerId, site.getId());
+                if (paymentProvider != null) {
+                    Class c = Class.forName(paymentProvider.getProviderClass());
+                    Payment payment = (Payment) c.newInstance();
+                    //flag = true, mean you complete payment.
+                    orderSessionObject.getOrder().set("ORDER_ID", orderId);
+                    payment.verifyResponseUrl(orderSessionObject, mapResponse, serviceLocator.getSystemContext().getSite());
+                }
             }
             return new ModelAndView("/site/checkout/receipt", "order", order);
         } else {

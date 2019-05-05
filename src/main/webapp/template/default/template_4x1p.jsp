@@ -217,29 +217,14 @@
     <!-- Google Fonts -->
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Leckerli+One">
 
-    <!-- CSS Global Compulsory -->
-    <link rel="stylesheet" href="/themes/m4x1p/vendor/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="/themes/m4x1p/vendor/icon-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/themes/m4x1p/vendor/icon-hs/style.css">
-    <link rel="stylesheet" href="/themes/m4x1p/vendor/icon-line/css/simple-line-icons.css">
-    <link rel="stylesheet" href="/themes/m4x1p/css/bootstrap-select.css" />
+    <link rel="stylesheet" href="/wro/${version}${template.templateCssCode}_css.css" type="text/css"/>
 
-    <!-- CSS Implementing Plugins -->
-    <link rel="stylesheet" href="/themes/m4x1p/vendor/hamburgers/hamburgers.min.css">
-    <link rel="stylesheet" href="/themes/m4x1p/vendor/slick-carousel/slick/slick.css">
-    <link rel="stylesheet" href="/themes/m4x1p/vendor/animate.css">
-    <link rel="stylesheet" href="/themes/m4x1p/vendor/custombox/custombox.min.css">
-
-    <!-- CSS Template -->
-    <link rel="stylesheet" href="/themes/m4x1p/css/styles.op-spa.css">
-
-    <!-- CSS Customization -->
-    <link rel="stylesheet" href="/themes/m4x1p/css/custom.css">
-    <link rel="stylesheet" href="/themes/m4x1p/css/red.css">
+    <%--(red, blue, orange, light, purple, aqua, brown, dark-blue, light-green, green)--%>
+    <link rel="stylesheet" id="templateColorCode" href="/wro/${version}${template.templateCssCode}_${template.templateColorCode}.css" type="text/css"/>
 </head>
 
 <body>
-<h1 style="display: none">${store.name}</h1>
+<%--<h1 style="display: none">${store.name}</h1>--%>
 <main>
 <!-- Header -->
 <header id="js-header" class="u-header u-header--sticky-top u-header--change-appearance g-z-index-9999"
@@ -880,38 +865,9 @@
    data-compensation="#js-header"
    data-show-effect="zoomIn"> <i class="hs-icon hs-icon-arrow-top"></i> </a>
 </main>
-<!-- JS Global Compulsory -->
-<script src="/themes/m4x1p/vendor/jquery/jquery.min.js"></script>
-<script src="/themes/m4x1p/vendor/jquery-migrate/jquery-migrate.min.js"></script>
-<script src="/themes/m4x1p/vendor/popper.js/popper.min.js"></script>
-<script src="/themes/m4x1p/vendor/bootstrap/bootstrap.min.js"></script>
+<script src="/wro/${version}${template.templateCssCode}_js.js" type="text/javascript"></script>
 
-<!-- JS Implementing Plugins -->
-<script src="/themes/m4x1p/vendor/appear.js"></script>
-<script src="/themes/m4x1p/vendor/slick-carousel/slick/slick.js"></script>
-<%--<script src="/themes/m4x1p/vendor/gmaps/gmaps.min.js"></script>--%>
-<script src="/themes/m3x/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js"></script>
-<!-- JS Implementing Plugins -->
-<script  src="/themes/m4x1p/vendor/custombox/custombox.min.js"></script>
-<!-- JS Plugins Init. -->
-
-<!-- JS Unify -->
-<script src="/themes/m4x1p/js/hs.core.js"></script>
-<script src="/themes/m4x1p/js/components/hs.header.js"></script>
-<script src="/themes/m4x1p/js/helpers/hs.hamburgers.js"></script>
-<script src="/themes/m4x1p/js/components/hs.scroll-nav.js"></script>
-<script src="/themes/m4x1p/js/components/hs.rating.js"></script>
-<script src="/themes/m4x1p/js/components/hs.carousel.js"></script>
-<script src="/themes/m4x1p/js/components/gmap/hs.map.js"></script>
-<script src="/themes/m4x1p/js/components/hs.go-to.js"></script>
-<script src="/themes/m4x1p/js/components/hs.modal-window.js"></script>
-<script src="/themes/m4x1p/js/bootstrap-select.min.js"></script>
-
-<!-- JS Customization -->
-<script src="/themes/m4x1p/js/custom.js"></script>
-
-<!-- JS Plugins Init. -->
-<script>
+<script language="javascript">
     $(document).on('ready', function () {
         // initialization of carousel
         $.HSCore.components.HSCarousel.init('.js-carousel');

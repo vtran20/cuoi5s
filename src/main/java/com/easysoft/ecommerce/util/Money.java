@@ -227,7 +227,7 @@ public class Money implements Comparable {
 //    /**
 //     * Converts a valid Money string into a Money object. The input
 //     * expects a string that starts with one char as currency, followed
-//     * by amount.
+//     * by amount. Normally, we use to convert money from database (cents) to Money object and use for display on the front-end.
 //     *
 //     * For example:
 //     * 100 -> 100 VND & 1.00$
@@ -248,7 +248,7 @@ public class Money implements Comparable {
         if ( GenericValidator.isLong(value)) {
             result = new Money (new BigDecimal(value), currency, currencyFormat);
         } else if (GenericValidator.isDouble(value)) {
-            value = value.replaceAll(".","");
+            value = value.replace(".","");
             result = new Money (new BigDecimal(value), currency, currencyFormat);
         } else {
             throw new IllegalStateException("The string is not money format: "+value);
@@ -272,7 +272,11 @@ public class Money implements Comparable {
 //        if (this.amount.intValue() <= 0) return "";
         StringBuffer result = new StringBuffer();
         DecimalFormat precision = new DecimalFormat(format);
-        result.append(precision.format(amount).replaceAll(",","."));
+        if (this.currency.equals("$")) {
+            result.append(precision.format(amount.longValue()/100.0));
+        } else {
+            result.append(StringUtils.replace(precision.format(amount), ",","."));
+        }
         return result.toString();
     }
 
@@ -294,6 +298,28 @@ public class Money implements Comparable {
                     m.getCurrency() + " doesn't match the expected currency : " + currency);
     }
 
+    /**
+     * The value is input from website. Before save to DB, we should call this method to convert to cents.
+     *
+     * @param value
+     * @param currency
+     * @return
+     */
+    public static long moneyToDB (String value, String currency) {
+        if (StringUtils.isEmpty(value)) return 0;
+        long result = 0;
+        if (GenericValidator.isLong(value)) {
+            if ("$".equals(currency)) {
+                result = Long.valueOf(value)*100;
+            } else {
+                result = Long.valueOf(value);
+            }
+        } else if (GenericValidator.isDouble(value)) {
+            result = Math.round(Double.valueOf(value)*100);
+        }
+
+        return result;
+    }
     public Money plus(Money m){
       checkSameCurrency(m);
       return new Money(this.amount.add(m.amount), currency, currencyFormat);

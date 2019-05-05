@@ -26,14 +26,16 @@
     </c:forEach>
 </c:if>
 </app:cache>
-
-<div class="container content">
-    <div class="row">
-        <div class="col-md-12">
-            <!-- Thumbnails v1 -->
-            <h:sitetemplates column="4"/>
+<spring:eval expression="serviceLocator.templateDao.findActiveByOrder('site.id', site.id, 'sequence')" var="templates"/>
+<c:if test="${fn:length(templates) > 1}">
+    <div class="container content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Thumbnails v1 -->
+                <h:sitetemplates column="4"/>
+            </div>
         </div>
     </div>
-</div>
+</c:if>
 </body>
 </html>

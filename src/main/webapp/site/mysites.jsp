@@ -67,35 +67,37 @@
                                     <spring:eval expression="site.siteParamsMap.get('DATE_FORMAT')" var="dateFormat"/>
                                     <fmt:formatDate pattern="${dateFormat}" value="${thisSite.current.endDate}"/>
                                     <div class="btn-group hidden-sm hidden-md hidden-lg">
-                                        <a class="btn-u btn-u-small margin-bottom-5" href="/site/data/general-information.html?thisSiteId=${thisSite.current.id}">Update Website</a><br>
-                                        <button data-toggle="dropdown" class="btn-u dropdown-toggle" type="button" aria-expanded="true">
-                                            Action
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
-                                        <ul role="menu" class="dropdown-menu">
-                                            <li><a href="/site/checkout/addtocart.html?productId=${product.id}&thisSiteId=${thisSite.current.id}"><i class="fa fa-refresh"></i> <fmt:message key="site.site.renew"/></a></li>
-                                            <li class="divider"></li>
-                                            <li><a target="_blank" href="http://${thisSite.current.subDomain}/site/go-to-sitemanager.html?code=${encryptText}"><i class="fa fa-globe"></i> <fmt:message key="site.site.admin"/></a></li>
-                                            <li><a href="/site/modules.html?thisSiteId=${thisSite.current.id}"><i class="fa fa-cubes"></i> <fmt:message key="site.module.list"/></a></li>
-                                        </ul>
+                                        <a class="btn-u btn-u-small margin-bottom-5" href="/site/data/general-information.html?thisSiteId=${thisSite.current.id}"><i class="fa fa-pencil"></i> Update Website</a><br>
+                                        <a class="btn-u btn-u-small margin-bottom-5" href="/site/checkout/addtocart.html?productId=${product.id}&thisSiteId=${thisSite.current.id}"><i class="fa fa-refresh"></i> <fmt:message key="site.site.renew"/></a>
+                                        <%--<button data-toggle="dropdown" class="btn-u dropdown-toggle" type="button" aria-expanded="true">--%>
+                                            <%--Action--%>
+                                            <%--<i class="fa fa-angle-down"></i>--%>
+                                        <%--</button>--%>
+                                        <%--<ul role="menu" class="dropdown-menu">--%>
+                                            <%--<li><a href="/site/checkout/addtocart.html?productId=${product.id}&thisSiteId=${thisSite.current.id}"><i class="fa fa-refresh"></i> <fmt:message key="site.site.renew"/></a></li>--%>
+                                            <%--<li class="divider"></li>--%>
+                                            <%--<li><a target="_blank" href="http://${thisSite.current.subDomain}/site/go-to-sitemanager.html?code=${encryptText}"><i class="fa fa-globe"></i> <fmt:message key="site.site.admin"/></a></li>--%>
+                                            <%--<li><a href="/site/modules.html?thisSiteId=${thisSite.current.id}"><i class="fa fa-cubes"></i> <fmt:message key="site.module.list"/></a></li>--%>
+                                        <%--</ul>--%>
                                     </div>
                                 </td>
                                 <td class="hidden-xs">
                                     <div class="btn-group">
-                                        <a class="btn-u btn-u-small" href="/site/data/general-information.html?thisSiteId=${thisSite.current.id}">Update Website</a>
+                                        <a class="btn-u btn-u-small margin-bottom-5" href="/site/data/general-information.html?thisSiteId=${thisSite.current.id}"><i class="fa fa-pencil"></i> Update Website</a>
+                                        <a class="btn-u btn-u-small margin-bottom-5" href="/site/checkout/addtocart.html?productId=${product.id}&thisSiteId=${thisSite.current.id}"><i class="fa fa-refresh"></i> <fmt:message key="site.site.renew"/></a>
                                     </div>
-                                    <div class="btn-group">
-                                        <button data-toggle="dropdown" class="btn-u dropdown-toggle" type="button" aria-expanded="true">
-                                            Action
-                                            <i class="fa fa-angle-down"></i>
-                                        </button>
-                                        <ul role="menu" class="dropdown-menu">
-                                            <li><a href="/site/checkout/addtocart.html?productId=${product.id}&thisSiteId=${thisSite.current.id}"><i class="fa fa-refresh"></i> <fmt:message key="site.site.renew"/></a></li>
-                                            <li class="divider"></li>
-                                            <li><a target="_blank" href="http://${thisSite.current.subDomain}/site/go-to-sitemanager.html?code=${encryptText}"><i class="fa fa-globe"></i> <fmt:message key="site.site.admin"/></a></li>
-                                            <li><a href="/site/modules.html?thisSiteId=${thisSite.current.id}"><i class="fa fa-cubes"></i> <fmt:message key="site.module.list"/></a></li>
-                                        </ul>
-                                    </div>
+                                    <%--<div class="btn-group">--%>
+                                        <%--<button data-toggle="dropdown" class="btn-u dropdown-toggle" type="button" aria-expanded="true">--%>
+                                            <%--Action--%>
+                                            <%--<i class="fa fa-angle-down"></i>--%>
+                                        <%--</button>--%>
+                                        <%--<ul role="menu" class="dropdown-menu">--%>
+                                            <%--<li><a href="/site/checkout/addtocart.html?productId=${product.id}&thisSiteId=${thisSite.current.id}"><i class="fa fa-refresh"></i> <fmt:message key="site.site.renew"/></a></li>--%>
+                                            <%--<li class="divider"></li>--%>
+                                            <%--<li><a target="_blank" href="http://${thisSite.current.subDomain}/site/go-to-sitemanager.html?code=${encryptText}"><i class="fa fa-globe"></i> <fmt:message key="site.site.admin"/></a></li>--%>
+                                            <%--<li><a href="/site/modules.html?thisSiteId=${thisSite.current.id}"><i class="fa fa-cubes"></i> <fmt:message key="site.module.list"/></a></li>--%>
+                                        <%--</ul>--%>
+                                    <%--</div>--%>
                                 </td>
                             </tr>
                         </c:forEach>

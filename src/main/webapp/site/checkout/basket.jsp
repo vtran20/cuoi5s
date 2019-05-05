@@ -60,7 +60,6 @@
         <div class="col-md-6 md-margin-bottom-40">
             <h2 class="title-type"><fmt:message key="billing.info.header"/></h2>
             <div class="billing-info-inputs checkbox-list">
-
                 <div class="row">
                     <div class="col-sm-6">
                         <input id="firstNameForBilling" type="text" placeholder="<fmt:message key="billing.shipping.firstname"/>" name="firstNameForBilling" class="form-control required" value="${billingAddress.FIRST_NAME}" tabindex="10">
@@ -70,9 +69,19 @@
                         <input id="lastNameForBilling" type="text" placeholder="<fmt:message key="billing.shipping.lastname"/>" name="lastNameForBilling" class="form-control required" value="${billingAddress.LAST_NAME}" tabindex="11">
                         <input id="phoneForBilling" type="tel" placeholder="<fmt:message key="billing.shipping.phone"/>" name="phoneForBilling" class="form-control required" value="${billingAddress.PHONE}" tabindex="13">
                     </div>
+                    <div class="col-sm-12">
+                        <input id="address1ForBilling" type="text" placeholder="<fmt:message key="billing.shipping.address"/>" name="address1ForBilling" class="form-control required" value="${billingAddress.ADDRESS_LINE}" tabindex="14">
+                    </div>
+                    <div class="col-sm-4">
+                        <input id="cityForBilling" type="text" placeholder="<fmt:message key="billing.shipping.city"/>" name="cityForBilling" class="form-control required" value="${billingAddress.CITY}" tabindex="15" maxlength="50"/>
+                    </div>
+                    <div class="col-sm-4">
+                        <h:stringparamselector name="stateForBilling" stringParam="USA_STATE" lang="en_US" defaultValue="${billingAddress.STATE}" includeTitle="Select State" styleClass="form-control required" tabindex="16"/>
+                    </div>
+                    <div class="col-sm-4">
+                        <input id="zipCodeForBilling" type="text" placeholder="<fmt:message key="billing.shipping.zipCode"/>" name="zipCodeForBilling" class="form-control required" value="${billingAddress.ZIP_CODE}" tabindex="17" maxlength="50"/>
+                    </div>
                 </div>
-                <input id="address1ForBilling" type="text" placeholder="<fmt:message key="billing.shipping.address"/>" name="address1ForBilling" class="form-control required" value="${billingAddress.ADDRESS_LINE}" tabindex="14">
-                <h:stringparamselector name="cityForBilling" stringParam="CITY" defaultValue="${billingAddress.CITY}" includeTitle="Chọn Tỉnh/Thành Phố" styleClass="form-control required" tabindex="15"/>
                     <%--<div class="row">--%>
                     <%--<div class="col-sm-6">--%>
                     <%--&lt;%&ndash;<input id="city" type="text" placeholder="City" name="city" class="form-control required">&ndash;%&gt;--%>
@@ -93,78 +102,78 @@
     </div>
 </section>
 
-<div class="header-tags">
-    <div class="overflow-h">
-        <h2><fmt:message key="paymentmethod.info.section"/></h2>
-            <%--<p>Select Payment method</p>--%>
-        <i class="rounded-x fa fa-credit-card"></i>
-    </div>
-</div>
-<section>
-    <div class="row">
-        <div class="col-md-6 md-margin-bottom-50">
-            <spring:eval expression="serviceLocator.getPaymentProviderSiteDao().findAll(site.id)"
-                         var="paymentProviders"/>
-            <c:if test="${!empty paymentProviders}">
-            <h2 class="title-type"><fmt:message key="paymentmethod.info.header"/></h2>
-            <!-- Accordion -->
-            <div class="accordion-v2">
-                <div class="panel-group" id="accordion">
-                    <c:forEach varStatus="paymentProvider" items="${paymentProviders}">
-                        <c:if test="${empty order.PAYMENT_METHOD_ID}">
-                            <c:if test="${paymentProvider.first}">
-                                <c:set var="checked" value="checked"/>
-                            </c:if>
-                            <c:if test="${!paymentProvider.first}">
-                                <c:set var="checked" value=""/>
-                            </c:if>
-                        </c:if>
-                        <c:if test="${!empty order.PAYMENT_METHOD_ID}">
-                            <c:if test="${order.PAYMENT_METHOD_ID == paymentProvider.current.id}">
-                                <c:set var="checked" value="checked"/>
-                            </c:if>
-                            <c:if test="${order.PAYMENT_METHOD_ID != paymentProvider.current.id}">
-                                <c:set var="checked" value=""/>
-                            </c:if>
-                        </c:if>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h5 class="panel-title">
-                                        <%--<a data-toggle="collapse" data-parent="#accordion" href="#collapse${paymentProvider.current.id}">--%>
-                                    <input id="payment_id_${paymentProvider.current.id}" class="che-payment-method required" name="paymentProviderId" type="radio"
-                                           value="${paymentProvider.current.id}" ${checked}>
-                                    <label for="payment_id_${paymentProvider.current.id}">${paymentProvider.current.name}
-                                        <c:if test="${paymentProvider.current.merchantId == 'MY_ACCOUNT'}">
-                                            <spring:eval expression="T(com.easysoft.ecommerce.controller.SessionUtil).loadUser(pageContext.request, pageContext.response)" var="user"/>
-                                            <c:set var="balenceMoney" value="${user.balance}"/>
-                                            <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(balenceMoney,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toStringKeepZero()" var="balance"/>
-                                            (${balance})
-                                            <span class="hide" id="balenceMoney">${balenceMoney}</span>
-                                        </c:if>
-                                    </label>
-                                        <%--</a>--%>
-                                </h5>
-                            </div>
-                            <c:if test="${!empty paymentProvider.current.description}">
-                                <div id="collapseOne" class="panel-collapse collapse in">
-                                    <div class="panel-body cus-form-horizontal">
-                                        <div class="form-group">
-                                            <% pageContext.setAttribute("newLine", "\n"); %>
-                                            <c:set value="${fn:replace(paymentProvider.current.description, newLine, '<br>')}" var="paymentDescription"/>
-                                            <label class="col-xs-12 no-col-space control-label">${paymentDescription}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:if>
-                        </div>
-                    </c:forEach>
-                </div>
-            </div>
-            </c:if>
-            <!-- End Accordion -->
-        </div>
-    </div>
-</section>
+<%--<div class="header-tags">--%>
+    <%--<div class="overflow-h">--%>
+        <%--<h2><fmt:message key="paymentmethod.info.section"/></h2>--%>
+            <%--&lt;%&ndash;<p>Select Payment method</p>&ndash;%&gt;--%>
+        <%--<i class="rounded-x fa fa-credit-card"></i>--%>
+    <%--</div>--%>
+<%--</div>--%>
+<%--<section>--%>
+    <%--<div class="row">--%>
+        <%--<div class="col-md-6 md-margin-bottom-50">--%>
+            <%--<spring:eval expression="serviceLocator.getPaymentProviderSiteDao().findAll(site.id)"--%>
+                         <%--var="paymentProviders"/>--%>
+            <%--<c:if test="${!empty paymentProviders}">--%>
+            <%--<h2 class="title-type"><fmt:message key="paymentmethod.info.header"/></h2>--%>
+            <%--<!-- Accordion -->--%>
+            <%--<div class="accordion-v2">--%>
+                <%--<div class="panel-group" id="accordion">--%>
+                    <%--<c:forEach varStatus="paymentProvider" items="${paymentProviders}">--%>
+                        <%--<c:if test="${empty order.PAYMENT_METHOD_ID}">--%>
+                            <%--<c:if test="${paymentProvider.first}">--%>
+                                <%--<c:set var="checked" value="checked"/>--%>
+                            <%--</c:if>--%>
+                            <%--<c:if test="${!paymentProvider.first}">--%>
+                                <%--<c:set var="checked" value=""/>--%>
+                            <%--</c:if>--%>
+                        <%--</c:if>--%>
+                        <%--<c:if test="${!empty order.PAYMENT_METHOD_ID}">--%>
+                            <%--<c:if test="${order.PAYMENT_METHOD_ID == paymentProvider.current.id}">--%>
+                                <%--<c:set var="checked" value="checked"/>--%>
+                            <%--</c:if>--%>
+                            <%--<c:if test="${order.PAYMENT_METHOD_ID != paymentProvider.current.id}">--%>
+                                <%--<c:set var="checked" value=""/>--%>
+                            <%--</c:if>--%>
+                        <%--</c:if>--%>
+                        <%--<div class="panel panel-default">--%>
+                            <%--<div class="panel-heading">--%>
+                                <%--<h5 class="panel-title">--%>
+                                        <%--&lt;%&ndash;<a data-toggle="collapse" data-parent="#accordion" href="#collapse${paymentProvider.current.id}">&ndash;%&gt;--%>
+                                    <%--<input id="payment_id_${paymentProvider.current.id}" class="che-payment-method required" name="paymentProviderId" type="radio"--%>
+                                           <%--value="${paymentProvider.current.id}" ${checked}>--%>
+                                    <%--<label for="payment_id_${paymentProvider.current.id}">${paymentProvider.current.name}--%>
+                                        <%--<c:if test="${paymentProvider.current.merchantId == 'MY_ACCOUNT'}">--%>
+                                            <%--<spring:eval expression="T(com.easysoft.ecommerce.controller.SessionUtil).loadUser(pageContext.request, pageContext.response)" var="user"/>--%>
+                                            <%--<c:set var="balenceMoney" value="${user.balance}"/>--%>
+                                            <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(balenceMoney,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toStringKeepZero()" var="balance"/>--%>
+                                            <%--(${balance})--%>
+                                            <%--<span class="hide" id="balenceMoney">${balenceMoney}</span>--%>
+                                        <%--</c:if>--%>
+                                    <%--</label>--%>
+                                        <%--&lt;%&ndash;</a>&ndash;%&gt;--%>
+                                <%--</h5>--%>
+                            <%--</div>--%>
+                            <%--<c:if test="${!empty paymentProvider.current.description}">--%>
+                                <%--<div id="collapseOne" class="panel-collapse collapse in">--%>
+                                    <%--<div class="panel-body cus-form-horizontal">--%>
+                                        <%--<div class="form-group">--%>
+                                            <%--<% pageContext.setAttribute("newLine", "\n"); %>--%>
+                                            <%--<c:set value="${fn:replace(paymentProvider.current.description, newLine, '<br>')}" var="paymentDescription"/>--%>
+                                            <%--<label class="col-xs-12 no-col-space control-label">${paymentDescription}</label>--%>
+                                        <%--</div>--%>
+                                    <%--</div>--%>
+                                <%--</div>--%>
+                            <%--</c:if>--%>
+                        <%--</div>--%>
+                    <%--</c:forEach>--%>
+                <%--</div>--%>
+            <%--</div>--%>
+            <%--</c:if>--%>
+            <%--<!-- End Accordion -->--%>
+        <%--</div>--%>
+    <%--</div>--%>
+<%--</section>--%>
 
 <div class="coupon-code">
     <div class="row">

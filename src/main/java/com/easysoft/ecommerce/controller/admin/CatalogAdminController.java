@@ -7,8 +7,10 @@ import com.easysoft.ecommerce.service.CategoryService;
 import com.easysoft.ecommerce.service.ServiceLocator;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.util.Messages;
+import com.easysoft.ecommerce.util.Money;
 import com.easysoft.ecommerce.util.WebUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.GenericValidator;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,8 +147,11 @@ public class CatalogAdminController {
      */
     @RequestMapping(value = {"productvariant_update.html"}, method = RequestMethod.POST, produces="application/x-www-form-urlencoded; charset=UTF-8")
     @CSRFProtection
-    public @ResponseBody String updateProductVariant(@Valid Long productId, @Valid ProductVariant productVariant, BindingResult bindingResult) throws Exception {
+    public @ResponseBody String updateProductVariant(@Valid Long productId, @Valid String productPrice, @Valid ProductVariant productVariant, BindingResult bindingResult) throws Exception {
         serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCategoryCacheKeyFromProduct(null, productId));
+        Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
+        String currency = site.getSiteParamsMap().get("CURRENCY");
+        productVariant.setPrice(Money.moneyToDB(productPrice, currency));
         Messages message =  categoryService.addVariant(productVariant, productId);
         //Update and rebuild index for the product
         serviceLocator.getProductDao().updateProductPrice(productId);

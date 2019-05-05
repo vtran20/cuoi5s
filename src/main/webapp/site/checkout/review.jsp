@@ -13,9 +13,9 @@
 <body>
 <link rel="stylesheet" href="/themes/m3x/css/pages/page_invoice.css">
 <script type="text/javascript">
-    $(function() {
-        jQuery('#play_order').preventDoubleSubmit();
-    });
+//    $(function() {
+//        jQuery('#play_order').preventDoubleSubmit();
+//    });
 </script>
 
 <c:set var="items" value="${sessionObject.ORDER.ITEMS}"/>
@@ -46,14 +46,9 @@
                 <h2><i class="fa fa-user"></i> <fmt:message key="review.billing.information"/> (<a
                         href="/site/checkout/basket.html"><fmt:message key="review.edit"/></a>)</h2>
                 <ul class="list-unstyled">
-                    <li>${billingAddress.LAST_NAME}&nbsp;${billingAddress.FIRST_NAME}</li>
+                    <li>${billingAddress.FIRST_NAME}&nbsp;${billingAddress.LAST_NAME}</li>
                     <li>${billingAddress.ADDRESS_LINE}</li>
-                    <c:if test="${!empty billingAddress.DISTRICT}">
-                        <li>${billingAddress.DISTRICT}</li>
-                    </c:if>
-                    <c:set value='${billingAddress.CITY}' var="city"/>
-                    <spring:eval expression="serviceLocator.getStringParamValueDao().getStringParamValue('CITY', serviceLocator.locale, city)" var="billingCity"/>
-                    <li>${billingCity.value}</li>
+                    <li>${billingAddress.CITY}, ${billingAddress.STATE} ${billingAddress.ZIP_CODE}</li>
                     <li>${billingAddress.PHONE}</li>
                     <li>${billingAddress.EMAIL}</li>
                 </ul>
@@ -77,23 +72,23 @@
             <%--</div>--%>
         <%--</div>--%>
         <div class="col-sm-4">
-            <div class="tag-box tag-box-v3">
-                <c:if test="${!empty sessionObject.ORDER.PAYMENT_METHOD_ID}">
-                    <h2><i class="fa fa-money"></i> <fmt:message key="review.billing.method"/></h2>
-                    <spring:eval expression="serviceLocator.getPaymentProviderSiteDao().findById(sessionObject.ORDER.PAYMENT_METHOD_ID, site.id)" var="paymentMethod"/>
-                    <div><b>${paymentMethod.name}</b></div>
-                    <c:if test="${!empty paymentMethod.description}">
-                        <% pageContext.setAttribute("newLine", "\n"); %>
-                        <c:set value="${fn:replace(paymentMethod.description, newLine, '<br>')}" var="paymentDescription"/>
-                        <div>${paymentDescription}1</div>
-                    </c:if>
-                </c:if>
-                <c:if test="${!empty sessionObject.ORDER.SHIPPING_METHOD_ID}">
-                    <h2><i class="fa fa-truck"></i> <fmt:message key="review.shipping.method"/></h2>
-                    <spring:eval expression="serviceLocator.getShippingSiteDao().findById(sessionObject.ORDER.SHIPPING_METHOD_ID, site.id)" var="shippingType"/>
-                    <div>${shippingType.name}</div>
-                </c:if>
-            </div>
+            <%--<div class="tag-box tag-box-v3">--%>
+                <%--<c:if test="${!empty sessionObject.ORDER.PAYMENT_METHOD_ID}">--%>
+                    <%--<h2><i class="fa fa-money"></i> <fmt:message key="review.billing.method"/></h2>--%>
+                    <%--<spring:eval expression="serviceLocator.getPaymentProviderSiteDao().findById(sessionObject.ORDER.PAYMENT_METHOD_ID, site.id)" var="paymentMethod"/>--%>
+                    <%--<div><b>${paymentMethod.name}</b></div>--%>
+                    <%--<c:if test="${!empty paymentMethod.description}">--%>
+                        <%--<% pageContext.setAttribute("newLine", "\n"); %>--%>
+                        <%--<c:set value="${fn:replace(paymentMethod.description, newLine, '<br>')}" var="paymentDescription"/>--%>
+                        <%--<div>${paymentDescription}1</div>--%>
+                    <%--</c:if>--%>
+                <%--</c:if>--%>
+                <%--<c:if test="${!empty sessionObject.ORDER.SHIPPING_METHOD_ID}">--%>
+                    <%--<h2><i class="fa fa-truck"></i> <fmt:message key="review.shipping.method"/></h2>--%>
+                    <%--<spring:eval expression="serviceLocator.getShippingSiteDao().findById(sessionObject.ORDER.SHIPPING_METHOD_ID, site.id)" var="shippingType"/>--%>
+                    <%--<div>${shippingType.name}</div>--%>
+                <%--</c:if>--%>
+            <%--</div>--%>
         </div>
     </div>
 
@@ -193,10 +188,49 @@
                 <form:form id="play_order" action="/site/checkout/payment.html" commandName="command" method="post">
                     <div style="width: 97%;" class="che-ord-rev-place-order-container">
                             <%--Double click prevent http://pitchpublish.com/blog/?p=62--%>
-                        <button type="submit" class="btn-u btn-u-sea-shop"><fmt:message key="review.place.order"/></button>
+                        <%--<button type="submit" class="btn-u btn-u-sea-shop"><fmt:message key="review.place.order"/></button>--%>
                     </div>
                 </form:form>
 
+                <spring:eval expression="site.siteParamsMap.get('PAYPAL_CLIENT_ID')" var="clientId"/>
+                <script src="https://www.paypal.com/sdk/js?client-id=${clientId}"></script>
+                <div id="paypal-button-container"></div>
+                <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).getMoneyValue()" var="moneyValue"/>
+                <script>
+                    paypal.Buttons({
+                        createOrder: function(data, actions) {
+                            // Set up the transaction
+                            return actions.order.create({
+                                purchase_units: [{
+                                    amount: {
+                                        value: '${moneyValue}'
+                                    }
+                                }]
+                            });
+                        },
+                        onApprove: function(data, actions) {
+                            // Capture the funds from the transaction
+                            return actions.order.capture().then(function(details) {
+                                // Show a success message to your buyer
+                                console.log (details)
+                                console.log (data)
+                                // Call your server to save the transaction
+                                return fetch('/site/checkout/payment.html', {
+                                    method: 'post',
+                                    headers: {
+                                        'content-type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        orderID: data.orderID
+                                    })
+                                }).then(function(res) {
+                                    console.log(res)
+                                    document.location.href = res.url
+                                });
+                            });
+                        }
+                    }).render('#paypal-button-container');
+                </script>
             </div>
         </div>
     </div>

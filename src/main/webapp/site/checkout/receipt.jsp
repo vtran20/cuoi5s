@@ -91,32 +91,27 @@ url<!DOCTYPE html>
                 <div class="tag-box tag-box-v3">
                     <h2><i class="fa fa-user"></i> <fmt:message key="review.billing.information"/></h2>
                     <ul class="list-unstyled">
-                        <li>${billingAddress.LAST_NAME}&nbsp;${billingAddress.FIRST_NAME}</li>
+                        <li>${billingAddress.FIRST_NAME}&nbsp;${billingAddress.LAST_NAME}</li>
                         <li>${billingAddress.ADDRESS_LINE}</li>
-                        <c:if test="${!empty billingAddress.DISTRICT}">
-                            <li>${billingAddress.DISTRICT}</li>
-                        </c:if>
-                        <c:set value='${billingAddress.CITY}' var="city"/>
-                        <spring:eval expression="serviceLocator.getStringParamValueDao().getStringParamValue('CITY', serviceLocator.locale, city)" var="billingCity"/>
-                        <li>${billingCity.value}</li>
+                        <li>${billingAddress.CITY}, ${billingAddress.STATE} ${billingAddress.ZIP_CODE}</li>
                         <li>${billingAddress.PHONE}</li>
                         <li>${billingAddress.EMAIL}</li>
                     </ul>
                 </div>
             </div>
             <div class="col-sm-4">
-                <div class="tag-box tag-box-v3">
-                    <c:if test="${!empty orderSession.ORDER.PAYMENT_METHOD_ID}">
-                        <h2><i class="fa fa-money"></i> <fmt:message key="review.billing.method"/></h2>
-                        <spring:eval expression="serviceLocator.getPaymentProviderSiteDao().findById(orderSession.ORDER.PAYMENT_METHOD_ID, site.id)" var="paymentMethod"/>
-                        <div>${paymentMethod.name}</div>
-                    </c:if>
-                    <c:if test="${!empty orderSession.ORDER.SHIPPING_METHOD_ID}">
-                        <h2><i class="fa fa-truck"></i> <fmt:message key="review.shipping.method"/></h2>
-                        <spring:eval expression="serviceLocator.getShippingSiteDao().findById(orderSession.ORDER.SHIPPING_METHOD_ID, site.id)" var="shippingType"/>
-                        <div>${shippingType.name}</div>
-                    </c:if>
-                </div>
+                <%--<div class="tag-box tag-box-v3">--%>
+                    <%--<c:if test="${!empty orderSession.ORDER.PAYMENT_METHOD_ID}">--%>
+                        <%--<h2><i class="fa fa-money"></i> <fmt:message key="review.billing.method"/></h2>--%>
+                        <%--<spring:eval expression="serviceLocator.getPaymentProviderSiteDao().findById(orderSession.ORDER.PAYMENT_METHOD_ID, site.id)" var="paymentMethod"/>--%>
+                        <%--<div>${paymentMethod.name}</div>--%>
+                    <%--</c:if>--%>
+                    <%--<c:if test="${!empty orderSession.ORDER.SHIPPING_METHOD_ID}">--%>
+                        <%--<h2><i class="fa fa-truck"></i> <fmt:message key="review.shipping.method"/></h2>--%>
+                        <%--<spring:eval expression="serviceLocator.getShippingSiteDao().findById(orderSession.ORDER.SHIPPING_METHOD_ID, site.id)" var="shippingType"/>--%>
+                        <%--<div>${shippingType.name}</div>--%>
+                    <%--</c:if>--%>
+                <%--</div>--%>
             </div>
 
         </div>

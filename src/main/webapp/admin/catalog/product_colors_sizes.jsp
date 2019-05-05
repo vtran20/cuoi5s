@@ -9,7 +9,7 @@
 <script>
     $("#product_variant").validate({
         rules:{
-            price:{
+            productPrice:{
                 required:true
             },
             inventory:{
@@ -18,7 +18,7 @@
         },
 
         messages:{
-            price:{
+            productPrice:{
                 required:"<fmt:message key="product.price.is.required"/>"
             },
             inventory:{
@@ -84,7 +84,7 @@
     $("#add_variant").on("click", function(){
         result = {
             "id":"",
-            "price":"",
+            "productPrice":"",
             "sku":"",
             "colorCode":"",
             "sizeCode":"",
@@ -120,19 +120,21 @@
     <c:if test="${fn:length(productVariants) == 1}">
         <c:set var="productVariant" value="${productVariants[0]}"/>
     </c:if>
+        <spring:eval
+                expression="T(com.easysoft.ecommerce.util.Money).valueOf(productVariant.price,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).getMoneyValue()"
+                var="productPrice"/>
         <input name="id" type="hidden" value="${productVariant.id}"/>
         <fieldset>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label no-padding-right" for="price"><fmt:message key="product.price"/>*</label>
+                        <label class="col-sm-4 control-label no-padding-right" for="productPrice"><fmt:message key="product.price"/>*</label>
                         <div class="col-sm-8 forms">
                             <spring:eval expression="site.siteParamsMap.get('CURRENCY')" var="currency"/>
-                            <c:set var="productPrice" value="${productVariant.price}"/>
                             <c:if test="${productVariant.price <= 0}">
                                 <c:set var="productPrice" value=""/>
                             </c:if>
-                            <input name="price" class="required number" id="price" type="text" maxlength="15" value="${productPrice}"/> ${currency}
+                            <input name="productPrice" class="required" id="productPrice" type="text" maxlength="15" value="${productPrice}"/> ${currency}
                         </div>
                     </div>
                     <div class="form-group">
@@ -235,10 +237,10 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label class="col-sm-4 control-label no-padding-right" for="price"><fmt:message key="product.price"/>*</label>
+                    <label class="col-sm-4 control-label no-padding-right" for="productPrice"><fmt:message key="product.price"/>*</label>
                     <div class="col-sm-8 forms">
                         <spring:eval expression="site.siteParamsMap.get('CURRENCY')" var="currency"/>
-                        <input name="price" class="required" id="price" type="text" maxlength="15" value="{{price}}"/> ${currency}
+                        <input name="productPrice" class="required" id="productPrice" type="text" maxlength="15" value="{{price}}"/> ${currency}
                     </div>
                 </div>
                 <div class="form-group">

@@ -350,4 +350,74 @@
         <js minimize="false">/themes/m3x/js/cropper/cropper.min.js</js>
         <js minimize="false">/themes/m3x/js/summernote/summernote.js</js>
     </group>
+    <!--Start m4x1p template-->
+    <group name="m4x1p_dark-red">
+        <!-- CSS Theme -->
+        <css minimize="true">/themes/m4x1p/css/dark-red.css</css>
+    </group>
+    <group name="m4x1p_light-skin">
+        <!-- CSS Customization -->
+        <css minimize="false">/themes/m4x/css/blank.css</css>
+    </group>
+
+    <group name="m4x1p_header-default">
+        <!-- CSS Customization -->
+        <css minimize="false">/themes/m4x/css/blank.css</css>
+    </group>
+    <group name="m4x1p_footer-v1">
+        <!-- CSS Customization -->
+        <css minimize="false">/themes/m4x/css/blank.css</css>
+    </group>
+
+    <group name="m4x1p_css">
+        <!-- CSS Global Compulsory -->
+        <css minimize="false">/themes/m4x1p/vendor/bootstrap/bootstrap.min.css</css>
+        <css minimize="false">/themes/m4x1p/vendor/icon-awesome/css/font-awesome.min.css</css>
+        <css minimize="true">/themes/m4x1p/vendor/icon-hs/style.css</css>
+        <css minimize="true">/themes/m4x1p/vendor/icon-line/css/simple-line-icons.css</css>
+        <css minimize="true">/themes/m4x1p/css/bootstrap-select.css</css>
+
+        <!-- CSS Implementing Plugins -->
+        <css minimize="false">/themes/m4x1p/vendor/hamburgers/hamburgers.min.css</css>
+        <css minimize="true">/themes/m4x1p/vendor/slick-carousel/slick/slick.css</css>
+        <css minimize="true">/themes/m4x1p/vendor/animate.css</css>
+        <css minimize="false">/themes/m4x1p/vendor/custombox/custombox.min.css</css>
+
+        <!-- CSS Template -->
+        <css minimize="true">/themes/m4x1p/css/styles.op-spa.css</css>
+
+        <!-- CSS Customization -->
+        <css minimize="true">/themes/m4x1p/css/custom.css</css>
+    </group>
+    <group name="m4x1p_js">
+        <!-- JS Global Compulsory -->
+        <js minimize="false">/themes/m4x1p/vendor/jquery/jquery.min.js</js>
+        <js minimize="false">/themes/m4x1p/vendor/jquery-migrate/jquery-migrate.min.js</js>
+        <js minimize="false">/themes/m4x1p/vendor/popper.js/popper.min.js</js>
+        <js minimize="false">/themes/m4x1p/vendor/bootstrap/bootstrap.min.js</js>
+
+        <!-- JS Implementing Plugins -->
+        <js minimize="false">/themes/m4x1p/vendor/appear.js</js>
+        <js minimize="false">/themes/m4x1p/vendor/slick-carousel/slick/slick.js</js>
+        <js minimize="false">/themes/m3x/plugins/sky-forms/version-2.0.1/js/jquery.validate.min.js</js>
+        <!-- JS Implementing Plugins -->
+        <js minimize="false">/themes/m4x1p/vendor/custombox/custombox.min.js</js>
+
+        <!-- JS Unify -->
+        <js minimize="false">/themes/m4x1p/js/hs.core.js</js>
+        <js minimize="false">/themes/m4x1p/js/components/hs.header.js</js>
+        <js minimize="false">/themes/m4x1p/js/helpers/hs.hamburgers.js</js>
+        <js minimize="false">/themes/m4x1p/js/components/hs.scroll-nav.js</js>
+        <js minimize="false">/themes/m4x1p/js/components/hs.rating.js</js>
+        <js minimize="false">/themes/m4x1p/js/components/hs.carousel.js</js>
+        <js minimize="false">/themes/m4x1p/js/components/hs.go-to.js</js>
+        <js minimize="false">/themes/m4x1p/js/components/hs.modal-window.js</js>
+        <js minimize="false">/themes/m4x1p/js/bootstrap-select.min.js</js>
+
+        <!-- JS Customization -->
+        <js minimize="false">/themes/m4x1p/js/custom.js</js>
+
+    </group>
+
+    <!--End m4x1p template-->
 </groups>
