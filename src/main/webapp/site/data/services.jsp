@@ -128,7 +128,7 @@
                                     <td>${item.index + 1}</td>
                                     <td>${service.name}</td>
                                     <spring:eval
-                                            expression="T(com.easysoft.ecommerce.util.Money).valueOf((service.price/100),thisSite.siteParamsMap.get('CURRENCY'), thisSite.siteParamsMap.get('CURRENCY_FORMAT')).getMoneyValue()"
+                                            expression="T(com.easysoft.ecommerce.util.Money).valueOf((service.price/100.0),thisSite.siteParamsMap.get('CURRENCY'), thisSite.siteParamsMap.get('CURRENCY_FORMAT')).getMoneyValue()"
                                             var="servicePrice"/>
                                     <td>$${servicePrice}</td>
                                     <td>${service.minutes}</td>

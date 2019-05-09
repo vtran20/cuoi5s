@@ -62,7 +62,7 @@
 </script>
 <div class="breadcrumbs">
     <div class="container">
-        <h1 class="pull-left"><fmt:message key="site.register.subdomain"/></h1>
+        <h1 class="pull-left"><fmt:message key="site.create.new.website"/></h1>
     </div>
 </div>
 <c:choose>
@@ -80,29 +80,29 @@
         <div class="col-md-7">
             <div class="panel panel-red margin-bottom-40">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="site.register.subdomain"/></h3>
+                    <h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="site.create.new.website"/></h3>
                 </div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" action="/site/create-site.html" id="form" method="post">
                         <h:frontendmessage _messages="${messages}"/>
                         <input name="templateId" type="hidden" value="${sessionObject.templateId}">
                         <div class="form-group">
-                            <label for="siteCode" class="col-lg-3 control-label"><fmt:message key="site.register.subdomain"/></label>
+                            <label for="siteCode" class="col-lg-3 control-label"><fmt:message key="site.register.sitecode"/></label>
                             <div class="col-lg-9">
                                 <input type="text" class="form-control" name="siteCode" id="siteCode" maxlength="50" placeholder='<fmt:message key="site.subdomain.example"/>' value="${sessionObject.siteCode}" autofocus>
-                                <spring:eval expression="site.getSiteParam('FREE_SITE_DOMAIN')" var="siteUrl"/>
-                                <c:if test="${empty siteUrl}">
-                                    <spring:eval expression="systemContext.getGlobalConfig('free.site.domain')" var="siteUrl"/>
-                                </c:if>
-                                <p class="help-block" id="subdomain"><fmt:message key="your.website"/>: <b></b>.${siteUrl}</p>
+                                <%--<spring:eval expression="site.getSiteParam('FREE_SITE_DOMAIN')" var="siteUrl"/>--%>
+                                <%--<c:if test="${empty siteUrl}">--%>
+                                    <%--<spring:eval expression="systemContext.getGlobalConfig('free.site.domain')" var="siteUrl"/>--%>
+                                <%--</c:if>--%>
+                                <%--<p class="help-block" id="subdomain"><fmt:message key="your.website"/>: <b></b>.${siteUrl}</p>--%>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-lg-3 control-label"><fmt:message key="site.register.templateCode"/></label>
-                            <div class="col-lg-9">
-                                <p class="help-block"><b>${sampleTemplate.templateModel}</b></p>
-                            </div>
-                        </div>
+                        <%--<div class="form-group">--%>
+                            <%--<label class="col-lg-3 control-label"><fmt:message key="site.register.templateCode"/></label>--%>
+                            <%--<div class="col-lg-9">--%>
+                                <%--<p class="help-block"><b>${sampleTemplate.templateModel}</b></p>--%>
+                            <%--</div>--%>
+                        <%--</div>--%>
                         <div class="form-group">
                             <label class="col-lg-3 control-label"></label>
                             <div class="col-lg-9">

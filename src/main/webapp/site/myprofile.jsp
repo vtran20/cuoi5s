@@ -98,38 +98,38 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="panel panel-red margin-bottom-40">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="user.balance.information"/></h3>
-                </div>
-                <div class="panel-body">
+        <%--<div class="col-md-4">--%>
+            <%--<div class="panel panel-red margin-bottom-40">--%>
+                <%--<div class="panel-heading">--%>
+                    <%--<h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="user.balance.information"/></h3>--%>
+                <%--</div>--%>
+                <%--<div class="panel-body">--%>
 
-                    <div class="input-group margin-bottom-20">
-                        <c:set var="balenceMoney" value="${user.balance}"/>
-                        <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(balenceMoney,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toStringKeepZero()" var="balance"/>
-                        <h3>${balance}</h3>
-                    </div>
+                    <%--<div class="input-group margin-bottom-20">--%>
+                        <%--<c:set var="balenceMoney" value="${user.balance}"/>--%>
+                        <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(balenceMoney,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toStringKeepZero()" var="balance"/>--%>
+                        <%--<h3>${balance}</h3>--%>
+                    <%--</div>--%>
 
-                    <form class="form-horizontal" role="login" action="#" id="login" method="post">
-                        <h:frontendmessage _messages="${error}"/>
-                        <div class="form-group">
-                            <div class="col-lg-12">
-                                <input type="text" value="" placeholder="<fmt:message key="site.deposit.money"/>" maxlength="20" name="deposit" id="deposit" class="form-control">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
+                    <%--<form class="form-horizontal" role="login" action="#" id="login" method="post">--%>
+                        <%--<h:frontendmessage _messages="${error}"/>--%>
+                        <%--<div class="form-group">--%>
+                            <%--<div class="col-lg-12">--%>
+                                <%--<input type="text" value="" placeholder="<fmt:message key="site.deposit.money"/>" maxlength="20" name="deposit" id="deposit" class="form-control">--%>
+                            <%--</div>--%>
+                        <%--</div>--%>
+                        <%--<div class="row">--%>
+                            <%--<div class="col-md-6">--%>
 
-                            </div>
-                            <div class="col-md-6">
-                                <button type="button" class="btn-u btn-u-red pull-right"><fmt:message key="site.deposit.money"/></button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+                            <%--</div>--%>
+                            <%--<div class="col-md-6">--%>
+                                <%--<button type="button" class="btn-u btn-u-red pull-right"><fmt:message key="site.deposit.money"/></button>--%>
+                            <%--</div>--%>
+                        <%--</div>--%>
+                    <%--</form>--%>
+                <%--</div>--%>
+            <%--</div>--%>
+        <%--</div>--%>
     </div>
 </div>
 <!-- End Content -->

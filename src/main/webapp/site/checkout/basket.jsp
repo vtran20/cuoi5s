@@ -177,20 +177,19 @@
 
 <div class="coupon-code">
     <div class="row">
-        <div class="col-sm-5 sm-margin-bottom-30">
+        <div class="col-sm-4 sm-margin-bottom-30">
             <c:set var="promoCode" value="${sessionObject.ORDER.PROMO_CODE}"/>
             <c:choose>
                 <c:when test="${!empty promoCode}">
                     <p>
                         <fmt:message key="message.promocode.using"/>&nbsp;&nbsp;<b>${promoCode}</b>&nbsp;&nbsp;<a
-                            href="/checkout/removepromocode.html"><fmt:message key="review.remove"/></a>
+                            href="/site/checkout/removepromocode.html"><fmt:message key="review.remove"/></a>
                     </p>
                 </c:when>
                 <c:otherwise>
                     <h3><fmt:message key="review.promo.code"/></h3>
-                    <p><fmt:message key="please.enter.promo.code"/></p>
                     <h:frontendmessage _messages="${promo_messages}"/>
-                    <input type="text" maxlength="20" size="20" value="" name="pc" id="che-bas-promoCode" class="form-control margin-bottom-10">
+                    <input type="text" maxlength="20" size="20" value="" name="pc" id="che-bas-promoCode" class="form-control margin-bottom-10" placeholder="<fmt:message key="please.enter.promo.code"/>">
                     <%--We cannot use form here because it had other form outside--%>
                     <a class="btn-u btn-u-sea-shop" onclick="applyDiscount()"><fmt:message key="review.apply"/></a>
                 </c:otherwise>
@@ -201,53 +200,8 @@
             <%--<input class="form-control margin-bottom-10" name="pc" type="text">--%>
             <%--<button type="button" id="apply_discount" onclick="applyDiscount()" class="btn-u btn-u-sea-shop"><fmt:message key="discount.apply"/></button>--%>
         </div>
-        <div class="col-sm-4 col-sm-offset-3">
-            <ul class="list-inline total-result">
-                <li>
-                    <h4><fmt:message key="basket.subtotal"/>:</h4>
-                    <spring:eval expression="sessionObject.getOrder().getSubPriceTotal()" var="subPrice"/>
-                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(subPrice,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="subTotalPrice"/>
-                    <div class="total-result-in">
-                        <span>${subTotalPrice}</span>
-                    </div>
-                    <spring:eval expression="sessionObject.getOrder().getOriginalSubTotal()" var="originalSubTotal"/>
-                    <c:if test="${subPrice != originalSubTotal}">
-                        <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(originalSubTotal,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="originalSubTotalPrice"/>
-                        <div class="total-result-in line-through">
-                            <span>${originalSubTotalPrice}</span>
-                        </div>
-                    </c:if>
-                </li>
-                <spring:eval expression="sessionObject.getOrder().getSubPriceDiscountTotal()" var="subTotalDiscount"/>
-                <c:if test="${!empty subTotalDiscount && subTotalDiscount > 0}">
-                    <li>
-                        <h4><fmt:message key="subordertotal-discount"/>:</h4>
-                        <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(subTotalDiscount,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="subTotalDiscount"/>
-                        <div class="total-result-in">
-                            <span class="text-right">-${subTotalDiscount}</span>
-                        </div>
-                    </li>
-                </c:if>
-                <li>
-                    <h4><fmt:message key="basket.tax"/>:</h4>
-                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(sessionObject.getOrder().getTaxPrice(),site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="tax_Price"/>
-                    <div class="total-result-in">
-                        <span>${tax_Price}</span>
-                    </div>
-                </li>
-                <li class="divider"></li>
-                <li class="total-price">
-                    <h4><fmt:message key="basket.ordertotal"/>:</h4>
-                    <spring:eval expression="sessionObject.getOrder().getTotalPrice()" var="price"/>
-                    <c:if test="${!empty price}">
-                        <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="totalPrice"/>
-                        <div class="total-result-in">
-                            <span>${totalPrice}</span>
-                        </div>
-                        <span class="hide" id="totalPrice">${totalPrice}</span>
-                    </c:if>
-                </li>
-            </ul>
+        <div class="col-sm-4 col-sm-offset-4">
+            <h:totalorder sessionObject="${sessionObject}"/>
         </div>
     </div>
 </div>

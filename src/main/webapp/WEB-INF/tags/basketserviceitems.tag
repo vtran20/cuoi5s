@@ -64,7 +64,7 @@
                                             <select name="productVariantId_${item.current.ITEM_ID}-${item.current.SITE_ID}" class="selectService required input-lg">
                                                 <option value=''><fmt:message key="product.select.service"/></option>
                                                 <c:forEach items="${productVariants}" var="pv">
-                                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(T(com.easysoft.ecommerce.util.WebUtil).generatePriceMin(pv.price, pv.pricePromo),site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="priceItem"/>
+                                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(T(com.easysoft.ecommerce.util.WebUtil).generatePriceMin(pv.price/100.0, pv.pricePromo/100.0),site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="priceItem"/>
                                                     <c:set value="" var="selected"/>
                                                     <c:if test="${pv.id == item.current.ITEM_VARIANT_ID}">
                                                         <c:set value="selected" var="selected"/>
@@ -77,7 +77,7 @@
                                             <c:set var="price" value="${item.current.FINAL_PRICE_ITEM}"/>
                                             <c:choose>
                                                 <c:when test="${!empty price}">
-                                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPrice"/>
+                                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price/100.0,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPrice"/>
                                                     ${itemPrice}
                                                 </c:when>
                                                 <c:otherwise>
@@ -90,7 +90,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:set var="price" value="${item.current.FINAL_PRICE_ITEM}"/>
-                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPrice"/>
+                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price/100.0,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPrice"/>
                                     ${itemPrice}
                                 </c:otherwise>
                             </c:choose>
@@ -112,11 +112,11 @@
                             <c:set var="price" value="${item.current.FINAL_PRICE_ITEM}"/>
                             <c:if test="${! empty price}">
                                 <c:set value="${item.current.QUANTITY}" var="quantity"/>
-                                <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price*quantity,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPriceTotal"/>
+                                <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price/100.0*quantity,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPriceTotal"/>
                                 ${itemPriceTotal}
                                 <c:if test="${item.current.PRICE_ITEM_PROMO_DISCOUNT > 0}">
                                     <c:set value="${item.current.PRICE_ITEM_PROMO_DISCOUNT}" var="itemDiscountPrice"/>
-                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(itemDiscountPrice * quantity,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPriceDiscountTotal"/>
+                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(itemDiscountPrice/100.0 * quantity,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPriceDiscountTotal"/>
                                     <br><span class="discount-row">-${itemPriceDiscountTotal}</span>
                                 </c:if>
                             </c:if>
@@ -196,11 +196,11 @@
                                                 <c:set var="price" value="${item.current.FINAL_PRICE_ITEM}"/>
                                                 <c:if test="${! empty price}">
                                                     <c:set value="${item.current.QUANTITY}" var="quantity"/>
-                                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price*quantity,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPriceTotal"/>
+                                                    <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price/100.0*quantity,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPriceTotal"/>
                                                     ${itemPriceTotal}
                                                     <c:if test="${item.current.PRICE_ITEM_PROMO_DISCOUNT > 0}">
                                                         <c:set value="${item.current.PRICE_ITEM_PROMO_DISCOUNT}" var="itemDiscountPrice"/>
-                                                        <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(itemDiscountPrice * quantity,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPriceDiscountTotal"/>
+                                                        <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(itemDiscountPrice/100.0 * quantity,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="itemPriceDiscountTotal"/>
                                                         <br><span class="discount-row">-${itemPriceDiscountTotal}</span>
                                                     </c:if>
                                                 </c:if>

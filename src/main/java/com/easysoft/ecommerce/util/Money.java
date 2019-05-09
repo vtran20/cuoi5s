@@ -163,7 +163,7 @@ public class Money implements Comparable {
     public String toString(String format) {
 //        if (this.amount.intValue() <= 0) return "";
         StringBuffer result = new StringBuffer();
-        result.append(getMoneyValue(format)).append(" ").append(this.currency);
+        result.append(this.currency).append(getMoneyValue(format));
         return result.toString();
     }
     /**
@@ -177,9 +177,9 @@ public class Money implements Comparable {
         StringBuffer result = new StringBuffer();
 
         if (this.amount.intValue() > 0) {
-            result.append(getMoneyValue(format)).append(" ").append(this.currency);
+            result.append(this.currency).append(getMoneyValue(format));
         } else {
-            result.append(0).append(" ").append(this.currency);
+            result.append(this.currency).append(0);
         }
         return result.toString();
     }
@@ -248,7 +248,7 @@ public class Money implements Comparable {
         if ( GenericValidator.isLong(value)) {
             result = new Money (new BigDecimal(value), currency, currencyFormat);
         } else if (GenericValidator.isDouble(value)) {
-            value = value.replace(".","");
+            //value = value.replace(".","");
             result = new Money (new BigDecimal(value), currency, currencyFormat);
         } else {
             throw new IllegalStateException("The string is not money format: "+value);
@@ -272,11 +272,7 @@ public class Money implements Comparable {
 //        if (this.amount.intValue() <= 0) return "";
         StringBuffer result = new StringBuffer();
         DecimalFormat precision = new DecimalFormat(format);
-        if (this.currency.equals("$")) {
-            result.append(precision.format(amount.longValue()/100.0));
-        } else {
-            result.append(StringUtils.replace(precision.format(amount), ",","."));
-        }
+        result.append(precision.format(amount).replaceAll(",","."));
         return result.toString();
     }
 

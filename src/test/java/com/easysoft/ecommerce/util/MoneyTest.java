@@ -44,7 +44,7 @@ public class MoneyTest extends TestCase {
         //VND
         Money m = new Money (new BigDecimal(120000), "VND", "#,###,###");
         Money m2 = new Money (new BigDecimal(100000), "VND", "#,###,###");
-        assertEquals(m.toString(), "120.000 VND");
+        assertEquals(m.toString(), "VND120.000");
         assertEquals(m.getMoneyValue(), "120.000");
 //        assertEquals(m.getAmount().longValue(), 120000);
         assertEquals(m.plus(m2), new Money (new BigDecimal(220000), "VND", "#,###,###"));
@@ -53,7 +53,7 @@ public class MoneyTest extends TestCase {
         //USA
         m = new Money (new BigDecimal(1200.01), "$", "####.00");
         m2 = new Money (new BigDecimal(1000.00), "$", "####.00");
-        assertEquals(m.toString(), "1200.01 $");
+        assertEquals(m.toString(), "$1200.01");
         assertEquals(m.getMoneyValue(), "1200.01");
 //        assertEquals(m.getAmount().doubleValue(), 1200.01d);
         assertEquals(m.plus(m2).toString(), new Money (new BigDecimal(2200.01), "$", "####.00").toString());
@@ -62,19 +62,19 @@ public class MoneyTest extends TestCase {
         //Testing for MoneyRange for VND (=, >, <, null)
         MoneyRange mr = null;
         mr = MoneyRange.valueOf("120000-120000", "VND", "#,###,###");
-        assertEquals("120.000 VND", mr.toString());
+        assertEquals("VND120.000", mr.toString());
         mr = MoneyRange.valueOf("120000-121000", "VND", "#,###,###");
-        assertEquals("120.000 - 121.000 VND", mr.toString());
+        assertEquals("VND120.000 - 121.000", mr.toString());
         mr = MoneyRange.valueOf("-", "VND", "#,###,###");
         assertEquals("", mr.toString());
         mr = MoneyRange.valueOf("", "VND", "#,###,###");
         assertEquals("", mr.toString());
         mr = MoneyRange.valueOf("100000", "VND", "#,###,###");
-        assertEquals("100.000 VND", mr.toString());
+        assertEquals("VND100.000", mr.toString());
         mr = MoneyRange.valueOf("-100000", "VND", "#,###,###");
-        assertEquals("100.000 VND", mr.toString());
+        assertEquals("VND100.000", mr.toString());
         mr = MoneyRange.valueOf("100000-", "VND", "#,###,###");
-        assertEquals("100.000 VND", mr.toString());
+        assertEquals("VND100.000", mr.toString());
 
         
 

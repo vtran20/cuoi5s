@@ -117,12 +117,10 @@
 
         <div class="row">
     <div class="col-xs-12" id="product_variant_form">
-    <c:if test="${fn:length(productVariants) == 1}">
+    <c:if test="${fn:length(productVariants) > 0}">
         <c:set var="productVariant" value="${productVariants[0]}"/>
     </c:if>
-        <spring:eval
-                expression="T(com.easysoft.ecommerce.util.Money).valueOf(productVariant.price,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).getMoneyValue()"
-                var="productPrice"/>
+        <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(productVariant.price/100.0,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).getMoneyValue()" var="productPrice"/>
         <input name="id" type="hidden" value="${productVariant.id}"/>
         <fieldset>
             <div class="row">
@@ -240,7 +238,7 @@
                     <label class="col-sm-4 control-label no-padding-right" for="productPrice"><fmt:message key="product.price"/>*</label>
                     <div class="col-sm-8 forms">
                         <spring:eval expression="site.siteParamsMap.get('CURRENCY')" var="currency"/>
-                        <input name="productPrice" class="required" id="productPrice" type="text" maxlength="15" value="{{price}}"/> ${currency}
+                        <input name="productPrice" class="required" id="productPrice" type="text" maxlength="15" value="{{price/100.0}}"/> ${currency}
                     </div>
                 </div>
                 <div class="form-group">

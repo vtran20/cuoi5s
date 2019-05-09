@@ -121,75 +121,50 @@ url<!DOCTYPE html>
                 <div class="col-sm-4 sm-margin-bottom-30">
                 </div>
                 <div class="col-sm-4 col-sm-offset-4">
-                    <ul class="list-inline total-result">
-                        <li>
-                            <h4><fmt:message key="basket.subtotal"/>:</h4>
-                            <spring:eval expression="orderSession.getOrder().getSubPriceTotal()" var="subPrice"/>
-                            <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(subPrice,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="subTotalPrice"/>
-                            <div class="total-result-in">
-                                <span>${subTotalPrice}</span>
-                            </div>
-                            <spring:eval expression="sessionObject.getOrder().getOriginalSubTotal()" var="originalSubTotal"/>
-                            <c:if test="${subPrice != originalSubTotal}">
-                                <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(originalSubTotal,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="originalSubTotalPrice"/>
-                                <div class="total-result-in line-through">
-                                    <span>${originalSubTotalPrice}</span>
-                                </div>
-                            </c:if>
-                        </li>
-                        <spring:eval expression="orderSession.getOrder().getSubPriceDiscountTotal()" var="subTotalDiscount"/>
-                        <c:if test="${!empty subTotalDiscount && subTotalDiscount > 0}">
-                            <li>
-                                <h4><fmt:message key="subordertotal-discount"/>:</h4>
-                                <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(subTotalDiscount,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="subTotalDiscount"/>
-                                <div class="total-result-in">
-                                    <span class="text-right">-${subTotalDiscount}</span>
-                                </div>
-                            </li>
-                        </c:if>
+                    <h:totalorder sessionObject="${orderSession}"/>
+                    <%--<ul class="list-inline total-result">--%>
                         <%--<li>--%>
-                            <%--<h4><fmt:message key="shipping.fee"/>:</h4>--%>
-                            <%--<spring:eval expression="orderSession.getShippingFee()" var="shippingPrice"/>--%>
-                            <%--<spring:eval expression="orderSession.getOrder().getShippingDiscountPrice()" var="shippingPriceDiscount"/>--%>
-                                <%--&lt;%&ndash;Shipping price > 0, Check discount for shipping fee&ndash;%&gt;--%>
-                            <%--<c:if test="${!empty shippingPrice && shippingPrice > 0}">--%>
-                                <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(shippingPrice,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="shipping_Price"/>--%>
-                                <%--<div class="total-result-in">--%>
-                                    <%--<span class="text-right">${shipping_Price}</span>--%>
-                                <%--</div>--%>
-                                <%--<c:if test="${shippingPriceDiscount > 0}">--%>
-                                    <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(shippingPriceDiscount,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="shipping_Price_Discount"/>--%>
-                                    <%--<h4><fmt:message key="basket.discount.shipping.fee"/>:</h4>--%>
-                                    <%--<div class="total-result-in">--%>
-                                        <%--<span class="text-right">-${shipping_Price_Discount}</span><br>--%>
-                                    <%--</div>--%>
-                                <%--</c:if>--%>
-                            <%--</c:if>--%>
-                                <%--&lt;%&ndash;Shipping price is 0, don't care discount for shipping fee&ndash;%&gt;--%>
-                            <%--<c:if test="${empty shippingPrice || shippingPrice <= 0}">--%>
-                                <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(0,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="shipping_Price"/>--%>
-                                <%--<div class="total-result-in">--%>
-                                    <%--<span class="text-right">${shipping_Price}</span><br>--%>
+                            <%--<h4><fmt:message key="basket.subtotal"/>:</h4>--%>
+                            <%--<spring:eval expression="orderSession.getOrder().getSubPriceTotal()" var="subPrice"/>--%>
+                            <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(subPrice,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="subTotalPrice"/>--%>
+                            <%--<div class="total-result-in">--%>
+                                <%--<span>${subTotalPrice}</span>--%>
+                            <%--</div>--%>
+                            <%--<spring:eval expression="sessionObject.getOrder().getOriginalSubTotal()" var="originalSubTotal"/>--%>
+                            <%--<c:if test="${subPrice != originalSubTotal}">--%>
+                                <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(originalSubTotal,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="originalSubTotalPrice"/>--%>
+                                <%--<div class="total-result-in line-through">--%>
+                                    <%--<span>${originalSubTotalPrice}</span>--%>
                                 <%--</div>--%>
                             <%--</c:if>--%>
                         <%--</li>--%>
-                        <li>
-                            <h4><fmt:message key="basket.tax"/>:</h4>
-                            <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(orderSession.getOrder().getTaxPrice(),site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="tax_Price"/>
-                            <div class="total-result-in">
-                                <span>${tax_Price}</span>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li class="total-price">
-                            <h4><fmt:message key="basket.ordertotal"/>:</h4>
-                            <spring:eval expression="orderSession.getOrder().getTotalPrice()" var="price"/>
-                            <spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="totalPrice"/>
-                            <div class="total-result-in">
-                                <span>${totalPrice}</span>
-                            </div>
-                        </li>
-                    </ul>
+                        <%--<spring:eval expression="orderSession.getOrder().getSubPriceDiscountTotal()" var="subTotalDiscount"/>--%>
+                        <%--<c:if test="${!empty subTotalDiscount && subTotalDiscount > 0}">--%>
+                            <%--<li>--%>
+                                <%--<h4><fmt:message key="subordertotal-discount"/>:</h4>--%>
+                                <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(subTotalDiscount,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="subTotalDiscount"/>--%>
+                                <%--<div class="total-result-in">--%>
+                                    <%--<span class="text-right">-${subTotalDiscount}</span>--%>
+                                <%--</div>--%>
+                            <%--</li>--%>
+                        <%--</c:if>--%>
+                        <%--<li>--%>
+                            <%--<h4><fmt:message key="basket.tax"/>:</h4>--%>
+                            <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(orderSession.getOrder().getTaxPrice(),site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="tax_Price"/>--%>
+                            <%--<div class="total-result-in">--%>
+                                <%--<span>${tax_Price}</span>--%>
+                            <%--</div>--%>
+                        <%--</li>--%>
+                        <%--<li class="divider"></li>--%>
+                        <%--<li class="total-price">--%>
+                            <%--<h4><fmt:message key="basket.ordertotal"/>:</h4>--%>
+                            <%--<spring:eval expression="orderSession.getOrder().getTotalPrice()" var="price"/>--%>
+                            <%--<spring:eval expression="T(com.easysoft.ecommerce.util.Money).valueOf(price,site.siteParamsMap.get('CURRENCY'), site.siteParamsMap.get('CURRENCY_FORMAT')).toString()" var="totalPrice"/>--%>
+                            <%--<div class="total-result-in">--%>
+                                <%--<span>${totalPrice}</span>--%>
+                            <%--</div>--%>
+                        <%--</li>--%>
+                    <%--</ul>--%>
                 </div>
             </div>
         </div>

@@ -82,7 +82,7 @@ public class MoneyRange {
                 if (lower.equals(greater)) {
                     return lower.toString();
                 } else {
-                    return lower.getMoneyValue() + " - " + greater.getMoneyValue() + " " + lower.getCurrency();
+                    return lower.getCurrency()+lower.getMoneyValue() + " - " + greater.getMoneyValue();
                 }
             } else {
                 return lower.toString();

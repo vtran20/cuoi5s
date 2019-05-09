@@ -51,17 +51,21 @@
                                 <td>${thisSite.index+1}</td>
                                 <c:choose>
                                     <c:when test="${!empty thisSite.current.domain}">
-                                        <td><a target="_blank" href="http://${thisSite.current.domain}">${thisSite.current.domain}</a><br>
-                                            <a target="_blank" href="http://${thisSite.current.subDomain}">${thisSite.current.subDomain}</a></td>
+                                        <td>
+                                        <a target="_blank" href="http://${thisSite.current.domain}">${thisSite.current.domain}</a><br>
+                                            <%--<a target="_blank" href="http://${thisSite.current.subDomain}">${thisSite.current.subDomain}</a>--%>
+                                        </td>
                                     </c:when>
                                     <c:otherwise>
-                                        <td><a target="_blank" href="http://${thisSite.current.subDomain}">${thisSite.current.subDomain}</a></td>
+                                        <td>
+                                            <%--<a target="_blank" href="http://${thisSite.current.subDomain}">${thisSite.current.subDomain}</a>--%>
+                                        </td>
                                     </c:otherwise>
                                 </c:choose>
                                 <td class="hidden-xs">${thisSite.current.name}</td>
-                                <spring:eval expression="serviceLocator.getStrongEncryptor().decrypt(currentUser.password)" var="password" />
-                                <c:set var="code" value="domain=${thisSite.current.subDomain}&j_username=${currentUser.username}&j_password=${password}"/>
-                                <spring:eval expression="T(com.easysoft.ecommerce.service.impl.URLUTF8Encoder).encode(serviceLocator.getStrongEncryptor().encrypt(code))" var="encryptText" />
+                                <%--<spring:eval expression="serviceLocator.getStrongEncryptor().decrypt(currentUser.password)" var="password" />--%>
+                                <%--<c:set var="code" value="domain=${thisSite.current.subDomain}&j_username=${currentUser.username}&j_password=${password}"/>--%>
+                                <%--<spring:eval expression="T(com.easysoft.ecommerce.service.impl.URLUTF8Encoder).encode(serviceLocator.getStrongEncryptor().encrypt(code))" var="encryptText" />--%>
                                 <spring:eval expression="serviceLocator.getProductDao().findUniqueBy('model','HOSTING', site.id)" var="product"/>
                                 <td>
                                     <spring:eval expression="site.siteParamsMap.get('DATE_FORMAT')" var="dateFormat"/>

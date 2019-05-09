@@ -371,7 +371,6 @@ public class SiteController {
                 so.remove("skinColor");
                 so.remove("fullWide");
                 so.remove("siteCode");
-                so.remove("siteCode");
                 return new ModelAndView("site/mysites", "messages", messages);
             }
         } else {
