@@ -1,5 +1,7 @@
 package com.easysoft.ecommerce.util;
 
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.model.*;
 import com.easysoft.ecommerce.model.*;
 import com.google.common.io.BaseEncoding;
 import com.google.gson.Gson;
@@ -768,7 +770,7 @@ public class WebUtil {
         }
         return "";
     }
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 
 //        ////Get day of week/////
 //        Calendar dateOfWeek = Calendar.getInstance();
@@ -842,5 +844,51 @@ public class WebUtil {
 //        for (Date ts : timeslots) {
 //            System.out.println(dateToString(ts, "HH:mm a"));
 //        }
+//    }
+
+    public static void main(String[] args) {
+        AmazonSNSClient snsClient = new AmazonSNSClient();
+        String message = "My SMS message";
+        String phoneNumber = "+17343532648";
+        Map<String, MessageAttributeValue> smsAttributes =
+                new HashMap<String, MessageAttributeValue>();
+        smsAttributes.put("AWS.SNS.SMS.SenderID", new MessageAttributeValue()
+                .withStringValue("mySenderID") //The sender ID shown on the device.
+                .withDataType("String"));
+        smsAttributes.put("AWS.SNS.SMS.MaxPrice", new MessageAttributeValue()
+                .withStringValue("0.50") //Sets the max price to 0.50 USD.
+                .withDataType("Number"));
+        smsAttributes.put("AWS.SNS.SMS.SMSType", new MessageAttributeValue()
+                .withStringValue("Promotional") //Sets the type to promotional.
+                .withDataType("String"));
+        //<set SMS attributes>
+        sendSMSMessage(snsClient, message, phoneNumber, smsAttributes);
+    }
+
+    public static void sendSMSMessage(AmazonSNSClient snsClient, String message,
+                                      String phoneNumber, Map<String, MessageAttributeValue> smsAttributes) {
+        PublishResult result = snsClient.publish(new PublishRequest()
+                .withMessage(message)
+                .withPhoneNumber(phoneNumber)
+                .withMessageAttributes(smsAttributes));
+        System.out.println(result); // Prints the message ID.
+    }
+
+    public static void setDefaultSmsAttributes(AmazonSNSClient snsClient) {
+        SetSMSAttributesRequest setRequest = new SetSMSAttributesRequest()
+                .addAttributesEntry("DefaultSenderID", "mySenderID")
+                .addAttributesEntry("MonthlySpendLimit", "1")
+                .addAttributesEntry("DeliveryStatusIAMRole",
+                        "arn:aws:iam::186371710645:user/vtran20SNSAdmin")
+                .addAttributesEntry("DeliveryStatusSuccessSamplingRate", "10")
+                .addAttributesEntry("DefaultSMSType", "Transactional")
+                .addAttributesEntry("UsageReportS3Bucket", "sns-sms-daily-usage");
+        snsClient.setSMSAttributes(setRequest);
+        Map<String, String> myAttributes = snsClient.getSMSAttributes(new GetSMSAttributesRequest())
+                .getAttributes();
+        System.out.println("My SMS attributes:");
+        for (String key : myAttributes.keySet()) {
+            System.out.println(key + " = " + myAttributes.get(key));
+        }
     }
 }
