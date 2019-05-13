@@ -10,8 +10,8 @@
             imagesPathOverride:'abc',
             generateName:'on',
             skipOptimization:'on',
-            url:'http://image.mangchiase.com/images/upload.json',
-            serverurl:'http://image.mangchiase.com'
+            url:'http://images.webphattai.com/images/upload.json',
+            serverurl:'http://images.webphattai.com'
         },
         csrf:'',
         uri:''

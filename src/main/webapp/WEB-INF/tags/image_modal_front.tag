@@ -85,7 +85,7 @@
             url = button.data('img');
             console.log("url="+url);
             if (typeof url !== 'undefined' ) {
-                if (url.indexOf('image.mangchiase.com') >= 0 || url.indexOf('images.webphattai.com') >= 0) {
+                if (url.indexOf('images.quanlytiemnail.com') >= 0 || url.indexOf('images.webphattai.com') >= 0) {
                     $image.cropper('destroy').cropper(options).cropper('replace', url);
                 } else {
                     $image.cropper('destroy').cropper(options).cropper('replace', url).cropper('clear');

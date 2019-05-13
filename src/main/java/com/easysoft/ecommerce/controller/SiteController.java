@@ -1798,7 +1798,7 @@ public class SiteController {
         if ("GET".equalsIgnoreCase(request.getMethod())) {
             return new ModelAndView("site/data/store");
         } else {
-            Messages messages = null;
+            Messages messages = new Messages();
             Map result = new HashMap();
             if (store.isEmptyId()) {
                 SessionObject so = SessionUtil.load(request, response);
@@ -1817,8 +1817,14 @@ public class SiteController {
                     }
                     store.setPhone(phone);
                     //Store hours
-                    updateHours(request, store);
-                    serviceLocator.getNailStoreDao().persist(store);
+                    updateHours(request, store, messages);
+                    if (messages.hasErrors()) {
+                        //do nothing
+                        //messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.saving.error.message", null, LocaleContextHolder.getLocale()));
+                    } else {
+                        messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
+                        serviceLocator.getNailStoreDao().persist(store);
+                    }
                 } else {
                     messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.error1", null, LocaleContextHolder.getLocale()));
                 }
@@ -1842,12 +1848,15 @@ public class SiteController {
                     phone = phone.replaceAll(" ", "");
                 }
                 originalStore.setPhone(phone);
-                updateHours(request, originalStore);
-                serviceLocator.getNailStoreDao().merge(originalStore);
+                updateHours(request, originalStore, messages);
+                if (messages.hasErrors()) {
+//                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.saving.error.message", null, LocaleContextHolder.getLocale()));
+                } else {
+                    messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
+                    serviceLocator.getNailStoreDao().merge(originalStore);
+                }
                 result.put("store", originalStore);
             }
-            messages = new Messages();
-            messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
             result.put("messages", messages);
             return new ModelAndView("site/data/store", result);
         }
@@ -2172,70 +2181,123 @@ public class SiteController {
         return "fail";
     }
 
-    private void updateHours (HttpServletRequest request, NailStore store) {
-        if (request.getParameter("mondayOpenHour") != null) {
-            if ("0".equals(request.getParameter("mondayOpenHour")) || "0".equals(request.getParameter("mondayCloseHour"))) {
+    private void updateHours (HttpServletRequest request, NailStore store, Messages messages) {
+        String mondayOpenHour = request.getParameter("mondayOpenHour");
+        String mondayCloseHour = request.getParameter("mondayCloseHour");
+        if (mondayOpenHour != null) {
+            if ("0".equals(mondayOpenHour) || "0".equals(mondayCloseHour)) {
                 store.setHourMon("0");
             } else {
-                store.setHourMon(request.getParameter("mondayOpenHour")+"-"+request.getParameter("mondayCloseHour"));
+                if (isOpenBeforeCloseHours(mondayOpenHour, mondayCloseHour)) {
+                    store.setHourMon(mondayOpenHour+"-"+mondayCloseHour);
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.open.close.hour.invalid", new String[]{"Monday"}, LocaleContextHolder.getLocale()));
+                }
             }
         } else {
             store.setHourMon("0");
         }
-        if (request.getParameter("tuesdayOpenHour") != null) {
-            if ("0".equals(request.getParameter("tuesdayOpenHour")) || "0".equals(request.getParameter("tuesdayCloseHour"))) {
+
+        String tuesdayOpenHour = request.getParameter("tuesdayOpenHour");
+        String tuesdayCloseHour = request.getParameter("tuesdayCloseHour");
+        if (tuesdayOpenHour != null) {
+            if ("0".equals(tuesdayOpenHour) || "0".equals(tuesdayCloseHour)) {
                 store.setHourTue("0");
             } else {
-                store.setHourTue(request.getParameter("tuesdayOpenHour")+"-"+request.getParameter("tuesdayCloseHour"));
+                if (isOpenBeforeCloseHours(tuesdayOpenHour, tuesdayCloseHour)) {
+                    store.setHourTue(tuesdayOpenHour+"-"+tuesdayCloseHour);
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.open.close.hour.invalid", new String[]{"Tuesday"}, LocaleContextHolder.getLocale()));
+                }
             }
         } else {
             store.setHourTue("0");
         }
-        if (request.getParameter("wednesdayOpenHour") != null) {
-            if ("0".equals(request.getParameter("wednesdayOpenHour")) || "0".equals(request.getParameter("wednesdayCloseHour"))) {
+
+        String wednesdayOpenHour = request.getParameter("wednesdayOpenHour");
+        String wednesdayCloseHour = request.getParameter("wednesdayCloseHour");
+        if (wednesdayOpenHour != null) {
+            if ("0".equals(wednesdayOpenHour) || "0".equals(wednesdayCloseHour)) {
                 store.setHourWed("0");
             } else {
-                store.setHourWed(request.getParameter("wednesdayOpenHour")+"-"+request.getParameter("wednesdayCloseHour"));
+                if (isOpenBeforeCloseHours(wednesdayOpenHour, wednesdayCloseHour)) {
+                    store.setHourWed(wednesdayOpenHour+"-"+wednesdayCloseHour);
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.open.close.hour.invalid", new String[]{"Wednesday"}, LocaleContextHolder.getLocale()));
+                }
             }
         } else {
             store.setHourWed("0");
         }
-        if (request.getParameter("thursdayOpenHour") != null) {
-            if ("0".equals(request.getParameter("thursdayOpenHour")) || "0".equals(request.getParameter("thursdayCloseHour"))) {
+
+        String thursdayOpenHour = request.getParameter("thursdayOpenHour");
+        String thursdayCloseHour = request.getParameter("thursdayCloseHour");
+        if (thursdayOpenHour != null) {
+            if ("0".equals(thursdayOpenHour) || "0".equals(thursdayCloseHour)) {
                 store.setHourThu("0");
             } else {
-                store.setHourThu(request.getParameter("thursdayOpenHour")+"-"+request.getParameter("thursdayCloseHour"));
+                if (isOpenBeforeCloseHours(thursdayOpenHour, thursdayCloseHour)) {
+                    store.setHourThu(thursdayOpenHour+"-"+thursdayCloseHour);
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.open.close.hour.invalid", new String[]{"Thursday"}, LocaleContextHolder.getLocale()));
+                }
             }
         } else {
             store.setHourThu("0");
         }
-        if (request.getParameter("fridayOpenHour") != null) {
-            if ("0".equals(request.getParameter("fridayOpenHour")) || "0".equals(request.getParameter("fridayCloseHour"))) {
+
+        String fridayOpenHour = request.getParameter("fridayOpenHour");
+        String fridayCloseHour = request.getParameter("fridayCloseHour");
+        if (fridayOpenHour != null) {
+            if ("0".equals(fridayOpenHour) || "0".equals(fridayCloseHour)) {
                 store.setHourFri("0");
             } else {
-                store.setHourFri(request.getParameter("fridayOpenHour")+"-"+request.getParameter("fridayCloseHour"));
+                if (isOpenBeforeCloseHours(fridayOpenHour, fridayCloseHour)) {
+                    store.setHourFri(fridayOpenHour+"-"+fridayCloseHour);
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.open.close.hour.invalid", new String[]{"Friday"}, LocaleContextHolder.getLocale()));
+                }
             }
         } else {
             store.setHourFri("0");
         }
-        if (request.getParameter("saturdayOpenHour") != null) {
-            if ("0".equals(request.getParameter("saturdayOpenHour")) || "0".equals(request.getParameter("saturdayCloseHour"))) {
+
+        String saturdayOpenHour = request.getParameter("saturdayOpenHour");
+        String saturdayCloseHour = request.getParameter("saturdayCloseHour");
+        if (saturdayOpenHour != null) {
+            if ("0".equals(saturdayOpenHour) || "0".equals(saturdayCloseHour)) {
                 store.setHourSat("0");
             } else {
-                store.setHourSat(request.getParameter("saturdayOpenHour")+"-"+request.getParameter("saturdayCloseHour"));
+                if (isOpenBeforeCloseHours(saturdayOpenHour, saturdayCloseHour)) {
+                    store.setHourSat(saturdayOpenHour+"-"+saturdayCloseHour);
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.open.close.hour.invalid", new String[]{"Saturday"}, LocaleContextHolder.getLocale()));
+                }
             }
         } else {
             store.setHourSat("0");
         }
-        if (request.getParameter("sundayOpenHour") != null) {
-            if ("0".equals(request.getParameter("sundayOpenHour")) || "0".equals(request.getParameter("sundayCloseHour"))) {
+
+        String sundayOpenHour = request.getParameter("sundayOpenHour");
+        String sundayCloseHour = request.getParameter("sundayCloseHour");
+        if (sundayOpenHour != null) {
+            if ("0".equals(sundayOpenHour) || "0".equals(sundayCloseHour)) {
                 store.setHourSun("0");
             } else {
-                store.setHourSun(request.getParameter("sundayOpenHour")+"-"+request.getParameter("sundayCloseHour"));
+                if (isOpenBeforeCloseHours(sundayOpenHour, sundayCloseHour)) {
+                    store.setHourSun(sundayOpenHour+"-"+sundayCloseHour);
+                } else {
+                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.open.close.hour.invalid", new String[]{"Sunday"}, LocaleContextHolder.getLocale()));
+                }
             }
         } else {
             store.setHourSun("0");
         }
     }
 
+    private boolean isOpenBeforeCloseHours (String open, String close) {
+        Date openHour = WebUtil.stringToDate(open, "hh:mm");
+        Date closeHour = WebUtil.stringToDate(close, "hh:mm");
+        return openHour.before(closeHour);
+    }
 }

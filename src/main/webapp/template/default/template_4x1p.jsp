@@ -1,5 +1,6 @@
 <%@ page language="java" isELIgnored="false" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" %>
 <%@include file="/common.jspf" %>
+<%--<app:cache key="${pageContext.request.serverName}">--%>
 <!DOCTYPE html>
 <html lang="en">
 <spring:eval expression="systemContext.getGlobalConfig('image.server')" var="imageServer"/>
@@ -539,7 +540,7 @@
                 </div>
                 <div class="modal-footer">
                         <%--<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>--%>
-                    <button type="button" id="submit-appointment" class="btn btn-primary">Save changes</button>
+                    <button type="button" id="submit-appointment" class="btn btn-primary">Submit</button>
                 </div>
             </div>
         </div>
@@ -661,7 +662,7 @@
                   <i class="icon-call-in"></i>
                 </span>
                     <em class="d-block g-color-black-light-v2 text-uppercase g-font-size-12 g-font-style-normal g-mb-5">Phone Number</em>
-                    <strong class="d-block">(${fn:substring(store.phone, 0, 3)}) ${fn:substring(store.phone, 3, 6)}-${fn:substring(store.phone, 6, fn:length(store.phone))}</strong>
+                    <strong class="d-block"><a href="tel:${store.phone}">(${fn:substring(store.phone, 0, 3)}) ${fn:substring(store.phone, 3, 6)}-${fn:substring(store.phone, 6, fn:length(store.phone))}</a></strong>
                 </div>
 
                 <div>
@@ -669,7 +670,7 @@
                   <i class="icon-envelope-letter"></i>
                 </span>
                     <em class="d-block g-color-black-light-v2 text-uppercase g-font-size-12 g-font-style-normal g-mb-5">Email</em>
-                    <strong class="d-block"><a href="#" class="g-color-main">${store.email}</a></strong>
+                    <strong class="d-block"><a href="mailto:${store.email}">${store.email}</a></strong>
                 </div>
             </div>
             <div class="col-md-3 text-center text-md-left g-mb-40--md">
@@ -1103,3 +1104,4 @@
 
 </body>
 </html>
+<%--</app:cache>--%>

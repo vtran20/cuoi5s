@@ -105,7 +105,7 @@
                             <%--</select>--%>
                         <%--</div>--%>
                     <%--</div>--%>
-                    <div class="headline"><h4>Contact Us</h4></div>
+                    <div class="headline"><h4>Salon Contact Us</h4></div>
                     <div class="form-group">
                         <label for="phone" class="col-lg-3 control-label"><fmt:message key="site.data.address.phone"/></label>
                         <div class="col-lg-9">

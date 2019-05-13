@@ -346,25 +346,30 @@
                     </ul>
                 </div>
                 <!-- End Social Links -->
-                <div class="col-md-3">
-                    <p>
-                        <c:choose>
-                            <c:when test="${site.parentSite.siteType == 3}">
-                                <c:set var="ownerDomain" value="${site.parentSite.domain}"/>
-                                <c:set var="ownerName" value="${site.parentSite.domain}"/>
-                            </c:when>
-                            <c:when test="${site.siteType == 3}">
-                                <c:set var="ownerDomain" value="${site.domain}"/>
-                                <c:set var="ownerName" value="${site.domain}"/>
-                            </c:when>
-                            <c:otherwise>
-                                <c:set var="ownerDomain" value="${site.parentSite.domain}"/>
-                                <c:set var="ownerName" value="WebPhatTai."/>
-                            </c:otherwise>
-                        </c:choose>
-                        Designed by <a href="http://${ownerDomain}">${ownerName}</a> | <a href="/admin/login.html"><fmt:message key='site.login.admin'/></a>
-                    </p>
-                </div>
+                <c:choose>
+                    <c:when test="${site.parentSite.siteType == 3}">
+                        <c:set var="ownerDomain" value="${site.parentSite.domain}"/>
+                        <c:set var="ownerName" value="${site.parentSite.domain}"/>
+                        <div class="col-md-3">
+                            <p>
+                                Designed by <a href="http://${ownerDomain}">${ownerName}</a> | <a href="/admin/login.html"><fmt:message key='site.login.admin'/></a>
+                            </p>
+                        </div>
+                    </c:when>
+                    <c:when test="${site.siteType == 3}">
+                        <c:set var="ownerDomain" value="${site.domain}"/>
+                        <c:set var="ownerName" value="${site.domain}"/>
+                        <div class="col-md-3">
+                            <p>
+                                Designed by <a href="http://${ownerDomain}">${ownerName}</a> | <a href="/admin/login.html"><fmt:message key='site.login.admin'/></a>
+                            </p>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="ownerDomain" value="${site.parentSite.domain}"/>
+                        <c:set var="ownerName" value="WebPhatTai."/>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
     </div><!--/copyright-->
