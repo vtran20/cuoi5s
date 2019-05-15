@@ -1795,6 +1795,7 @@ public class SiteController {
 
     @RequestMapping(value = "data/create-update-store.html", method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView updateGeneralInformation(@Valid NailStore store, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Site thisSite = null;
         if ("GET".equalsIgnoreCase(request.getMethod())) {
             return new ModelAndView("site/data/store");
         } else {
@@ -1805,7 +1806,7 @@ public class SiteController {
                 String sSite = so.getString("UPDATE_CURRENT_SITE_ID");
                 if (StringUtils.isNumeric(sSite)) {
                     Long siteId = Long.valueOf(sSite);
-                    Site thisSite = serviceLocator.getSiteDao().findById(siteId);
+                    thisSite = serviceLocator.getSiteDao().findById(siteId);
                     store.setActive("Y");
                     store.setSite(thisSite);
                     String phone = store.getPhone();
@@ -1873,6 +1874,9 @@ public class SiteController {
                 }
                 result.put("store", originalStore);
             }
+            if (!messages.hasErrors() && thisSite != null) {
+                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+            }
             result.put("messages", messages);
             return new ModelAndView("site/data/store", result);
         }
@@ -1897,6 +1901,11 @@ public class SiteController {
                 originalPartContent.setTitle(partContent.getTitle());
                 originalPartContent.setContent(partContent.getContent());
                 serviceLocator.getSiteMenuPartContentDao().merge(originalPartContent);
+                Site thisSite = getThisSite(request, response);
+                if (thisSite != null) {
+                    serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                }
+
             }
             messages = new Messages();
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
@@ -1921,6 +1930,10 @@ public class SiteController {
                 originalPartContent.setImgUrl(partContent.getImgUrl());
                 originalPartContent.setCrop(partContent.getCrop());
                 serviceLocator.getSiteMenuPartContentDao().merge(originalPartContent);
+                Site thisSite = getThisSite(request, response);
+                if (thisSite != null) {
+                    serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                }
                 return "ok";
             } catch (Exception e) {
                 return "fail";
@@ -1941,6 +1954,11 @@ public class SiteController {
                 siteParam.setSiteId(siteId);
                 serviceLocator.getSiteParamDao().persist(siteParam);
             }
+            Site thisSite = getThisSite(request, response);
+            if (thisSite != null) {
+                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain() + "_template4x1p");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return "fail";
@@ -1966,8 +1984,9 @@ public class SiteController {
                 serviceLocator.getSiteHeaderFooterDao().merge(header);
             }
 
-            //TODO: Remove cache for the headerFooter.
-//            serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateHeaderCacheKey());
+            if (thisSite != null) {
+                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+            }
             return "ok";
         } catch (Exception e) {
             e.printStackTrace();
@@ -2013,6 +2032,10 @@ public class SiteController {
                 }
                 serviceLocator.getNailServiceDao().merge(originalService);
             }
+            Site thisSite = getThisSite(request, response);
+            if (!messages.hasErrors() && thisSite != null) {
+                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+            }
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
             return messages.toString();
         }
@@ -2025,6 +2048,10 @@ public class SiteController {
         if (service != null) {
             serviceLocator.getNailServiceDao().remove(service);
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.deleted.success", null, LocaleContextHolder.getLocale()));
+            Site thisSite = getThisSite(request, response);
+            if (!messages.hasErrors() && thisSite != null) {
+                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+            }
         } else {
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.no.data.changed", null, LocaleContextHolder.getLocale()));
         }
@@ -2065,6 +2092,10 @@ public class SiteController {
                 originalEmployee.setPhone(phone);
                 serviceLocator.getNailEmployeeDao().merge(originalEmployee);
             }
+            Site thisSite = getThisSite(request, response);
+            if (!messages.hasErrors() && thisSite != null) {
+                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain() + "_template4x1p");
+            }
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
             return messages.toString();
         }
@@ -2077,6 +2108,10 @@ public class SiteController {
         if (employee != null) {
             serviceLocator.getNailEmployeeDao().remove(employee);
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.deleted.success", null, LocaleContextHolder.getLocale()));
+            Site thisSite = getThisSite(request, response);
+            if (!messages.hasErrors() && thisSite != null) {
+                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+            }
         } else {
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.no.data.changed", null, LocaleContextHolder.getLocale()));
         }
@@ -2114,6 +2149,10 @@ public class SiteController {
             map.put("id", albumImage.getId());
             map.put("uri", albumImage.getUri());
             map.put("delete_url", imageServer+"/images/remove.json?name="+albumImage.getUri()+"&key="+ URLEncoder.encode(WebUtil.encrypt(albumImage.getUri()), "UTF-8")+"&path="+site.getSiteCode());
+            Site thisSite = getThisSite(request, response);
+            if (thisSite != null) {
+                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+            }
         } else {
             map.put("success", false);
         }
@@ -2124,7 +2163,7 @@ public class SiteController {
      * This method is called when update description to an album
      */
     @RequestMapping(value = "data/update_image.html", method = RequestMethod.POST, produces="application/x-www-form-urlencoded; charset=UTF-8")
-    public @ResponseBody String updateAlbumImage(HttpServletRequest request, AlbumImage entity) throws Exception {
+    public @ResponseBody String updateAlbumImage(HttpServletRequest request, AlbumImage entity, HttpServletResponse response) throws Exception {
         Messages messages = new Messages();
         String siteId = request.getParameter("siteId");
         Site thisSite = null;
@@ -2132,7 +2171,7 @@ public class SiteController {
             thisSite = ServiceLocatorHolder.getServiceLocator().getSiteDao().findById(Long.valueOf(siteId));
         }
         boolean isChange = false;
-        if (entity != null && !entity.isEmptyId()) { // Update AlbumImage
+        if (entity != null && !entity.isEmptyId() && thisSite != null) { // Update AlbumImage
             AlbumImage originalAlbumImage =  serviceLocator.getAlbumImageDao().findById(entity.getId(), thisSite.getId());
             if (originalAlbumImage != null) {
                 if ((originalAlbumImage.getDescription() == null && entity.getDescription() != null) ||
@@ -2143,7 +2182,9 @@ public class SiteController {
             }
             if (isChange) {
                 serviceLocator.getAlbumImageDao().merge(originalAlbumImage);
-//                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromAlbumImage(null, originalAlbumImage.getId()));
+                if (!messages.hasErrors()) {
+                    serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                }
                 messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.saved.success", null, LocaleContextHolder.getLocale()));
                 return messages.toString();
 
@@ -2159,13 +2200,14 @@ public class SiteController {
     @RequestMapping(value = "data/deleteimage.html", method = RequestMethod.GET)
     public @ResponseBody String deleteImage(@Valid Long id, @Valid Long siteId) {
         try {
-            Site site = ServiceLocatorHolder.getServiceLocator().getSiteDao().findById(Long.valueOf(siteId));
+            Site thisSite = ServiceLocatorHolder.getServiceLocator().getSiteDao().findById(siteId);
             if (id > 0) {
-                AlbumImage albumImage = serviceLocator.getAlbumImageDao().findById(id, site.getId());
+                AlbumImage albumImage = serviceLocator.getAlbumImageDao().findById(id, thisSite.getId());
                 if (albumImage != null) {
 //                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromAlbumImage(null, albumImage.getId()));
 //                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromGallery(null));
                     serviceLocator.getAlbumImageDao().remove(albumImage);
+                    serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
                 }
                 return "ok";
             }
@@ -2180,13 +2222,17 @@ public class SiteController {
      * This will be called when update gallery image
      */
     @RequestMapping(value = "data/update_image.html", method = RequestMethod.GET)
-    public @ResponseBody String updateImage(@Valid Long id, @Valid String crop) {
+    public @ResponseBody String updateImage(@Valid Long id, @Valid String crop, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (id > 0) {
                 AlbumImage albumImage = serviceLocator.getAlbumImageDao().findById(id);
                 if (albumImage != null) {
                     albumImage.setCrop(crop);
                     serviceLocator.getAlbumImageDao().merge(albumImage);
+                    Site thisSite = getThisSite(request, response);
+                    if (thisSite != null) {
+                        serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                    }
                 }
                 return "ok";
             }
@@ -2315,5 +2361,23 @@ public class SiteController {
         Date openHour = WebUtil.stringToDate(open, "hh:mm");
         Date closeHour = WebUtil.stringToDate(close, "hh:mm");
         return openHour.before(closeHour);
+    }
+
+    private Site getThisSite (HttpServletRequest request, HttpServletResponse response) {
+        try {
+            SessionObject so = SessionUtil.load(request, response);
+            return getThisSite(so);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private Site getThisSite (SessionObject so) {
+        String sSite = so.getString("UPDATE_CURRENT_SITE_ID");
+        if (StringUtils.isNumeric(sSite)) {
+            Long siteId = Long.valueOf(sSite);
+            return serviceLocator.getSiteDao().findById(siteId);
+        }
+        return null;
     }
 }

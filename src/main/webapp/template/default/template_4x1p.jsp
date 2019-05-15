@@ -1,6 +1,6 @@
 <%@ page language="java" isELIgnored="false" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" %>
 <%@include file="/common.jspf" %>
-<app:cache key="${pageContext.request.serverName}">
+<app:cache key="${site.subDomain}_template4x1p">
 <!DOCTYPE html>
 <html lang="en">
 <spring:eval expression="systemContext.getGlobalConfig('image.server')" var="imageServer"/>
