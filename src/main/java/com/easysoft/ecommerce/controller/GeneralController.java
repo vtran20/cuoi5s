@@ -449,13 +449,16 @@ public class GeneralController {
 
                     //Sending SMS message
                     StringBuilder smsMessage =  new StringBuilder();
-                    smsMessage.append("New Appt: Cust: ")
-                            .append(request.getParameter("firstName")).append(" on:")
+                    smsMessage.append("New Appt: Customer: ")
+                            .append(request.getParameter("firstName")).append(" ").append(request.getParameter("lastName")).append(" made appt: ")
                             .append(request.getParameter("selectedDate")).append(" ").append(request.getParameter("selectedTime"))
-                            .append(" Emp:").append(inputData.get("employeeName")).append(" Services:");
+                            .append(" Emp: ").append(inputData.get("employeeName")).append(" Services: ");
                     for (NailService service : nailServices) {
                         smsMessage.append(service.getName()).append(",");
                     }
+                    //remove the last comma
+                    smsMessage.substring(0, smsMessage.length() -1);
+
                     if (StringUtils.isNotEmpty(store.getCellPhone()) && store.getCellPhone().length() == 10) {
                         WebUtil.sendSMSMessage(smsMessage.toString(), "+1"+store.getCellPhone());
                     }
