@@ -1032,8 +1032,11 @@
             $("input[name='selectedTime']").val(object.val())
         });
 
-        $('#submit-appointment').click(function() {
+        $('#submit-appointment').click(function(evt) {
+            var button = $(this)
             if ($("#formModal").valid()) {
+                button.attr("disabled", true)
+                button.append("<img src='/themes/editor/img/spinner.gif' id='spinner-gif'>");
                 var storeId = $("#selectedStoreId").val()
                 var serviceId = $("#selectedServiceId").val()
                 var employeeId = $("#selectedEmployeeId").val()
@@ -1046,9 +1049,13 @@
                     data: formData,
                     success: function(result){
                         $('#modal_message_alert').html(result);
+                        button.find("#spinner-gif").remove();
+//                        button.attr("disabled", true)
                     },
                     error: function (result) {
                         $('#modal_message_alert').html(result);
+                        button.find("#spinner-gif").remove();
+                        button.attr("disabled", false)
                     }
                 });
             }

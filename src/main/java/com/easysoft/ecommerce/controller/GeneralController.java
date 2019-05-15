@@ -407,7 +407,61 @@ public class GeneralController {
             inputData.put("phone", phone);
             inputData.put("email", request.getParameter("email"));
             inputData.put("message", request.getParameter("message"));
-            return serviceLocator.getSystemContext().getServiceLocator().getNailManagementService().makeAppointmentFromFrontEnd(inputData, new Long(request.getParameter("selectedStoreId"))).toString();
+            Messages messages = serviceLocator.getSystemContext().getServiceLocator().getNailManagementService().makeAppointmentFromFrontEnd(inputData, new Long(request.getParameter("selectedStoreId")));
+            if (messages.hasErrors()) {
+                return messages.toString();
+            } else {
+                //Sending email
+                String fromEmail = "info@webphattai.com";
+                String[] bcc = null;
+                NailStore store = null;
+                //Email Template
+                EmailTemplate emailTemplate = serviceLocator.getEmailTemplateDao().getEmailTemplate("appointmentMailToClient", serviceLocator.getLocale().toString());
+                //Store information
+                if (StringUtils.isNumeric(inputData.get("selectedStoreId")+"")) {
+                    Long storeId = Long.valueOf(inputData.get("selectedStoreId")+"");
+                    store = serviceLocator.getSystemContext().getServiceLocator().getNailStoreDao().findById(storeId);
+                    bcc = new String[]{store.getEmail()};
+                    inputData.put("store", store);
+
+                    //Service information
+                    List <NailService> nailServices = new ArrayList<NailService>();
+                    if (serviceIds != null && serviceIds.length > 0) {
+                        for (Object obj : serviceIds) {
+                            if (obj instanceof String) {
+                                String i = (String) obj;
+                                Long serviceId = new Long(i);
+                                NailService service = serviceLocator.getNailServiceDao().findById(serviceId);
+                                nailServices.add(service);
+                            }
+                        }
+                        inputData.put("services", nailServices);
+                    }
+                    //Employee
+                    Long employeeId = StringUtils.isNumeric(request.getParameter("selectedEmployeeId"))? new Long (request.getParameter("selectedEmployeeId")) : 0;
+                    NailEmployee employee = serviceLocator.getNailEmployeeDao().findByIdByStore(employeeId, store.getId());
+                    if (employee != null) {
+                        inputData.put("employeeName", employee.getFirstName() + " " + employee.getLastName());
+                    } else {
+                        inputData.put("employeeName", "N/A");
+                    }
+                    serviceLocator.getMailService().sendEmailFromTemplateContent(fromEmail, request.getParameter("email"), null, bcc, emailTemplate.getSubject(), inputData, emailTemplate.getTemplateContent());
+
+                    //Sending SMS message
+                    StringBuilder smsMessage =  new StringBuilder();
+                    smsMessage.append("New Appt: Cust: ")
+                            .append(request.getParameter("firstName")).append(" on:")
+                            .append(request.getParameter("selectedDate")).append(" ").append(request.getParameter("selectedTime"))
+                            .append(" Emp:").append(inputData.get("employeeName")).append(" Services:");
+                    for (NailService service : nailServices) {
+                        smsMessage.append(service.getName()).append(",");
+                    }
+                    if (StringUtils.isNotEmpty(store.getCellPhone()) && store.getCellPhone().length() == 10) {
+                        WebUtil.sendSMSMessage(smsMessage.toString(), "+1"+store.getCellPhone());
+                    }
+                }
+                return messages.toString();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Messages error = new Messages();

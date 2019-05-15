@@ -8,12 +8,12 @@ import org.springframework.stereotype.Repository;
 public class EmailTemplateDaoImpl extends GenericDaoImpl<EmailTemplate, Long> implements EmailTemplateDao {
     @Override
     public EmailTemplate getEmailTemplate(String templateName, String locale) {
-        EmailTemplate emailTemplate =  (EmailTemplate) this.getSessionFactory().getCurrentSession().createQuery("select a from EmailTemplate a where a.templateName = :templateName and a.locale = :locale").
+        EmailTemplate emailTemplate =  (EmailTemplate) this.getSessionFactory().getCurrentSession().createQuery("select a from " + getPersistentClass().getName() + " a where a.templateName = :templateName and a.locale = :locale").
                 setParameter("templateName", templateName).
                 setParameter("locale", locale).uniqueResult();
         if (emailTemplate == null) {
-            emailTemplate =  (EmailTemplate) this.getSessionFactory().getCurrentSession().createQuery("select a from EmailTemplate a where a.templateName = :templateName and a.defaultEmail = 'Y'").
-                    setParameter("templateName", emailTemplate).uniqueResult();
+            emailTemplate =  (EmailTemplate) this.getSessionFactory().getCurrentSession().createQuery("select a from " + getPersistentClass().getName() + " a where a.templateName = :templateName and a.defaultEmail = 'Y'").
+                    setParameter("templateName", templateName).uniqueResult();
         }
 
         return emailTemplate;

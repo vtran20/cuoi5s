@@ -23,6 +23,7 @@ public class NailStore extends AbstractEntity {
     private String longitude;
     private String country;
     private String phone;
+    private String cellPhone;
     private String email;
 
     private String hourSun;
@@ -128,6 +129,14 @@ public class NailStore extends AbstractEntity {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getCellPhone() {
+        return cellPhone;
+    }
+
+    public void setCellPhone(String cellPhone) {
+        this.cellPhone = cellPhone;
     }
 
     public String getEmail() {

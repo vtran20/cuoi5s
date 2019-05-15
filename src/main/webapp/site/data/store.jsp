@@ -116,6 +116,16 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="cellPhone" class="col-lg-3 control-label"><fmt:message key="site.data.address.cell.phone"/></label>
+                        <div class="col-lg-9">
+                            <c:if test="${!empty store.cellPhone}">
+                                <c:set var="cellPhoneFormat" value="(${fn:substring(store.cellPhone, 0, 3)}) ${fn:substring(store.cellPhone, 3, 6)}-${fn:substring(store.cellPhone, 6, fn:length(store.cellPhone))}"/>
+                            </c:if>
+                            <input type="text" class="form-control" id="cellPhone" name="cellPhone" maxlength="20" placeholder="(xxx) xxx-xxxx" value="${cellPhoneFormat}">
+                            <em>Our system will text sms message to this cell phone number when we have customer make an appointment from the website.</em>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="email" class="col-lg-3 control-label"><fmt:message key="site.data.address.email"/></label>
                         <div class="col-lg-9">
                             <input type="text" class="form-control required" id="email" name="email" maxlength="20" placeholder="<fmt:message key="site.data.address.email"/>" value="${store.email}">
@@ -289,6 +299,9 @@
     });
     $(function () {
         $('#phone').usPhoneFormat({
+            format: '(xxx) xxx-xxxx'
+        });
+        $('#cellPhone').usPhoneFormat({
             format: '(xxx) xxx-xxxx'
         });
 

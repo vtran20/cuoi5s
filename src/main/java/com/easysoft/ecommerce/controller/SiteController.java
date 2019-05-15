@@ -1816,6 +1816,14 @@ public class SiteController {
                         phone = phone.replaceAll(" ", "");
                     }
                     store.setPhone(phone);
+                    String cellPhone = store.getCellPhone();
+                    if (StringUtils.isNotEmpty(cellPhone)) {
+                        cellPhone = cellPhone.replaceAll("\\(", "");
+                        cellPhone = cellPhone.replaceAll("\\)", "");
+                        cellPhone = cellPhone.replaceAll("-", "");
+                        cellPhone = cellPhone.replaceAll(" ", "");
+                    }
+                    store.setCellPhone(cellPhone);
                     //Store hours
                     updateHours(request, store, messages);
                     if (messages.hasErrors()) {
@@ -1848,6 +1856,14 @@ public class SiteController {
                     phone = phone.replaceAll(" ", "");
                 }
                 originalStore.setPhone(phone);
+                String cellPhone = store.getCellPhone();
+                if (StringUtils.isNotEmpty(cellPhone)) {
+                    cellPhone = cellPhone.replaceAll("\\(", "");
+                    cellPhone = cellPhone.replaceAll("\\)", "");
+                    cellPhone = cellPhone.replaceAll("-", "");
+                    cellPhone = cellPhone.replaceAll(" ", "");
+                }
+                originalStore.setCellPhone(cellPhone);
                 updateHours(request, originalStore, messages);
                 if (messages.hasErrors()) {
 //                    messages.addError(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.saving.error.message", null, LocaleContextHolder.getLocale()));

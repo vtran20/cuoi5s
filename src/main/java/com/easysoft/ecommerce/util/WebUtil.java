@@ -1,5 +1,8 @@
 package com.easysoft.ecommerce.util;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.model.*;
 import com.easysoft.ecommerce.model.*;
@@ -846,33 +849,40 @@ public class WebUtil {
 //        }
 //    }
 
-    public static void main(String[] args) {
-        AmazonSNSClient snsClient = new AmazonSNSClient();
-        String message = "My SMS message";
-        String phoneNumber = "+17343532648";
-        Map<String, MessageAttributeValue> smsAttributes =
-                new HashMap<String, MessageAttributeValue>();
-        smsAttributes.put("AWS.SNS.SMS.SenderID", new MessageAttributeValue()
-                .withStringValue("mySenderID") //The sender ID shown on the device.
-                .withDataType("String"));
-        smsAttributes.put("AWS.SNS.SMS.MaxPrice", new MessageAttributeValue()
-                .withStringValue("0.50") //Sets the max price to 0.50 USD.
-                .withDataType("Number"));
-        smsAttributes.put("AWS.SNS.SMS.SMSType", new MessageAttributeValue()
-                .withStringValue("Promotional") //Sets the type to promotional.
-                .withDataType("String"));
-        //<set SMS attributes>
-        sendSMSMessage(snsClient, message, phoneNumber, smsAttributes);
-    }
+    private static AmazonSNS snsClient = AmazonSNSClient
+            .builder()
+            .withRegion("us-east-1")
+            .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("AKIASWZE6T22RYNJBGOL", "Iu024Ggl/7v9ox6ol+T87A5gsbds+ZerLf5uxy+N")))
+            .build();
+    public static void sendSMSMessage(String message,
+                                      String phoneNumber) {
+        if (message != null && message.length() >= 160) {
+            message = message.substring(0, 159);
+        }
+        Map<String, MessageAttributeValue> smsAttributes = new HashMap<String, MessageAttributeValue>();
+        smsAttributes.put("AWS.SNS.SMS.SenderID", new MessageAttributeValue().withStringValue("mySenderID").withDataType("String")); //The sender ID shown on the device.
+//        smsAttributes.put("AWS.SNS.SMS.MaxPrice", new MessageAttributeValue().withStringValue("0.50").withDataType("Number")); //Sets the max price to 0.50 USD.
+        smsAttributes.put("AWS.SNS.SMS.SMSType", new MessageAttributeValue().withStringValue("Promotional").withDataType("String")); //Sets the type to promotional.
 
-    public static void sendSMSMessage(AmazonSNSClient snsClient, String message,
-                                      String phoneNumber, Map<String, MessageAttributeValue> smsAttributes) {
         PublishResult result = snsClient.publish(new PublishRequest()
                 .withMessage(message)
                 .withPhoneNumber(phoneNumber)
                 .withMessageAttributes(smsAttributes));
         System.out.println(result); // Prints the message ID.
     }
+
+    public static void main(String[] args) {
+        String message = "My SMS message";
+        String phoneNumber = "+17343532648";
+        Map<String, MessageAttributeValue> smsAttributes =
+                new HashMap<String, MessageAttributeValue>();
+        smsAttributes.put("AWS.SNS.SMS.SenderID", new MessageAttributeValue().withStringValue("mySenderID").withDataType("String")); //The sender ID shown on the device.
+        smsAttributes.put("AWS.SNS.SMS.MaxPrice", new MessageAttributeValue().withStringValue("0.50").withDataType("Number")); //Sets the max price to 0.50 USD.
+        smsAttributes.put("AWS.SNS.SMS.SMSType", new MessageAttributeValue().withStringValue("Promotional").withDataType("String")); //Sets the type to promotional.
+        //<set SMS attributes>
+        sendSMSMessage(message, phoneNumber);
+    }
+
 
     public static void setDefaultSmsAttributes(AmazonSNSClient snsClient) {
         SetSMSAttributesRequest setRequest = new SetSMSAttributesRequest()

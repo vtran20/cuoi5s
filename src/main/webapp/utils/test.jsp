@@ -129,62 +129,83 @@
 //
 //
     RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
-    StringReader reader = new StringReader("#set( $rowTitle = \"About Us\" )\n" +
-            "#if ($row.title && $row.showTitle == 'Y') #set( $rowTitle = $row.title ) #end\n" +
-            "#foreach( $content in $contents )\n" +
-            "#set( $crop = \"\" )\n" +
-            "#if ($content.crop && $content.crop != '')\n" +
-            "#set( $crop = \"?op=crop|$content.crop\" )\n" +
-            "#end\n" +
-            "#set( $imageUrl = \"http://images.webphattai.com/get/49318030-7047-409c-92c9-7aa62946522d.jpg\")\n" +
-            "#if ($content.imgUrl && $content.imgUrl != '')\n" +
-            "#set( $imageUrl = \"$content.imgUrl?op=crop|$content.crop&op=scale|1200\" )\n" +
-            "#end\n" +
-            "#set( $contentTitle = \"\" )\n" +
-            "#if ($content.title) #set( $contentTitle = $content.title ) #end\n" +
-            "#set( $contentContent = \"\" )\n" +
-            "#if ($content.content) #set( $contentContent = $content.content) #end\n" +
+    StringReader reader = new StringReader("<!DOCTYPE HTML>\n" +
+            "<HTML>\n" +
+            "<HEAD>\n" +
+            "    <TITLE>Appointment Confirmation</TITLE>\n" +
+            "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n" +
+            "</HEAD>\n" +
+            "<BODY>\n" +
+            "<div id=\"cg_msg_content\">\n" +
+            "    <style type=\"text/css\">\n" +
+            "        <!--\n" +
+            "        body {\n" +
+            "            margin-top: 10px;\n" +
+            "            margin-left: 0px;\n" +
+            "        }\n" +
             "\n" +
-            "<section id=\"about\" class=\"g-pb-80\">\n" +
-            "    <div class=\"container-fluid px-0\">\n" +
-            "        <div class=\"row no-gutters\">\n" +
-            "            <div class=\"col-md-6 g-bg-img-hero g-min-height-400\" style=\"background-image: url($imageUrl);\"></div>\n" +
-            "            <div class=\"col-md-6 d-flex align-items-center text-center g-pa-50\">\n" +
-            "                <div class=\"w-100\">\n" +
-            "                    <div class=\"g-mb-25\">\n" +
-            "                        <h4 class=\"g-font-weight-700 g-font-size-20 g-theme-h-v1 g-color-primary g-mb-25\">$rowTitle</h4>\n" +
-            "                        <h2 class=\"text-uppercase g-font-weight-600 g-font-size-22 mb-0\">$contentTitle</h2>\n" +
-            "                    </div>\n" +
+            "        .style1 {\n" +
+            "            font-family: Arial, Helvetica, sans-serif;\n" +
+            "            font-size: 9px;\n" +
+            "            color: #d1d5c9;\n" +
+            "        }\n" +
             "\n" +
-            "                    <p class=\"g-mb-35\">$contentContent</p>\n" +
-            "                </div>\n" +
-            "            </div>\n" +
-            "        </div>\n" +
-            "        <div class=\"row no-gutters\">\n" +
-            "            <div class=\"col-md-6\">\n" +
-            "                <img class=\"img-fluid\" src=\"http://images.webphattai.com/get/25b24315-8936-40f2-9e87-34e143ccd62d.jpg?op=scale|1200\" alt=\"Image description\">\n" +
-            "            </div>\n" +
-            "            <div class=\"col-md-6\">\n" +
-            "                <div class=\"js-carousel\"\n" +
-            "                     data-infinite=\"true\"\n" +
-            "                     data-arrows-classes=\"u-arrow-v1 g-absolute-centered--y g-width-45 g-height-55 g-font-size-12 g-theme-color-gray-dark-v1 g-bg-white g-mt-minus-10\"\n" +
-            "                     data-arrow-left-classes=\"fa fa-chevron-left g-left-0\"\n" +
-            "                     data-arrow-right-classes=\"fa fa-chevron-right g-right-0\">\n" +
-            "                    <div class=\"js-slide\">\n" +
-            "                        <img class=\"img-fluid\" src=\"http://images.webphattai.com/get/082cc9a4-a605-489c-a192-d796336b531d.jpg?op=scale|1200\" alt=\"Image description\">\n" +
-            "                    </div>\n" +
-            "                    <div class=\"js-slide\">\n" +
-            "                        <img class=\"img-fluid\" src=\"http://images.webphattai.com/get/939f8d93-73b0-4063-9b01-931bdad6697c.jpg?op=scale|1200\" alt=\"Image description\">\n" +
-            "                    </div>\n" +
-            "                    <div class=\"js-slide\">\n" +
-            "                        <img class=\"img-fluid\" src=\"http://images.webphattai.com/get/9c2e026d-43e2-493a-a0d8-005a9b2f43db.jpg?op=scale|1200\" alt=\"Image description\">\n" +
-            "                    </div>\n" +
-            "                </div>\n" +
-            "            </div>\n" +
-            "        </div>\n" +
-            "    </div>\n" +
-            "</section>\n" +
-            "#end");
+            "        a:link {\n" +
+            "            text-decoration: none;\n" +
+            "        }\n" +
+            "\n" +
+            "        a:visited {\n" +
+            "            text-decoration: none;\n" +
+            "        }\n" +
+            "\n" +
+            "        a:hover {\n" +
+            "            text-decoration: underline;\n" +
+            "        }\n" +
+            "\n" +
+            "        a:active {\n" +
+            "            text-decoration: none;\n" +
+            "        }\n" +
+            "\n" +
+            "        -->\n" +
+            "    </style>\n" +
+            "    <table width=\"735px\" border=\"0\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\">\n" +
+            "        <tbody>\n" +
+            "        <tr>\n" +
+            "            <td>\n" +
+            "                From ${store.name}\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        </tbody>\n" +
+            "    </table>\n" +
+            "    <table width=\"735px\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" style=\"border:1px solid #d2d6c8;padding:15px;\">\n" +
+            "        <tbody>\n" +
+            "        <tr>\n" +
+            "            <td valign=\"top\" width=\"100%\">\n" +
+            "                <br>\n" +
+            "                <p><strong>Dear ${firstName}.</strong></p>\n" +
+            "\n" +
+            "                <p style=\"MARGIN-BOTTOM:10px;\">This email confirms your appointment on <b>${selectedDate} ${selectedTime} </b> at ${store.name}. If you have any additional questions, use the contact details below to get in touch with us.<br>\n" +
+            "                </p>\n" +
+            "                <p style=\"MARGIN-BOTTOM:10px;\">\n" +
+            "                    To cancel or reschedule your appointment before the scheduled time, please call us at ${store.phone}.<br>\n" +
+            "                </p>\n" +
+            "                <p>Thank for booking with ${store.name}.</br></p>\n" +
+            "\n" +
+            "<br>\n" +
+            "<p>Location Address:</p>\n" +
+            "<p>${store.address_1}</p>\n" +
+            "<p>${store.city}, ${store.state} ${store.zipCode}</p>\n" +
+            "<p>Phone: ${store.phone}</p>\n" +
+            "<br>\n" +
+            "<p>Regards</p>\n" +
+            "<p>${store.name}</p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        </tbody>\n" +
+            "    </table>\n" +
+            "</div>\n" +
+            "</BODY>\n" +
+            "</HTML>");
     SimpleNode node = null;
     try {
         node = runtimeServices.parse(reader, "test");
@@ -229,6 +250,11 @@
     context.put("priceMap", priceMap);
     String imageServer = ServiceLocatorHolder.getServiceLocator().getSystemContext().getGlobalConfig("image.server");
     context.put("imageServer",imageServer);
+    context.put("firstName", "Vu");
+    context.put("lastName", "Tran");
+    context.put("selectedDate", "3/3/2019");
+    context.put("selectedTime", "5am");
+    context.put("store", ServiceLocatorHolder.getServiceLocator().getNailStoreDao().findById(1l));
     VelocityContext velocityContext = new VelocityContext(context);
     template.merge(velocityContext, writer);
     out.print(writer.toString());
