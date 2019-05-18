@@ -230,16 +230,18 @@
         <!-- Begin Content -->
         <div class="col-md-9">
             <spring:eval expression="serviceLocator.menuDao.getMenu(thisSite, 'gallery.html', 'Y')" var="galleryMenu"/>
-            <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(galleryMenu.id, 'Y')" var="menuRows"/>
-            <c:forEach var="row" items="${menuRows}">
-                <c:if test="${fn:contains(row.title, 'Gallery')}">
-                    <c:set var="galleryRow" value="${row}"/>
-                    <spring:eval expression="serviceLocator.siteMenuPartContentDao.getContentParts(galleryRow.id, 'Y')" var="partContents"/>
-                    <c:if test="${fn:length(partContents) > 0}">
-                        <c:set var="galleryContent" value="${partContents[0]}"/>
+            <c:if test="${!empty galleryMenu}">
+                <spring:eval expression="serviceLocator.getSiteMenuPartContentDao().getMenuRows(galleryMenu.id, 'Y')" var="menuRows"/>
+                <c:forEach var="row" items="${menuRows}">
+                    <c:if test="${fn:contains(row.title, 'Gallery')}">
+                        <c:set var="galleryRow" value="${row}"/>
+                        <spring:eval expression="serviceLocator.siteMenuPartContentDao.getContentParts(galleryRow.id, 'Y')" var="partContents"/>
+                        <c:if test="${fn:length(partContents) > 0}">
+                            <c:set var="galleryContent" value="${partContents[0]}"/>
+                        </c:if>
                     </c:if>
-                </c:if>
-            </c:forEach>
+                </c:forEach>
+            </c:if>
             <div class="row">
                 <!-- Begin Sidebar Menu -->
                 <div class="col-md-12">
