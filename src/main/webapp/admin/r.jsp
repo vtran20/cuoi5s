@@ -5,7 +5,7 @@
 <html>
 <body>
 
-<c:redirect url="http://${domain}/admin/index.html"/>
+<c:redirect url="https://${domain}/admin/index.html"/>
 
 </body>
 </html>
