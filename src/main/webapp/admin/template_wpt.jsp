@@ -64,7 +64,7 @@
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/1/daterangepicker-bs3.css" />
 
     <%--Adding font for VN--%>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300italic&subset=latin,vietnamese,greek,cyrillic,cyrillic-ext,greek-ext,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300italic&subset=latin,vietnamese,greek,cyrillic,cyrillic-ext,greek-ext,latin-ext' rel='stylesheet' type='text/css'>
 </head>
 
 <body class="no-skin">
