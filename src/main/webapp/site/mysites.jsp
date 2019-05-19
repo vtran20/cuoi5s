@@ -53,12 +53,12 @@
                                     <c:when test="${!empty thisSite.current.domain}">
                                         <td>
                                         <a target="_blank" href="http://${thisSite.current.domain}">${thisSite.current.domain}</a><br>
-                                            <%--<a target="_blank" href="http://${thisSite.current.subDomain}">${thisSite.current.subDomain}</a>--%>
+                                            <a target="_blank" href="http://${thisSite.current.subDomain}">${thisSite.current.subDomain}</a>
                                         </td>
                                     </c:when>
                                     <c:otherwise>
                                         <td>
-                                            <%--<a target="_blank" href="http://${thisSite.current.subDomain}">${thisSite.current.subDomain}</a>--%>
+                                            <a target="_blank" href="http://${thisSite.current.subDomain}">${thisSite.current.subDomain}</a>
                                         </td>
                                     </c:otherwise>
                                 </c:choose>

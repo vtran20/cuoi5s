@@ -1875,7 +1875,7 @@ public class SiteController {
                 result.put("store", originalStore);
             }
             if (!messages.hasErrors() && thisSite != null) {
-                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
             }
             result.put("messages", messages);
             return new ModelAndView("site/data/store", result);
@@ -1903,7 +1903,7 @@ public class SiteController {
                 serviceLocator.getSiteMenuPartContentDao().merge(originalPartContent);
                 Site thisSite = getThisSite(request, response);
                 if (thisSite != null) {
-                    serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
                 }
 
             }
@@ -1932,7 +1932,7 @@ public class SiteController {
                 serviceLocator.getSiteMenuPartContentDao().merge(originalPartContent);
                 Site thisSite = getThisSite(request, response);
                 if (thisSite != null) {
-                    serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
                 }
                 return "ok";
             } catch (Exception e) {
@@ -1985,7 +1985,7 @@ public class SiteController {
             }
 
             if (thisSite != null) {
-                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
             }
             return "ok";
         } catch (Exception e) {
@@ -2034,7 +2034,7 @@ public class SiteController {
             }
             Site thisSite = getThisSite(request, response);
             if (!messages.hasErrors() && thisSite != null) {
-                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
             }
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("site.data.save.successfully", null, LocaleContextHolder.getLocale()));
             return messages.toString();
@@ -2050,7 +2050,7 @@ public class SiteController {
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.deleted.success", null, LocaleContextHolder.getLocale()));
             Site thisSite = getThisSite(request, response);
             if (!messages.hasErrors() && thisSite != null) {
-                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
             }
         } else {
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.no.data.changed", null, LocaleContextHolder.getLocale()));
@@ -2110,7 +2110,7 @@ public class SiteController {
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.deleted.success", null, LocaleContextHolder.getLocale()));
             Site thisSite = getThisSite(request, response);
             if (!messages.hasErrors() && thisSite != null) {
-                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
             }
         } else {
             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.no.data.changed", null, LocaleContextHolder.getLocale()));
@@ -2151,7 +2151,7 @@ public class SiteController {
             map.put("delete_url", imageServer+"/images/remove.json?name="+albumImage.getUri()+"&key="+ URLEncoder.encode(WebUtil.encrypt(albumImage.getUri()), "UTF-8")+"&path="+site.getSiteCode());
             Site thisSite = getThisSite(request, response);
             if (thisSite != null) {
-                serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
             }
         } else {
             map.put("success", false);
@@ -2183,7 +2183,7 @@ public class SiteController {
             if (isChange) {
                 serviceLocator.getAlbumImageDao().merge(originalAlbumImage);
                 if (!messages.hasErrors()) {
-                    serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
                 }
                 messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.saved.success", null, LocaleContextHolder.getLocale()));
                 return messages.toString();
@@ -2198,7 +2198,7 @@ public class SiteController {
      * This will be called when delete a gallery image
      */
     @RequestMapping(value = "data/deleteimage.html", method = RequestMethod.GET)
-    public @ResponseBody String deleteImage(@Valid Long id, @Valid Long siteId) {
+    public @ResponseBody String deleteImage(@Valid Long id, @Valid Long siteId, HttpServletRequest request) {
         try {
             Site thisSite = ServiceLocatorHolder.getServiceLocator().getSiteDao().findById(siteId);
             if (id > 0) {
@@ -2207,7 +2207,7 @@ public class SiteController {
 //                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromAlbumImage(null, albumImage.getId()));
 //                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKeyFromGallery(null));
                     serviceLocator.getAlbumImageDao().remove(albumImage);
-                    serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                    serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
                 }
                 return "ok";
             }
@@ -2231,7 +2231,7 @@ public class SiteController {
                     serviceLocator.getAlbumImageDao().merge(albumImage);
                     Site thisSite = getThisSite(request, response);
                     if (thisSite != null) {
-                        serviceLocator.getCacheData().removeCacheTag(thisSite.getSubDomain()+"_template4x1p");
+                        serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, thisSite.getSubDomain()+"_template4x1p"));
                     }
                 }
                 return "ok";

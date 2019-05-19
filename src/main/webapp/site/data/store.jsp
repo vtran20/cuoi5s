@@ -122,7 +122,7 @@
                                 <c:set var="cellPhoneFormat" value="(${fn:substring(store.cellPhone, 0, 3)}) ${fn:substring(store.cellPhone, 3, 6)}-${fn:substring(store.cellPhone, 6, fn:length(store.cellPhone))}"/>
                             </c:if>
                             <input type="text" class="form-control" id="cellPhone" name="cellPhone" maxlength="20" placeholder="(xxx) xxx-xxxx" value="${cellPhoneFormat}">
-                            <em>Our system will text sms message to this cell phone number when we have customer make an appointment from the website.</em>
+                            <em>Our system will text sms message to this cell phone number when we have a customer make an appointment from the website.</em>
                         </div>
                     </div>
                     <div class="form-group">
