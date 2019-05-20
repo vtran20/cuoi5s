@@ -540,6 +540,8 @@ public class SiteServiceImpl implements SiteService {
                             newService.setId(null);
                             newService.setStore(newStore);
                             newService.setGroup(newGroup);
+                            newGroup.setNailCustomerServices(null);
+                            newGroup.setServices(null);
                             newService.setCreatedDate(now.getTime());
                             serviceLocator.getNailServiceDao().persist(newService);
                         }
