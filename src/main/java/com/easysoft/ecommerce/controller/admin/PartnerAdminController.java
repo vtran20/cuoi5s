@@ -121,8 +121,8 @@ public class PartnerAdminController {
                         entity.setTemplateCssCode("m3x");
                         ServiceLocatorHolder.getServiceLocator().getTemplateDao().persist(entity);
                         messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.create.successful", null, LocaleContextHolder.getLocale()));
-                        serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, "sitetemplates3"));
-                        serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, "sitetemplates4"));
+                        serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(site, "sitetemplates3"));
+                        serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(site, "sitetemplates4"));
                     }
                 } else {
                     Template thisTemplate = ServiceLocatorHolder.getServiceLocator().getTemplateDao().findUniqueBy("siteSample.id", siteSample.getId(), site.getId());
@@ -158,8 +158,8 @@ public class PartnerAdminController {
                             originalTemplate.setUpdatedDate(new Date());
                             ServiceLocatorHolder.getServiceLocator().getTemplateDao().merge(originalTemplate);
                             messages.addInfo(ServiceLocatorHolder.getServiceLocator().getMessageSource().getMessage("common.data.saved.success", null, LocaleContextHolder.getLocale()));
-                            serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, "sitetemplates3"));
-                            serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, "sitetemplates4"));
+                            serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(site, "sitetemplates3"));
+                            serviceLocator.getCacheData().removeCacheTag(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(site, "sitetemplates4"));
                         }
                     }
                 }

@@ -16,14 +16,21 @@ public class CacheKeyGenerator {
     /**
      * This method generate the cache key for the page.
      *
-     * @param httpRequest
+     * @param thisSite
      * @param uri
+     * @param queryString
      * @return
      */
-    public String generateCacheKey(HttpServletRequest httpRequest, String uri, String queryString) {
+    public String generateCacheKey(Site thisSite, String uri, String queryString) {
         StringBuilder stringBuffer = new StringBuilder();
         if (StringUtils.isNotEmpty(uri)) {
-            Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
+            Site site = null;
+            if (thisSite != null) {
+                site = thisSite;
+            } else {
+                site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
+            }
+
             stringBuffer.append(site.getId()).append("|");
             SiteTemplate siteTemplate = site.getSiteTemplate();
             stringBuffer.append(siteTemplate.getTemplate().getId()).append("|");
@@ -39,14 +46,14 @@ public class CacheKeyGenerator {
             }
 
 /*
-        String domain = httpRequest.getServerName();
-        String queryString = httpRequest.getQueryString();
+        String domain = null.getServerName();
+        String queryString = null.getQueryString();
         String themeName = ServiceLocatorHolder.getServiceLocator().getThemeName();
         stringBuffer.append(toStringAwareNull(queryString)).append("|");
         stringBuffer.append(toStringAwareNull(themeName)).append("|");
-        int serverPort = httpRequest.getServerPort();
-        String method = httpRequest.getMethod();
-        String user = httpRequest.getRemoteUser();
+        int serverPort = null.getServerPort();
+        String method = null.getMethod();
+        String user = null.getRemoteUser();
         String locale = ServiceLocatorHolder.getServiceLocator().getLocale().toString();
         String timeZone = ServiceLocatorHolder.getServiceLocator().getTimeZone().getID();
         stringBuffer.append("serverPort:").append(serverPort).append("|");
@@ -60,26 +67,26 @@ public class CacheKeyGenerator {
 
         return stringBuffer.toString();
     }
-    public String generateCacheKey(HttpServletRequest httpRequest, String uri) {
-        return generateCacheKey(httpRequest, uri, null);
+    public String generateCacheKey(Site thisSite, String uri) {
+        return generateCacheKey(thisSite, uri, null);
     }
-    public String generateCacheKeyFromMenu(HttpServletRequest httpRequest, Long menuId) {
+    public String generateCacheKeyFromMenu(HttpServletRequest request, Long menuId) {
         if (menuId != null) {
             Menu menu = ServiceLocatorHolder.getServiceLocator().getMenuDao().findById(menuId);
             if (menu != null) {
                 if ("Y".equals(menu.getHomePage())) {
-                    return generateCacheKey(httpRequest, "/index.html");
+                    return generateCacheKey(null, "/index.html");
                 } else {
                     if ("Y".equals(menu.getMenuTemplate())) {
-                        return generateCacheKey(httpRequest, "/"+menu.getUri());
+                        return generateCacheKey(null, "/"+menu.getUri());
                     } else if ("E".equals(menu.getMenuTemplate())) {
-                        return generateCacheKey(httpRequest, menu.getUri());
+                        return generateCacheKey(null, menu.getUri());
                     } else {
-                        return generateCacheKey(httpRequest, "/content/"+menu.getUri());
+                        return generateCacheKey(null, "/content/"+menu.getUri());
                     }
                 }
             } else {
-                return generateCacheKey(httpRequest, "");
+                return generateCacheKey(null, "");
             }
         }
         return null;
@@ -90,40 +97,40 @@ public class CacheKeyGenerator {
             Menu menu = ServiceLocatorHolder.getServiceLocator().getMenuDao().getMenuFromRow(ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite(), rowId, "Y");
             if (menu != null) {
                 if ("Y".equals(menu.getHomePage())) {
-                    return generateCacheKey(httpRequest, "/index.html");
+                    return generateCacheKey(null, "/index.html");
                 } else {
                     if ("Y".equals(menu.getMenuTemplate())) {
-                        return generateCacheKey(httpRequest, "/"+menu.getUri());
+                        return generateCacheKey(null, "/"+menu.getUri());
                     } else if ("E".equals(menu.getMenuTemplate())) {
-                        return generateCacheKey(httpRequest, menu.getUri());
+                        return generateCacheKey(null, menu.getUri());
                     } else {
-                        return generateCacheKey(httpRequest, "/content/"+menu.getUri());
+                        return generateCacheKey(null, "/content/"+menu.getUri());
                     }
                 }
             } else {
-                return generateCacheKey(httpRequest, "");
+                return generateCacheKey(null, "");
             }
         }
         return null;
     }
 
-    public String generateCacheKeyFromPartContent(HttpServletRequest httpRequest, Long partContentId) {
+    public String generateCacheKeyFromPartContent(HttpServletRequest request, Long partContentId) {
         if (partContentId != null) {
             Menu menu = ServiceLocatorHolder.getServiceLocator().getMenuDao().getMenuFromPartContent(ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite(), partContentId, "Y");
             if (menu != null) {
                 if ("Y".equals(menu.getHomePage())) {
-                    return generateCacheKey(httpRequest, "/index.html");
+                    return generateCacheKey(null, "/index.html");
                 } else {
                     if ("Y".equals(menu.getMenuTemplate())) {
-                        return generateCacheKey(httpRequest, "/"+menu.getUri());
+                        return generateCacheKey(null, "/"+menu.getUri());
                     } else if ("E".equals(menu.getMenuTemplate())) {
-                        return generateCacheKey(httpRequest, menu.getUri());
+                        return generateCacheKey(null, menu.getUri());
                     } else {
-                        return generateCacheKey(httpRequest, "/content/"+menu.getUri());
+                        return generateCacheKey(null, "/content/"+menu.getUri());
                     }
                 }
             } else {
-                return generateCacheKey(httpRequest, "");
+                return generateCacheKey(null, "");
             }
         }
         return null;
@@ -140,15 +147,15 @@ public class CacheKeyGenerator {
     }
 
     public String generateCacheKeyFromGallery(HttpServletRequest httpRequest) {
-        return generateCacheKey(httpRequest, "/page/gallery.html");
+        return generateCacheKey(null, "/page/gallery.html");
     }
     public String generateCacheKeyFromAlbum(HttpServletRequest httpRequest, Long albumId) {
         if (albumId != null) {
             Album album = ServiceLocatorHolder.getServiceLocator().getAlbumDao().findById(albumId, ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite().getId());
             if (album != null) {
-                return generateCacheKey(httpRequest, "/page/album.html|albumId="+album.getId());
+                return generateCacheKey(null, "/page/album.html|albumId="+album.getId());
             } else {
-                return generateCacheKey(httpRequest, "");
+                return generateCacheKey(null, "");
             }
         }
         return null;
@@ -157,9 +164,9 @@ public class CacheKeyGenerator {
         if (albumImageId != null) {
             Album album = ServiceLocatorHolder.getServiceLocator().getAlbumDao().getAlbumFromImage(ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite(), albumImageId, "Y");
             if (album != null) {
-                return generateCacheKey(httpRequest, "/page/album.html|albumId="+album.getId());
+                return generateCacheKey(null, "/page/album.html|albumId="+album.getId());
             } else {
-                return generateCacheKey(httpRequest, "");
+                return generateCacheKey(null, "");
             }
         }
         return null;
@@ -172,14 +179,14 @@ public class CacheKeyGenerator {
      * @return
      */
     public String generateNewsIndexCacheKey(HttpServletRequest httpRequest) {
-        return generateCacheKey(httpRequest, "/news/index.html","");
+        return generateCacheKey(null, "/news/index.html","");
     }
 
     public String generateNewsCategoryCacheKeyFromCategoryNews(HttpServletRequest httpRequest, Long categoryNewsId) {
         if (categoryNewsId != null) {
             NewsCategory newsCategory = ServiceLocatorHolder.getServiceLocator().getNewsCategoryDao().findById(categoryNewsId, ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite().getId());
             if (newsCategory != null) {
-                return generateCacheKey(httpRequest, "/news/c/" + newsCategory.getUri(), "");
+                return generateCacheKey(null, "/news/c/" + newsCategory.getUri(), "");
             } else {
                 return null;
             }
@@ -192,7 +199,7 @@ public class CacheKeyGenerator {
             List<String> cacheKeys = new ArrayList<String>();
             if (newsCategories != null) {
                 for (NewsCategory newsCategory: newsCategories) {
-                    cacheKeys.add(generateCacheKey(httpRequest, "/news/c/" + newsCategory.getUri(), ""));
+                    cacheKeys.add(generateCacheKey(null, "/news/c/" + newsCategory.getUri(), ""));
                 }
             } else {
                 return null;
@@ -206,7 +213,7 @@ public class CacheKeyGenerator {
         if (newsId != null) {
             News news = ServiceLocatorHolder.getServiceLocator().getNewsDao().findById(newsId, ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite().getId());
             if (news != null) {
-                return generateCacheKey(httpRequest, "/news/" + news.getUri());
+                return generateCacheKey(null, "/news/" + news.getUri());
             } else {
                 return null;
             }
@@ -242,9 +249,9 @@ public class CacheKeyGenerator {
                 }
                 if (StringUtils.isNotEmpty(uri)) {
                     //Generate category url key
-                    cacheKeys.add(generateCacheKey(httpRequest, "/category" + uri + ".html", ""));
+                    cacheKeys.add(generateCacheKey(null, "/category" + uri + ".html", ""));
                     //Generate full product url key
-                    cacheKeys.add(generateCacheKey(httpRequest, "/product" + uri + "/" + product.getUri() + "-" + product.getId() + ".html", ""));
+                    cacheKeys.add(generateCacheKey(null, "/product" + uri + "/" + product.getUri() + "-" + product.getId() + ".html", ""));
                 }
             }
         }
@@ -258,7 +265,7 @@ public class CacheKeyGenerator {
      * @return
      */
     public String generateContactUsCacheKey(HttpServletRequest httpRequest) {
-        return generateCacheKey(httpRequest, "/contact-us.html");
+        return generateCacheKey(null, "/contact-us.html");
     }
 
 

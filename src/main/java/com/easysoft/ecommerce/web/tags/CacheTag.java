@@ -1,5 +1,6 @@
 package com.easysoft.ecommerce.web.tags;
 
+import com.easysoft.ecommerce.model.Site;
 import com.easysoft.ecommerce.service.ServiceLocatorHolder;
 import com.easysoft.ecommerce.web.cache.CacheKeyGenerator;
 import net.sf.ehcache.Cache;
@@ -90,8 +91,8 @@ public class CacheTag extends SimpleTagSupport {
 
         PageContext pageContext = (PageContext) getJspContext();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-
-        cBuffer.append(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(request, key));
+        Site site = ServiceLocatorHolder.getServiceLocator().getSystemContext().getSite();
+        cBuffer.append(ServiceLocatorHolder.getServiceLocator().getCacheKeyGenerator().generateCacheKey(site, key));
 
         return cBuffer.toString();
     }
