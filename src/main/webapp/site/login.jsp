@@ -108,7 +108,36 @@
 <div class="container content">
     <div class="row">
         <!-- Begin Sidebar Menu -->
-        <div class="col-md-7">
+        <div class="col-md-6">
+            <div class="panel panel-red margin-bottom-40">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="site.login"/></h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" role="login" action="/site/login.html" id="login" method="post">
+                        <input name="rememberMe" type="hidden" value="Y"/>
+                        <h:frontendmessage _messages="${error}"/>
+                        <div class="input-group margin-bottom-20">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" name="userName" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="input-group margin-bottom-20">
+                            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                            <input type="password" name="password" placeholder="<fmt:message key="site.register.password"/>" class="form-control">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn-u btn-u-red pull-right"><fmt:message key="site.login"/></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
             <div class="panel panel-red margin-bottom-40">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="site.register.account"/></h3>
@@ -146,35 +175,6 @@
                         <div class="form-group">
                             <div class="col-lg-offset-3 col-lg-9">
                                 <button type="submit" class="btn-u btn-u-red"><fmt:message key="site.register.register"/></button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-5">
-            <div class="panel panel-red margin-bottom-40">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-tasks"></i> <fmt:message key="site.login"/></h3>
-                </div>
-                <div class="panel-body">
-                    <form class="form-horizontal" role="login" action="/site/login.html" id="login" method="post">
-                        <input name="rememberMe" type="hidden" value="Y"/>
-                        <h:frontendmessage _messages="${error}"/>
-                        <div class="input-group margin-bottom-20">
-                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                            <input type="text" name="userName" placeholder="Email" class="form-control">
-                        </div>
-                        <div class="input-group margin-bottom-20">
-                            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                            <input type="password" name="password" placeholder="<fmt:message key="site.register.password"/>" class="form-control">
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-
-                            </div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn-u btn-u-red pull-right"><fmt:message key="site.login"/></button>
                             </div>
                         </div>
                     </form>

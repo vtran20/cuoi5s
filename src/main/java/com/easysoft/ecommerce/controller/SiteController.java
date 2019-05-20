@@ -222,7 +222,7 @@ public class SiteController {
 
     }
 
-    @RequestMapping(value = "kich-hoat.html", method = RequestMethod.GET)
+    @RequestMapping(value = {"kich-hoat.html", "activate.html"}, method = RequestMethod.GET)
     public ModelAndView activateAccount(@Valid String code) throws Exception {
         Map map = new HashMap();
         Messages messages = new Messages();

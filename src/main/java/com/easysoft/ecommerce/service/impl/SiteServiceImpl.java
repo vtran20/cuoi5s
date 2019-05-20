@@ -498,6 +498,10 @@ public class SiteServiceImpl implements SiteService {
                 }
                 newStore.setId(null);
                 newStore.setSite(newSite);
+                newStore.setNailCustomers(null);
+                newStore.setNailCustomerPayments(null);
+                newStore.setNailEmployees(null);
+                newStore.setNailServices(null);
                 newStore.setCreatedDate(now.getTime());
                 serviceLocator.getNailStoreDao().persist(newStore);
 
@@ -516,6 +520,9 @@ public class SiteServiceImpl implements SiteService {
                         }
                         newGroup.setId(null);
                         newGroup.setStore(newStore);
+                        newGroup.setGroup(null);
+                        newGroup.setNailCustomerServices(null);
+                        newGroup.setServices(null);
                         newGroup.setCreatedDate(now.getTime());
                         serviceLocator.getNailServiceDao().persist(newGroup);
 
