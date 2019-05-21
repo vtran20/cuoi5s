@@ -40,7 +40,7 @@
                         <tr>
                             <th>#</th>
                             <th><fmt:message key="site.primary.url"/></th>
-                            <th class="hidden-xs"><fmt:message key="site.website.info"/></th>
+                            <%--<th class="hidden-xs"><fmt:message key="site.website.info"/></th>--%>
                             <th><fmt:message key="site.website.expired"/></th>
                             <th class="hidden-xs"></th>
                         </tr>
@@ -62,7 +62,7 @@
                                         </td>
                                     </c:otherwise>
                                 </c:choose>
-                                <td class="hidden-xs">${thisSite.current.name}</td>
+                                <%--<td class="hidden-xs">${thisSite.current.name}</td>--%>
                                 <%--<spring:eval expression="serviceLocator.getStrongEncryptor().decrypt(currentUser.password)" var="password" />--%>
                                 <%--<c:set var="code" value="domain=${thisSite.current.subDomain}&j_username=${currentUser.username}&j_password=${password}"/>--%>
                                 <%--<spring:eval expression="T(com.easysoft.ecommerce.service.impl.URLUTF8Encoder).encode(serviceLocator.getStrongEncryptor().encrypt(code))" var="encryptText" />--%>
@@ -71,7 +71,7 @@
                                     <spring:eval expression="site.siteParamsMap.get('DATE_FORMAT')" var="dateFormat"/>
                                     <fmt:formatDate pattern="${dateFormat}" value="${thisSite.current.endDate}"/>
                                     <div class="btn-group hidden-sm hidden-md hidden-lg">
-                                        <a class="btn-u btn-u-small margin-bottom-5" href="/site/data/general-information.html?thisSiteId=${thisSite.current.id}"><i class="fa fa-pencil"></i> Update Website</a><br>
+                                        <a class="btn-u btn-u-small margin-bottom-5" href="/site/data/general-information.html?thisSiteId=${thisSite.current.id}"><i class="fa fa-pencil"></i> Update Website</a>
                                         <a class="btn-u btn-u-small margin-bottom-5" href="/site/checkout/addtocart.html?productId=${product.id}&thisSiteId=${thisSite.current.id}"><i class="fa fa-refresh"></i> <fmt:message key="site.site.renew"/></a>
                                         <%--<button data-toggle="dropdown" class="btn-u dropdown-toggle" type="button" aria-expanded="true">--%>
                                             <%--Action--%>
