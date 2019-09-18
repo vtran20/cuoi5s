@@ -5,7 +5,7 @@ import com.easysoft.ecommerce.dao.filter.CategoryFilterFactory;
 import com.easysoft.ecommerce.dao.filter.PriceLongBridge;
 import com.easysoft.ecommerce.dao.filter.PriceRangeFilter;
 import com.easysoft.ecommerce.dao.filter.SiteFilterFactory;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.search.annotations.*;
 import org.hibernate.search.annotations.Parameter;
 

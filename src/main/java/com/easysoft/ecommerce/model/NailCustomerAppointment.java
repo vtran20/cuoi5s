@@ -2,7 +2,7 @@ package com.easysoft.ecommerce.model;
 
 
 import com.easysoft.ecommerce.model.json.DateSerializer;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 

@@ -1,6 +1,6 @@
 package com.easysoft.ecommerce.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -51,7 +51,7 @@ public class NailCustomerPayment extends AbstractEntity  {
         return servicePrice;
     }
 
-    @ManyToOne
+    @ManyToOne  (fetch = FetchType.LAZY)
     @JsonIgnore
     public NailStore getStore() {
         return store;

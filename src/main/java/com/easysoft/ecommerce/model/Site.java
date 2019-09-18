@@ -6,7 +6,6 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Index;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.*;
 
 
@@ -47,6 +46,7 @@ public class Site extends AbstractEntity  {
     private List<Category> categories;
     private List<Product> products;
     private List<Menu> menus;
+    private List<NailStore> stores;
 
     private List<CmsArea> cmsArea;
     private SiteTemplate siteTemplate;
@@ -156,6 +156,15 @@ public class Site extends AbstractEntity  {
 
     public void setCategories(List<Category> categories) {
         this.categories = categories;
+    }
+
+    @OneToMany(mappedBy = "site", fetch = FetchType.LAZY)
+    public List<NailStore> getStores() {
+        return stores;
+    }
+
+    public void setStores(List<NailStore> stores) {
+        this.stores = stores;
     }
 
     @OneToMany(mappedBy = "site", fetch = FetchType.LAZY)
