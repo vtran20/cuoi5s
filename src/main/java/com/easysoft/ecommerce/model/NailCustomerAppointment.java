@@ -3,7 +3,7 @@ package com.easysoft.ecommerce.model;
 
 import com.easysoft.ecommerce.model.json.DateSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import javax.persistence.*;
@@ -112,6 +112,7 @@ public class NailCustomerAppointment extends AbstractEntity  {
     }
 
     @Transient
+    @JsonProperty("customerId")
     public Long getCustomerId() {
         return customerId!= null? customerId : (nailCustomer != null && nailCustomer.getId() != null)? nailCustomer.getId() : 0;
     }

@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -187,7 +188,6 @@ public class NailController {
         Date endDate = WebUtil.stringToDate(request.getParameter("endDate"), WebUtil.POS_DATETIME_FORMAT, new Date());
 
         if (nailStore != null) {
-//            dataObject.put("selectedStoreId",nailStore.getId());
             dataObject.put("stores",stores);
             dataObject.put("employees",this.serviceLocator.getNailEmployeeDao().findBy("store.id", nailStore.getId()));
             List<NailService> serviceGroups = this.serviceLocator.getNailServiceDao().getGroupServices(nailStore.getId());
@@ -195,9 +195,7 @@ public class NailController {
             if (serviceGroups != null) {
                 for (NailService group : serviceGroups) {
                     List<NailService> children = this.serviceLocator.getNailServiceDao().getServices(group.getId(), nailStore.getId());
-                    if (services != null) {
-                        services.addAll(children);
-                    }
+                    services.addAll(children);
                 }
             }
 
@@ -215,7 +213,14 @@ public class NailController {
                     customerService.setCustomerId(customer.getId());
                     customers.add(customer);
                 }
-                NailService service = customerService.getNailService();
+
+                /*
+                 * ERROR [org.hibernate.LazyInitializationException] - <failed to lazily initialize a collection of role: com.easysoft.ecommerce.model.NailService.nailCustomerServices, no session or session was closed>
+                 * Root cause:
+                 *  customerService.getNailService() set lazy load, so cannot call something like NailService service = customerService.getNailService();
+                 */
+
+                NailService service = serviceLocator.getNailServiceDao().findById(customerService.getServiceId());
                 if (service != null) {
                     //set customer id to customer service.
                     customerService.setServiceId(service.getId());
@@ -280,7 +285,9 @@ public class NailController {
                     customerService.setCustomerId(customer.getId());
                     customers.add(customer);
                 }
-                NailService service = customerService.getNailService();
+
+                NailService service = serviceLocator.getNailServiceDao().findById(customerService.getServiceId());
+
                 if (service != null) {
                     //set customer id to customer service.
                     customerService.setServiceId(service.getId());
@@ -1189,11 +1196,14 @@ public class NailController {
                     customer.setStatus(null);
                 }
                 serviceLocator.getNailCustomerAppointmentDao().remove(appointment);
+                return new ResponseEntity(appointment, HttpStatus.OK);
             } else {
-                throw new NailsException("Cannot delete the old appointment");
+                Messages messages = new Messages();
+                messages.addError("Cannot delete the old appointment");
+                return new ResponseEntity(messages, HttpStatus.GONE);
             }
         }
-        return new ResponseEntity(HttpStatus.OK);
+//        return new ResponseEntity(HttpStatus.OK);
     }
 
     /**

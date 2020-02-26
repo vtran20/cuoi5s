@@ -221,7 +221,7 @@
         <css minimize="true">/themes/m3x/css/shop.blocks.css</css>
         <css minimize="true">/themes/m3x/css/style.css</css>
         <css minimize="true">/themes/m3x/css/shop.style.css</css>
-        <css minimize="true">/themes/m3x/plugins/animate.css</css>
+        <css minimize="true">/themes/m3x/css/animate.css</css>
         <css minimize="false">/themes/m3x/css/summernote/summernote.css</css>
         <css minimize="false">/themes/m3x/css/cropper/cropper.min.css</css>
 

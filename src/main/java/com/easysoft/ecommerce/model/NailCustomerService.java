@@ -90,6 +90,7 @@ public class NailCustomerService extends AbstractEntity  {
     /////////Transient attribute///////////
     private Long serviceId;
     private Long customerId;
+    private Long appointmentId;
 
     @Transient
     public Long getServiceId() {
@@ -109,6 +110,12 @@ public class NailCustomerService extends AbstractEntity  {
         this.customerId = customerId;
     }
 
+    public Long getAppointmentId() {
+        return appointmentId != null? appointmentId: (appointment != null && appointment.getId() != null)? appointment.getId() : 0;
+    }
 
+    public void setAppointmentId(Long appointmentId) {
+        this.appointmentId = appointmentId;
+    }
 }
 
