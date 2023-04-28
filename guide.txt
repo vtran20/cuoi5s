@@ -1,0 +1,24 @@
+j7
+set JAVA_HOME=c:\Java\jdk1.7.0_25
+set PATH=c:\Java\jdk1.7.0_25\bin;%PATH%
+
+j8
+set JAVA_HOME=c:\Java\jdk1.8.0_121
+set PATH=c:\Java\jdk1.8.0_121\bin;%PATH%
+
+maven3:
+set PATH=d:\Softwares\apache-maven-3.5.0\bin\;%PATH%
+
+set JAVA_OPTS=%JAVA_OPTS% -Dhttp.proxyHost=www-proxy-adcq7-new.us.oracle.com -Dhttp.proxyPort=80
+
+#Start my-network. Our application will run within this network
+docker network create my-network
+
+#Run mysql container
+docker run --name mysql --network my-network -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mysql_admin -e MYSQL_USER=cuoi5s -e MYSQL_PASSWORD=TranQuang2007 -e MYSQL_DATABASE1=images -e MYSQL_DATABASE2=cuoi5s mysql:latest
+
+#Run images-server container
+docker run -p 8080:8080 --name images-server --network my-network --pull missing images-server:latest
+
+#Run cuoi5s-server container
+docker run -p 8081:8080 --name cuoi5s-server --network my-network --pull missing -e JVM_OPTS="-Xmx512m -XX:MaxPermSize=256m" cuoi5s:latest
