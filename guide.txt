@@ -22,3 +22,11 @@ docker run -p 8080:8080 --name images-server --network my-network --pull missing
 
 #Run cuoi5s-server container
 docker run -p 8081:8080 --name cuoi5s-server --network my-network --pull missing -e JVM_OPTS="-Xmx512m -XX:MaxPermSize=256m" cuoi5s:latest
+
+
+#convert to native2ascii
+native2ascii src/main/resources/messages_vi_VN.properties target/classes/messages_vi_VN.properties
+native2ascii src/main/resources/emailtemplate/forgotpassword.vm target/classes/emailtemplate/forgotpassword.vm
+
+#copy war file
+cp target/cuoi5s.war /Users/vutran/Oracle/Content/Servers/apache-tomcat-7.0.99/webapps

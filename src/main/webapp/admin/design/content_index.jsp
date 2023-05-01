@@ -189,7 +189,7 @@
                     </td>
                     <c:choose>
                         <c:when test="${!empty partContent.current.imgUrl}">
-                            <td><img src="${partContent.current.imgUrl}?op=scale|200x100"/></td>
+                            <td><img src="${partContent.current.imgUrl}?op=scale_200x100"/></td>
                         </c:when>
                         <c:otherwise>
                             <td></td>

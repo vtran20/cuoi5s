@@ -120,7 +120,7 @@
                     <h5>${news.shortDescription}</h5>
                     <c:if test="${!empty news.thumbImg}">
                         <div class="blog-img">
-                            <img src='${news.thumbImg}?op=scale|850x' alt=""/>
+                            <img src='${news.thumbImg}?op=scale_850x' alt=""/>
                         </div>
                     </c:if>
                     <div class="margin-bottom-20"></div>

@@ -74,7 +74,7 @@
                             <div class="col-md-4 funny-boxes-img">
                                 <a href="${newsurl}">
                                     <c:if test="${!empty currentNews.thumbImg}">
-                                        <img class="img-responsive" src="${currentNews.thumbImg}?op=scale|300&op=crop|0,0,300,200" alt="">
+                                        <img class="img-responsive" src="${currentNews.thumbImg}?op=scale_300&op=crop|0,0,300,200" alt="">
                                     </c:if>
                                     <c:if test="${empty currentNews.thumbImg}">
                                         <img class="img-responsive" src="http://placehold.it/300x200" alt="">

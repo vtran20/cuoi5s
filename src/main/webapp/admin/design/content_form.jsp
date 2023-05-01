@@ -185,7 +185,7 @@
                                     <input type="hidden" name="crop" id="crop" value=""/>
                                 </c:if>
                                 <c:if test="${!empty partContent.imgUrl}">
-                                    <img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="content-image" src="${partContent.imgUrl}?op=scale|200x100" alt="" height="100" />
+                                    <img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="content-image" src="${partContent.imgUrl}?op=scale_200x100" alt="" height="100" />
                                     <input type="hidden" name="imgUrl" id="imgUrl" value="${partContent.imgUrl}"/>
                                     <input type="hidden" name="crop" id="crop" value="${partContent.crop}"/>
                                 </c:if>
@@ -331,7 +331,7 @@
                                 //Don't use width
                                 imgSize = "x"+h;
                             }
-                            var src = "${imageServer}"+"/get/"+element.name+".jpg?op=scale|"+imgSize;
+                            var src = "${imageServer}"+"/get/"+element.name+".jpg?op=scale_"+imgSize;
                             currElement.attr({"src": src, "width":w, "height":h});
                             //Set image into hidden field to submit to server
                             var contentImage = "${imageServer}"+"/get/"+element.name+".jpg";

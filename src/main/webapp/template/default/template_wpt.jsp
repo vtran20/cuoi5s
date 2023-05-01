@@ -53,8 +53,8 @@
             <c:choose>
                 <c:when test="${fn:startsWith(siteHeaderFooter.useLogoImg, 'Y')}">
                     <c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop|${siteHeaderFooter.crop}" var="opCrop"/></c:if>
-                    <img class="hidden-xs" id="logo-header" src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale|x70" alt="${site.name}">
-                    <img class="hidden-sm hidden-md hidden-lg" id="logo-header" src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale|x50" alt="${site.name}">
+                    <img class="hidden-xs" id="logo-header" src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale_x70" alt="${site.name}">
+                    <img class="hidden-sm hidden-md hidden-lg" id="logo-header" src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale_x50" alt="${site.name}">
                 </c:when>
                 <c:otherwise>
                     ${siteHeaderFooter.logoText}

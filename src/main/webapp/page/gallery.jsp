@@ -45,7 +45,7 @@
                 <ul class="list-unstyled row portfolio-box-v1">
                     <c:forEach items="${albumImages}" var="image">
                     <li class="col-md-3 col-sm-6">
-                        <img class="img-responsive" src="${imageServer}/get/${image.uri}.jpg?op=scale|x225&op=crop|0,0,300,225" alt="">
+                        <img class="img-responsive" src="${imageServer}/get/${image.uri}.jpg?op=scale_x225&op=crop|0,0,300,225" alt="">
                         <div class="portfolio-box-v1-in">
                             <%--<h3>Ahola Company</h3>--%>
                             <p>${image.album.name}</p>

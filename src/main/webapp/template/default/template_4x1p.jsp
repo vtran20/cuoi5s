@@ -25,15 +25,15 @@
 <spring:eval expression="serviceLocator.albumImageDao.findAlbumImages(0, 0, 100, 'id', site.id, true)" var="galleryImages"/>
 <%--Logo--%>
 <spring:eval expression="serviceLocator.siteHeaderFooterDao.findUniqueBy('site.id', site.id)" var="siteHeaderFooter"/>
-<c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop|${siteHeaderFooter.crop}" var="opCrop"/></c:if>
+<c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop_${siteHeaderFooter.crop}" var="opCrop"/></c:if>
 
 <c:if test="${!empty siteHeaderFooter}">
     <c:choose>
         <c:when test="${! empty siteHeaderFooter.crop}">
-            <c:set value="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale|x60" var="logoUrl"/>
+            <c:set value="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale_x60" var="logoUrl"/>
         </c:when>
         <c:otherwise>
-            <c:set value="${imageServer}/get/${siteHeaderFooter.logoImg}.png?op=scale|x60" var="logoUrl"/>
+            <c:set value="${imageServer}/get/${siteHeaderFooter.logoImg}.png?op=scale_x60" var="logoUrl"/>
         </c:otherwise>
     </c:choose>
 </c:if>
@@ -146,9 +146,9 @@
   "@context": "https://schema.org",
   "@type": "NailSalon",
   "image": [
-    "${aboutUsContent.imgUrl}?op=scale|1",
-    "${aboutUsContent.imgUrl}?op=scale|4",
-    "${aboutUsContent.imgUrl}?op=scale|16"
+    "${aboutUsContent.imgUrl}?op=scale_1",
+    "${aboutUsContent.imgUrl}?op=scale_4",
+    "${aboutUsContent.imgUrl}?op=scale_16"
    ],
   "@id": "${site.subDomain}",
   "name": "${store.name}",
@@ -162,8 +162,8 @@
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": ${store.latitude},
-    "longitude": ${store.longitude}
+    "latitude": "${store.latitude}",
+    "longitude": "${store.longitude}"
   },
   "url": "${site.domain}",
   "telephone": "+1${store.phone}",
@@ -401,8 +401,8 @@
                 <!-- Article -->
                 <article class="text-center u-block-hover u-block-hover__additional--jump g-bg-white g-color-gray-dark-v3">
                     <!-- Article Image -->
-                    <c:if test="${!empty group.crop}"><c:set var="cropData" value="op=crop|${group.crop}"/></c:if>
-                    <img class="w-100" src="${group.imageUrl}?${cropData}&op=scale|${width}" alt="${group.name}">
+                    <c:if test="${!empty group.crop}"><c:set var="cropData" value="op=crop_${group.crop}"/></c:if>
+                    <img class="w-100" src="${imageServer}/${group.imageUrl}?${cropData}&op=scale_${width}" alt="${group.name}">
                     <!-- End Article Image -->
 
                     <!-- Article Content -->
@@ -579,9 +579,9 @@
                 <div class="row no-gutters">
                     <c:forEach var="image" items="${galleryImages}" end="1">
                         <c:if test="${!empty image.crop}">
-                            <c:set var="cropImg" value="op=crop|${image.crop}"/>
+                            <c:set var="cropImg" value="op=crop_${image.crop}"/>
                         </c:if>
-                        <div class="col-md-6 g-bg-img-hero g-min-height-400" style="background-image: url(${imageServer}/get/${image.uri}.jpg?${cropImg}&op=scale|1200);"></div>
+                        <div class="col-md-6 g-bg-img-hero g-min-height-400" style="background-image: url(${imageServer}/get/${image.uri}.jpg?${cropImg}&op=scale_1200);"></div>
                         <%--<div class="col-md-6 g-bg-img-hero g-min-height-400" style="background-image: url(https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80);"></div>--%>
                     </c:forEach>
                 </div>
@@ -590,9 +590,9 @@
                     <div class="col-md-6">
                         <c:forEach var="image" items="${galleryImages}" begin="2" end="2">
                             <c:if test="${!empty image.crop}">
-                                <c:set var="cropImg" value="op=crop|${image.crop}"/>
+                                <c:set var="cropImg" value="op=crop_${image.crop}"/>
                             </c:if>
-                            <img class="img-fluid" src="${imageServer}/get/${image.uri}.jpg?${cropImg}&op=scale|1200" alt="Gallery Images">
+                            <img class="img-fluid" src="${imageServer}/get/${image.uri}.jpg?${cropImg}&op=scale_1200" alt="Gallery Images">
                         </c:forEach>
                     </div>
 
@@ -604,10 +604,10 @@
                              data-arrow-right-classes="fa fa-chevron-right g-right-0">
                             <c:forEach var="image" items="${galleryImages}" begin="3">
                                 <c:if test="${!empty image.crop}">
-                                    <c:set var="cropImg" value="op=crop|${image.crop}"/>
+                                    <c:set var="cropImg" value="op=crop_${image.crop}"/>
                                 </c:if>
                                 <div class="js-slide">
-                                    <img class="img-fluid" src="${imageServer}/get/${image.uri}.jpg?${cropImg}&op=scale|1200" alt="Gallery Images">
+                                    <img class="img-fluid" src="${imageServer}/get/${image.uri}.jpg?${cropImg}&op=scale_1200" alt="Gallery Images">
                                 </div>
                             </c:forEach>
                         </div>

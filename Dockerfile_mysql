@@ -2,18 +2,11 @@ FROM mysql:5.7.42
 
 ENV MYSQL_ROOT_PASSWORD=admin_mysql
 
-# Create a user
-ENV MYSQL_USER=cuoi5s
-ENV MYSQL_PASSWORD=TranQuang2007
-
-# Create two databases
-ENV MYSQL_DATABASE1=images
-ENV MYSQL_DATABASE2=cuoi5s
+# Create a non-root user and grant privileges
+RUN useradd -ms /bin/bash cuoi5s
+RUN echo "GRANT SELECT, INSERT, UPDATE, DELETE ON images.* TO 'cuoi5s'@'%';" > /docker-entrypoint-initdb.d/init.sql
+RUN echo "GRANT SELECT, INSERT, UPDATE, DELETE ON cuoi5s.* TO 'cuoi5s'@'%';" >> /docker-entrypoint-initdb.d/init.sql
 
 # Import the SQL dumps
 COPY databases/images.sql /docker-entrypoint-initdb.d/
 COPY databases/cuoi5s.sql /docker-entrypoint-initdb.d/
-
-RUN echo "GRANT ALL PRIVILEGES ON images.* TO 'cuoi5s'@'%';" >> /docker-entrypoint-initdb.d/init.sql
-RUN echo "GRANT ALL PRIVILEGES ON cuoi5s.* TO 'cuoi5s'@'%';" >> /docker-entrypoint-initdb.d/init.sql
-
