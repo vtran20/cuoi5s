@@ -30,7 +30,7 @@
                 <input type="hidden" name="logoImg" value=""/>
             </c:if>
             <c:if test="${!empty siteHeaderFooter.logoImg}">
-                <img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="logo-image" src="${siteHeaderFooter.logoImg}?op=scale|x70" alt="" />
+                <img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="logo-image" src="${siteHeaderFooter.logoImg}?op=scale_x70" alt="" />
                 <input type="hidden" name="logoImg" value="${siteHeaderFooter.logoImg}"/>
             </c:if>
             <span class="help-button" data-rel="popover" data-trigger="hover" data-placement="right" data-content="Logo giới hạn chiều cao là 70px chiều rộng tùy ý. Hệ thống sẽ tự động thay đổi kích thước để phù hợp với yêu cầu này" title="">?</span>
@@ -171,7 +171,7 @@
                                 //Don't use width
                                 imgSize = "x"+h;
                             }
-                            var src = "${imageServer}"+"/get/"+element.name+".jpg?op=scale|"+imgSize;
+                            var src = "${imageServer}"+"/get/"+element.name+".jpg?op=scale_"+imgSize;
                             currElement.attr({"src": src, "width":w, "height":h});
                             //Set image into hidden field to submit to server
                             var logoImgSave = "${imageServer}"+"/get/"+element.name+".jpg";
@@ -257,7 +257,7 @@
                 if ($(".modal-body div.tab-pane.active").attr("id") == 'image_library') {
                     imgLink = $(".modal-body #images-selected").val();
                     if (imgLink != "") {
-                        $("#logo-image").attr("src", imgLink+"?op=scale|x50");
+                        $("#logo-image").attr("src", imgLink+"?op=scale_x50");
                         $("#form input[name='logoImg']").val(imgLink);
                     }
                     //Select Image from External

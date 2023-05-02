@@ -113,8 +113,8 @@
                                     </c:if>
                                     <div class="item ${active}">
                                         <c:choose>
-                                            <c:when test="${!empty image.crop}"><img src="${imageServer}/get/${image.uri}.jpg?op=crop|${image.crop}&op=scale|600" alt=""></c:when>
-                                            <c:otherwise><img src="${imageServer}/get/${image.uri}.jpg?op=scale|600" alt=""></c:otherwise>
+                                            <c:when test="${!empty image.crop}"><img src="${imageServer}/get/${image.uri}.jpg?op=crop_${image.crop}&op=scale_600" alt=""></c:when>
+                                            <c:otherwise><img src="${imageServer}/get/${image.uri}.jpg?op=scale_600" alt=""></c:otherwise>
                                         </c:choose>
                                     </div>
                                 </c:forEach>

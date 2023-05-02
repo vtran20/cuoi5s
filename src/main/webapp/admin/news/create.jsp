@@ -169,7 +169,7 @@
                                                                 <input type="hidden" name="thumbImg" value=""/>
                                                             </c:if>
                                                             <c:if test="${!empty news.thumbImg}">
-                                                                <img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="thumbnail-image" src="${news.thumbImg}?op=scale|300x200" alt="" width="300" height="200" />
+                                                                <img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="thumbnail-image" src="${news.thumbImg}?op=scale_300x200" alt="" width="300" height="200" />
                                                                 <input type="hidden" name="thumbImg" value="${news.thumbImg}"/>
                                                             </c:if>
                                                             <%--<div class="caption" style="text-align:center">--%>
@@ -428,7 +428,7 @@
                                 //Don't use width
                                 imgSize = "x"+h;
                             }
-                            var src = "${imageServer}"+"/get/"+element.name+".jpg?op=scale|"+imgSize;
+                            var src = "${imageServer}"+"/get/"+element.name+".jpg?op=scale_"+imgSize;
                             currElement.attr({"src": src, "width":w, "height":h});
                             //Set image into hidden field to submit to server
                             var contentImage = "${imageServer}"+"/get/"+element.name+".jpg";
@@ -466,7 +466,7 @@
                     }
                     $.each(res, function(index, element) {
                         if (element.name) {
-                            imgLink = '${imageServer}/get/'+element.name+'.jpg'+'?op=scale|770x';
+                            imgLink = '${imageServer}/get/'+element.name+'.jpg'+'?op=scale_770x';
                             tinyMCE.execCommand('mceInsertContent',false,"<img src='"+imgLink+"' width='770'/>");
                             //return "${imageServer}"+"/get/"+element.name+".jpg";
                         }

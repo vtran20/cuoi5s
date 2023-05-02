@@ -23,7 +23,7 @@
         <td class="product-in-table" style="width: 50%;">
             <c:set var="imageUrl" value="/assets/images/no_image.png"/>
             <c:if test="${!empty item.current.IMAGE_URL}">
-                <c:set var="imageUrl" value="${imageServer}/get/${item.current.IMAGE_URL}.jpg?op=scale_120x&op=crop|0,0,120,120"/>
+                <c:set var="imageUrl" value="${imageServer}/get/${item.current.IMAGE_URL}.jpg?op=scale_120x&op=crop_0,0,120,120"/>
             </c:if>
             <a href="/product/${item.current.ITEM_URI}-${item.current.ITEM_ID}.html"><img class="img-responsive" width="120" src="${imageUrl}" alt="${item.current.NAME}"></a>
             <div class="product-it-in">

@@ -849,11 +849,11 @@ public class WebUtil {
 //        }
 //    }
 
-    private static AmazonSNS snsClient = AmazonSNSClient
-            .builder()
-            .withRegion("us-east-1")
-            .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("AKIASWZE6T22RYNJBGOL", "Iu024Ggl/7v9ox6ol+T87A5gsbds+ZerLf5uxy+N")))
-            .build();
+//    private static AmazonSNS snsClient = AmazonSNSClient
+//            .builder()
+//            .withRegion("us-east-1")
+//            //.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("AKIASWZE6T22RYNJBGOL", "Iu024Ggl/7v9ox6ol+T87A5gsbds+ZerLf5uxy+N")))
+//            .build();
     public static void sendSMSMessage(String message,
                                       String phoneNumber) {
         if (message != null && message.length() >= 160) {
@@ -864,11 +864,11 @@ public class WebUtil {
 //        smsAttributes.put("AWS.SNS.SMS.MaxPrice", new MessageAttributeValue().withStringValue("0.50").withDataType("Number")); //Sets the max price to 0.50 USD.
         smsAttributes.put("AWS.SNS.SMS.SMSType", new MessageAttributeValue().withStringValue("Promotional").withDataType("String")); //Sets the type to promotional.
 
-        PublishResult result = snsClient.publish(new PublishRequest()
-                .withMessage(message)
-                .withPhoneNumber(phoneNumber)
-                .withMessageAttributes(smsAttributes));
-        System.out.println(result); // Prints the message ID.
+//        PublishResult result = snsClient.publish(new PublishRequest()
+//                .withMessage(message)
+//                .withPhoneNumber(phoneNumber)
+//                .withMessageAttributes(smsAttributes));
+//        System.out.println(result); // Prints the message ID.
     }
 
     public static void main(String[] args) {

@@ -60,7 +60,7 @@
                                 <c:set var="active" value="active"/>
                             </c:if>
                             <div class="item ${active}">
-                                <img src="${imageServer}/get/${image.uri}.jpg?op=scale|1200" alt="">
+                                <img src="${imageServer}/get/${image.uri}.jpg?op=scale_1200" alt="">
                                 <c:if test="${!empty image.description}">
                                     <div class="carousel-caption">
                                         <p>${image.description}</p>

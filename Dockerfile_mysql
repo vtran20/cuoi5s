@@ -1,5 +1,7 @@
-FROM mysql:5.7.42
+# Use a minimal base image
+FROM mysql:5.7.42-debian
 
+# Set environment variables
 ENV MYSQL_ROOT_PASSWORD=admin_mysql
 
 # Create a non-root user and grant privileges
@@ -7,6 +9,9 @@ RUN useradd -ms /bin/bash cuoi5s
 RUN echo "GRANT SELECT, INSERT, UPDATE, DELETE ON images.* TO 'cuoi5s'@'%';" > /docker-entrypoint-initdb.d/init.sql
 RUN echo "GRANT SELECT, INSERT, UPDATE, DELETE ON cuoi5s.* TO 'cuoi5s'@'%';" >> /docker-entrypoint-initdb.d/init.sql
 
-# Import the SQL dumps
+# Copy the SQL dumps
 COPY databases/images.sql /docker-entrypoint-initdb.d/
 COPY databases/cuoi5s.sql /docker-entrypoint-initdb.d/
+
+# Switch to the non-root user
+USER cuoi5s

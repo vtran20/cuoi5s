@@ -284,7 +284,7 @@
                                                 h = currElement.attr("height");
                                                 imgSize = w+"x"+h;
                                             }
-                                            var src = ieditor.config.imageupload.serverurl+"/get/"+element.name+".image?op=scale|"+imgSize;
+                                            var src = ieditor.config.imageupload.serverurl+"/get/"+element.name+".image?op=scale_"+imgSize;
                                             var alt = element.original;
                                             currElement.attr({"src": src, "alt": alt, "width":w, "height":h});
                                         }
@@ -471,7 +471,7 @@
                 h = currElement.attr("height");
                 imgSize = w+"x"+h;
             }
-            var src = $draggable.attr("data-src")+"?op=scale|"+imgSize;
+            var src = $draggable.attr("data-src")+"?op=scale_"+imgSize;
             var alt = $draggable.attr("title");
             currElement.attr({"src": src, "alt": alt, "width":w, "height":h});
             $(this).changedContent();

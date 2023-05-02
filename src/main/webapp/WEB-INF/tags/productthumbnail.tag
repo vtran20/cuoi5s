@@ -20,8 +20,8 @@
         <c:set var="imageUrl" value="/assets/images/no_image.png"/>
         <c:if test="${!empty image}">
             <c:choose>
-                <c:when test="${!empty image.crop}"><c:set var="imageUrl" value="${imageServer}/get/${image.uri}.jpg?op=crop|${image.crop}&op=scale_x328"/></c:when>
-                <c:otherwise><c:set var="imageUrl" value="${imageServer}/get/${image.uri}.jpg?op=scale_x328&op=crop|0,0,262,328"/></c:otherwise>
+                <c:when test="${!empty image.crop}"><c:set var="imageUrl" value="${imageServer}/get/${image.uri}.jpg?op=crop_${image.crop}&op=scale_x328"/></c:when>
+                <c:otherwise><c:set var="imageUrl" value="${imageServer}/get/${image.uri}.jpg?op=scale_x328&op=crop_0,0,262,328"/></c:otherwise>
             </c:choose>
         </c:if>
         <a href="${url}"><img class="full-width img-responsive" src="${imageUrl}" alt="<c:out value="${product.name}" escapeXml="true"/>"></a>

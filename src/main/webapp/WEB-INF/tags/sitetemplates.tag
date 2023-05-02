@@ -22,8 +22,8 @@
                     <div class="thumbnail-img">
                         <div class="overflow-hidden">
                             <c:choose>
-                                <c:when test="${!empty template.crop}"><c:set var="imageQS" value="op=crop|${template.crop}&op=scale_400x"/></c:when>
-                                <c:otherwise><c:set var="imageQS" value="op=scale_400x&op=crop|0,0,400,500"/></c:otherwise>
+                                <c:when test="${!empty template.crop}"><c:set var="imageQS" value="op=crop_${template.crop}&op=scale_400x"/></c:when>
+                                <c:otherwise><c:set var="imageQS" value="op=scale_400x&op=crop_0,0,400,500"/></c:otherwise>
                             </c:choose>
                             <c:choose>
                                 <c:when test="${fn:contains(template.imageUrl, imageServer)}"><img alt="" src="${template.imageUrl}?${imageQS}" class="img-responsive"></c:when>

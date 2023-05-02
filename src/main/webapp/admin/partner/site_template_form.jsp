@@ -88,8 +88,8 @@
                     </c:if>
                     <c:if test="${!empty thisTemplate.imageUrl}">
                         <c:choose>
-                            <c:when test="${fn:contains(thisTemplate.imageUrl, imageServer)}"><img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="content-image" src="${thisTemplate.imageUrl}?op=scale|200x100" alt="" height="100" /></c:when>
-                            <c:otherwise><img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="content-image" src="${imageServer}/get/${thisTemplate.imageUrl}.jpg?op=scale|200x100" alt="" height="100" /></c:otherwise>
+                            <c:when test="${fn:contains(thisTemplate.imageUrl, imageServer)}"><img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="content-image" src="${thisTemplate.imageUrl}?op=scale_200x100" alt="" height="100" /></c:when>
+                            <c:otherwise><img ondrop="$(this).dropImage(event)" ondragover="$(this).dragOverImage(event)" ondragleave="$(this).dragLeaveImage(event)" id="content-image" src="${imageServer}/get/${thisTemplate.imageUrl}.jpg?op=scale_200x100" alt="" height="100" /></c:otherwise>
                         </c:choose>
                         <c:choose>
                             <c:when test="${fn:contains(thisTemplate.imageUrl, imageServer)}"><input type="hidden" name="imageUrl" id="imageUrl" value="${thisTemplate.imageUrl}"/></c:when>
@@ -180,7 +180,7 @@
                                 //Don't use width
                                 imgSize = "x"+h;
                             }
-                            var src = "${imageServer}"+"/get/"+element.name+".jpg?op=scale|"+imgSize;
+                            var src = "${imageServer}"+"/get/"+element.name+".jpg?op=scale_"+imgSize;
                             currElement.attr({"src": src, "width":w, "height":h});
                             //Set image into hidden field to submit to server
                             var contentImage = "${imageServer}"+"/get/"+element.name+".jpg";

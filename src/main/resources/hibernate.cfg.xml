@@ -7,6 +7,9 @@
     <session-factory>
 
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+<!--        <property name="hibernate.connection.url">${env.DB_URL}</property>-->
+<!--        <property name="hibernate.connection.username">${env.DB_USERNAME}</property>-->
+<!--        <property name="hibernate.connection.password">${env.DB_PASSWORD}</property>-->
         <property name="hibernate.connection.url">jdbc:mysql://mysql:3306/cuoi5s?useUnicode=true&amp;characterEncoding=UTF-8</property>
         <property name="hibernate.connection.username">cuoi5s</property>
         <property name="hibernate.connection.password">TranQuang2007</property>

@@ -160,7 +160,7 @@
                     </div>
                     <div id="logo-image" class="col-md-6">
                         <c:if test="${!empty siteHeaderFooter.logoImg}">
-                            <c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop|${siteHeaderFooter.crop}" var="opCrop"/></c:if>
+                            <c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop_${siteHeaderFooter.crop}" var="opCrop"/></c:if>
                             <img src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}"/>
                         </c:if>
                     </div>
@@ -353,9 +353,9 @@
                 if (data == "ok") {
                     var newImageUrl
                     if ($(button).data("img")) {
-                        newImageUrl = $(button).data("img")+'?op=scale|220'
+                        newImageUrl = $(button).data("img")+'?op=scale_220'
                     } else {
-                        newImageUrl = '${imageServer}/get/'+imageUri+'.png?op=crop|'+$(button).data("crop")
+                        newImageUrl = '${imageServer}/get/'+imageUri+'.png?op=crop_'+$(button).data("crop")
                         $(button).data("img", '${imageServer}/get/'+imageUri+'.png')
                     }
                     //rebuild a new url with crop

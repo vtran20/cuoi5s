@@ -1,0 +1,6 @@
+<Context>
+    <!--Environment settings-->
+    <Environment name="DB_URL" value="jdbc:mysql://mysql:3306/cuoi5s" type="java.lang.String"/>
+    <Environment name="DB_USERNAME" value="cuoi5s" type="java.lang.String"/>
+    <Environment name="DB_PASSWORD" value="TranQuang2007" type="java.lang.String"/>
+</Context>

@@ -292,7 +292,7 @@
                 #if ($content.thumbImg && $content.thumbImg != '')
                 <div class="thumbnail-img">
                     <div class="overflow-hidden">
-                        <img class="img-responsive" src="${content.thumbImg}?op=scale|600&op=crop|0,0,600,500" alt="">
+                        <img class="img-responsive" src="${content.thumbImg}?op=scale_600&op=crop_0,0,600,500" alt="">
                     </div>
                     <a class="btn-more hover-effect" href="$link">chi tiết +</a>
                 </div>
@@ -320,22 +320,22 @@
 <ul id="out-of-the-box-demo">
     <li>
         <a href="#1">
-            <img src="http://images.webphattai.com/get/ca704f97-106a-4d8a-9967-e2947226b01a.jpg?op=scale|1600x&op=crop|0,300,1600,500" alt="This is caption 1 <a href='#link'>Even with links!</a>">
+            <img src="http://images.webphattai.com/get/ca704f97-106a-4d8a-9967-e2947226b01a.jpg?op=scale_1600x&op=crop_0,300,1600,500" alt="This is caption 1 <a href='#link'>Even with links!</a>">
         </a>
     </li>
     <li>
         <a href="#2">
-            <img src="http://images.webphattai.com/get/0344104d-9242-411c-878f-671366386c7a.jpg?op=scale|1600x&op=crop|0,600,1600,500"  alt="This is caption 2">
+            <img src="http://images.webphattai.com/get/0344104d-9242-411c-878f-671366386c7a.jpg?op=scale_1600x&op=crop_0,600,1600,500"  alt="This is caption 2">
         </a>
     </li>
     <li>
         <a href="#3">
-            <img src="http://images.webphattai.com/get/ca704f97-106a-4d8a-9967-e2947226b01a.jpg?op=scale|1600x&op=crop|0,300,1600,500" alt="And this is some very long caption for slide 3. Yes, really long.">
+            <img src="http://images.webphattai.com/get/ca704f97-106a-4d8a-9967-e2947226b01a.jpg?op=scale_1600x&op=crop_0,300,1600,500" alt="And this is some very long caption for slide 3. Yes, really long.">
         </a>
     </li>
     <li>
         <a href="#4">
-            <img src="http://images.webphattai.com/get/5f51f9ed-21ab-4964-815d-6a65f701ffbb.jpg?op=scale|1600x&op=crop|0,400,1600,500" alt="And this is some very long caption for slide 4.">
+            <img src="http://images.webphattai.com/get/5f51f9ed-21ab-4964-815d-6a65f701ffbb.jpg?op=scale_1600x&op=crop_0,400,1600,500" alt="And this is some very long caption for slide 4.">
         </a>
     </li>
 </ul>
@@ -454,58 +454,58 @@
         <div class="headline"><h2>Our Clients</h2></div>
         <div class="owl-slider">
             <div class="item">
-                <a href=""><img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|220&op=crop|0,0,200,150" alt=""></a>
+                <a href=""><img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_220&op=crop_0,0,200,150" alt=""></a>
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|220&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_220&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <a href=""><img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|220&op=crop|0,0,200,150" alt=""></a>
+                <a href=""><img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_220&op=crop_0,0,200,150" alt=""></a>
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/056c95bf-c0c5-47e9-8699-effd476f6fc0.jpg?op=scale|220&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/056c95bf-c0c5-47e9-8699-effd476f6fc0.jpg?op=scale_220&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <a href=""><img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|220&op=crop|0,0,200,150" alt=""></a>
+                <a href=""><img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_220&op=crop_0,0,200,150" alt=""></a>
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|220&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_220&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/02b63d74-16c0-435d-a3ad-b66e7494f541.jpg?op=scale|220&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/02b63d74-16c0-435d-a3ad-b66e7494f541.jpg?op=scale_220&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
             <div class="item">
-                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale|200&op=crop|0,0,200,150" alt="">
+                <img src="http://images.webphattai.com/get/30fbfc12-91f3-4323-960c-13161ce57b55.jpg?op=scale_200&op=crop_0,0,200,150" alt="">
             </div>
         </div>
     </div>
@@ -522,7 +522,7 @@
 
 
         #if ($content.crop && $content.crop != '')
-        background: rgba(0, 0, 0, 0) url("${content.imgUrl}?op=crop|$content.crop&op=scale|$widgetTemplate.imageSize") no-repeat scroll center center / cover ;
+        background: rgba(0, 0, 0, 0) url("${content.imgUrl}?op=crop_$content.crop&op=scale_$widgetTemplate.imageSize") no-repeat scroll center center / cover ;
         #else
         background: rgba(0, 0, 0, 0) url("${content.imgUrl}") no-repeat scroll center center / cover ;
         #end
@@ -530,15 +530,15 @@
 
 
 #if ($content.crop && $content.crop != '')
-<div class="da-img"><img src="${content.imgUrl}?op=crop|$content.crop&op=scale|$widgetTemplate.imageSize" alt="" /></div>
+<div class="da-img"><img src="${content.imgUrl}?op=crop_$content.crop&op=scale_$widgetTemplate.imageSize" alt="" /></div>
 #else
-<div class="da-img"><img src="${content.imgUrl}?op=scale|600&op=crop|0,0,550,290" alt="" /></div>
+<div class="da-img"><img src="${content.imgUrl}?op=scale_600&op=crop_0,0,550,290" alt="" /></div>
 #end
 
 #foreach( $content in $contents )
 #set( $crop = "" )
 #if ($content.crop && $content.crop != '')
-#set( $crop = "?op=crop|$content.crop" )
+#set( $crop = "?op=crop_$content.crop" )
 #end
 <section id="home" class="u-bg-overlay g-height-100vh g-min-height-600 g-bg-img-hero g-bg-black-opacity-0_3--after" style="background-image: url($content.imgUrl$crop);">
     <div class="u-bg-overlay__inner g-absolute-centered--y w-100">
@@ -557,11 +557,11 @@
 #foreach( $content in $contents )
 #set( $crop = "" )
 #if ($content.crop && $content.crop != '')
-#set( $crop = "?op=crop|$content.crop" )
+#set( $crop = "?op=crop_$content.crop" )
 #end
 #set( $imageUrl = "http://images.webphattai.com/get/49318030-7047-409c-92c9-7aa62946522d.jpg")
 #if ($content.imgUrl && $content.imgUrl != '')
-#set( $imageUrl = "$content.imgUrl?op=crop|$content.crop&op=scale|1200" )
+#set( $imageUrl = "$content.imgUrl?op=crop_$content.crop&op=scale_1200" )
 #end
 #set( $contentTitle = "" )
 #if ($content.title) #set( $contentTitle = $content.title ) #end
@@ -585,7 +585,7 @@
         </div>
         <div class="row no-gutters">
             <div class="col-md-6">
-                <img class="img-fluid" src="http://images.webphattai.com/get/25b24315-8936-40f2-9e87-34e143ccd62d.jpg?op=scale|1200" alt="Image description">
+                <img class="img-fluid" src="http://images.webphattai.com/get/25b24315-8936-40f2-9e87-34e143ccd62d.jpg?op=scale_1200" alt="Image description">
             </div>
             <div class="col-md-6">
                 <div class="js-carousel"
@@ -594,13 +594,13 @@
                      data-arrow-left-classes="fa fa-chevron-left g-left-0"
                      data-arrow-right-classes="fa fa-chevron-right g-right-0">
                     <div class="js-slide">
-                        <img class="img-fluid" src="http://images.webphattai.com/get/082cc9a4-a605-489c-a192-d796336b531d.jpg?op=scale|1200" alt="Image description">
+                        <img class="img-fluid" src="http://images.webphattai.com/get/082cc9a4-a605-489c-a192-d796336b531d.jpg?op=scale_1200" alt="Image description">
                     </div>
                     <div class="js-slide">
-                        <img class="img-fluid" src="http://images.webphattai.com/get/939f8d93-73b0-4063-9b01-931bdad6697c.jpg?op=scale|1200" alt="Image description">
+                        <img class="img-fluid" src="http://images.webphattai.com/get/939f8d93-73b0-4063-9b01-931bdad6697c.jpg?op=scale_1200" alt="Image description">
                     </div>
                     <div class="js-slide">
-                        <img class="img-fluid" src="http://images.webphattai.com/get/9c2e026d-43e2-493a-a0d8-005a9b2f43db.jpg?op=scale|1200" alt="Image description">
+                        <img class="img-fluid" src="http://images.webphattai.com/get/9c2e026d-43e2-493a-a0d8-005a9b2f43db.jpg?op=scale_1200" alt="Image description">
                     </div>
                 </div>
             </div>

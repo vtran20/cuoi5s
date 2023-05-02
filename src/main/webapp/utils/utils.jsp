@@ -113,6 +113,13 @@
         cache.removeAll();
         commonCache.removeAll();
     }
+
+    String dbUrl = System.getenv("DB_URL");
+    String dbUsername = System.getenv("DB_USERNAME");
+    String dbPassword = System.getenv("DB_PASSWORD");
+    System.out.println("DB URL: " + dbUrl);
+    System.out.println("DB Username: " + dbUsername);
+    System.out.println("DB Password: " + dbPassword);
 %>
 <p>Clear cache completed.</p>
 <fmt:message key="common.saving.error.message"/>

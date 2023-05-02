@@ -21,7 +21,7 @@ docker run --name mysql --network my-network -d -p 3306:3306 -e MYSQL_ROOT_PASSW
 docker run -p 8080:8080 --name images-server --network my-network --pull missing images-server:latest
 
 #Run cuoi5s-server container
-docker run -p 8081:8080 --name cuoi5s-server --network my-network --pull missing -e JVM_OPTS="-Xmx512m -XX:MaxPermSize=256m" cuoi5s:latest
+docker run -p 8081:8080 --env-file env.list --name cuoi5s-server --network my-network --pull missing -e JVM_OPTS="-Xmx512m -XX:MaxPermSize=256m" cuoi5s:latest
 
 
 #convert to native2ascii

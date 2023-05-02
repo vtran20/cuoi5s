@@ -217,8 +217,8 @@
             <spring:eval expression="serviceLocator.siteHeaderFooterDao.findUniqueBy('site.id', site.id)" var="siteHeaderFooter"/>
             <c:choose>
                 <c:when test="${fn:startsWith(siteHeaderFooter.useLogoImg, 'Y')}">
-                    <c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop|${siteHeaderFooter.crop}" var="opCrop"/></c:if>
-                    <img id="logo-header" src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale|x70" alt="${site.name}">
+                    <c:if test="${! empty siteHeaderFooter.crop}"><c:set value="op=crop_${siteHeaderFooter.crop}" var="opCrop"/></c:if>
+                    <img id="logo-header" src="${imageServer}/get/${siteHeaderFooter.logoImg}.png?${opCrop}&op=scale_x70" alt="${site.name}">
                 </c:when>
                 <c:otherwise>
                     ${siteHeaderFooter.logoText}

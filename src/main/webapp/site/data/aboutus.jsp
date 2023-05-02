@@ -98,7 +98,7 @@
                     </label>
                     <div id="aboutus-image">
                         <c:if test="${!empty aboutUsContent.imgUrl}">
-                            <img src="${aboutUsContent.imgUrl}?op=scale|220"/>
+                            <img src="${aboutUsContent.imgUrl}?op=scale_220"/>
                         </c:if>
                     </div>
                 </div>
@@ -154,7 +154,7 @@
             success: function(data)
             {
                 if (data == "ok") {
-                    var newImageUrl = $(button).data("img")+'?op=scale|220'
+                    var newImageUrl = $(button).data("img")+'?op=scale_220'
                     //rebuild a new url with crop
                     $("#aboutus-image").html('<img src="'+newImageUrl+'"/>')
                 }

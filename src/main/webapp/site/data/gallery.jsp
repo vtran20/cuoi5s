@@ -302,8 +302,8 @@
                             <li>
                                 <a href="#" data-rel="colorbox">
                                     <c:choose>
-                                        <c:when test="${!empty image.crop}"><img id="image${image.id}" src="${imageServer}/get/${image.uri}.jpg?op=crop|${image.crop}&op=scale|x100" alt=""/></c:when>
-                                        <c:otherwise><img id="image${image.id}" src="${imageServer}/get/${image.uri}.jpg?op=scale|x100" alt=""/></c:otherwise>
+                                        <c:when test="${!empty image.crop}"><img id="image${image.id}" src="${imageServer}/get/${image.uri}.jpg?op=crop_${image.crop}&op=scale_x100" alt=""/></c:when>
+                                        <c:otherwise><img id="image${image.id}" src="${imageServer}/get/${image.uri}.jpg?op=scale_x100" alt=""/></c:otherwise>
                                     </c:choose>
                                     <div class="text">
                                         <div class="inner"></div>
@@ -513,7 +513,7 @@
             {
                 if (data == "ok") {
                     //TODO: set image follow the new crop
-                    var newImageUrl = $(button).data("img")+'?op=crop|'+$(button).data("crop")+'&op=scale|x100'
+                    var newImageUrl = $(button).data("img")+'?op=crop_'+$(button).data("crop")+'&op=scale_x100'
                     //rebuild a new url with crop
                     $("#image"+$(button).data("id")).attr('src', newImageUrl)
                 }
@@ -532,7 +532,7 @@
 <script type="text/x-mustache" id="album_image_mustache">
     <li>
         <a href="#" data-rel="colorbox">
-            <img id="image{{id}}" src="${imageServer}/get/{{uri}}.jpg?op=scale|x100" alt=""/>
+            <img id="image{{id}}" src="${imageServer}/get/{{uri}}.jpg?op=scale_x100" alt=""/>
             <div class="text">
                 <div class="inner"></div>
             </div>

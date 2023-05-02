@@ -73,7 +73,7 @@
                     #set($productImage = $priceMap[$content.id].productImage)
                     #set($imageUrl = "/assets/images/no_image.png")
                     #if ($productImage)
-                    #set($imageUrl = "${imageServer}/get/${productImage.uri}.jpg?op=scale|x328&op=crop|0,0,262,328")
+                    #set($imageUrl = "${imageServer}/get/${productImage.uri}.jpg?op=scale_x328&op=crop_0,0,262,328")
                     #end
                     <a href="/product/${content.uri}-${content.id}.html"><img class="full-width img-responsive" src="${imageUrl}" alt=""></a>
                     <a class="product-review" href="/product/${content.uri}-${content.id}.html">Quick review</a>
@@ -122,22 +122,22 @@
 <ul id="out-of-the-box-demo">
     <li>
         <a href="#1">
-            <img src="http://images.webphattai.com/get/ca704f97-106a-4d8a-9967-e2947226b01a.jpg?op=scale|1600x&op=crop|0,300,1600,500" alt="This is caption 1 <a href='#link'>Even with links!</a>">
+            <img src="http://images.webphattai.com/get/ca704f97-106a-4d8a-9967-e2947226b01a.jpg?op=scale_1600x&op=crop_0,300,1600,500" alt="This is caption 1 <a href='#link'>Even with links!</a>">
         </a>
     </li>
     <li>
         <a href="#2">
-            <img src="http://images.webphattai.com/get/0344104d-9242-411c-878f-671366386c7a.jpg?op=scale|1600x&op=crop|0,600,1600,500"  alt="This is caption 2">
+            <img src="http://images.webphattai.com/get/0344104d-9242-411c-878f-671366386c7a.jpg?op=scale_1600x&op=crop_0,600,1600,500"  alt="This is caption 2">
         </a>
     </li>
     <li>
         <a href="#3">
-            <img src="http://images.webphattai.com/get/ca704f97-106a-4d8a-9967-e2947226b01a.jpg?op=scale|1600x&op=crop|0,300,1600,500" alt="And this is some very long caption for slide 3. Yes, really long.">
+            <img src="http://images.webphattai.com/get/ca704f97-106a-4d8a-9967-e2947226b01a.jpg?op=scale_1600x&op=crop_0,300,1600,500" alt="And this is some very long caption for slide 3. Yes, really long.">
         </a>
     </li>
     <li>
         <a href="#4">
-            <img src="http://images.webphattai.com/get/5f51f9ed-21ab-4964-815d-6a65f701ffbb.jpg?op=scale|1600x&op=crop|0,400,1600,500" alt="And this is some very long caption for slide 4.">
+            <img src="http://images.webphattai.com/get/5f51f9ed-21ab-4964-815d-6a65f701ffbb.jpg?op=scale_1600x&op=crop_0,400,1600,500" alt="And this is some very long caption for slide 4.">
         </a>
     </li>
 </ul>
@@ -246,7 +246,7 @@
                     #set($productImage = $priceMap[$content.id].productImage)
                     #set($imageUrl = "/assets/images/no_image.png")
                     #if ($productImage)
-                    #set($imageUrl = "${imageServer}/get/${productImage.uri}.jpg?op=scale|x328&op=crop|0,0,262,328")
+                    #set($imageUrl = "${imageServer}/get/${productImage.uri}.jpg?op=scale_x328&op=crop_0,0,262,328")
                     #end
                     <a href="/product/${content.uri}-${content.id}.html"><img class="full-width img-responsive" src="${imageUrl}" alt=""></a>
                     <a class="product-review" href="/product/${content.uri}-${content.id}.html">Quick review</a>
@@ -562,7 +562,7 @@
         <div class="thumbnails thumbnail-style thumbnail-kenburn">
             <div class="thumbnail-img">
                 <div class="overflow-hidden">
-                    <img alt="" src="http://images.webphattai.com/get/077f19d9-bbb5-46c4-9a30-ec48203022c2.jpg?op=scale|300&amp;op=crop|0,0,300,200" class="img-responsive">
+                    <img alt="" src="http://images.webphattai.com/get/077f19d9-bbb5-46c4-9a30-ec48203022c2.jpg?op=scale_300&amp;op=crop_0,0,300,200" class="img-responsive">
                 </div>
                 <a href="http://m12.webphattai.com/page/album.html?albumId=42" class="btn-more hover-effect">chi tiết +</a>                </div>
             <div class="caption">
@@ -573,7 +573,7 @@
         <div class="thumbnails thumbnail-style thumbnail-kenburn">
             <div class="thumbnail-img">
                 <div class="overflow-hidden">
-                    <img alt="" src="http://images.webphattai.com/get/239a896c-27cb-466c-9d6c-51b5bc80b75e.jpg?op=scale|300&amp;op=crop|0,0,300,200" class="img-responsive">
+                    <img alt="" src="http://images.webphattai.com/get/239a896c-27cb-466c-9d6c-51b5bc80b75e.jpg?op=scale_300&amp;op=crop_0,0,300,200" class="img-responsive">
                 </div>
                 <a href="http://m12.webphattai.com/page/album.html?albumId=39" class="btn-more hover-effect">chi tiết +</a>                </div>
             <div class="caption">
