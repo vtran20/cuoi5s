@@ -1,7 +1,61 @@
-# Add any directories, files, or patterns you don't want to be tracked by version control
-cuoi5s.iws
-cuoi5s.ipr
-cuoi5s.iml
+# ==========================================
+# IDE files (IntelliJ / Eclipse / VS Code)
+# ==========================================
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+
+# ==========================================
+# OS-generated files
+# ==========================================
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# Build output (Maven / Java)
+# ==========================================
+target/
+out/
+build/
+*.class
+*.war
+*.ear
+*.jar
+
+# ==========================================
+# Logs and runtime artifacts
+# ==========================================
+*.log
+logs/
+velocity.log
+hs_err_pid*
+
+# ==========================================
+# Temporary and backup files
+# ==========================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.orig
+
+# ==========================================
+# Local environment/config secrets
+# (keep template/example files in git)
+# ==========================================
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# Project-specific local helper files/scripts
+# ==========================================
 todo.txt
 json.json
 README.txt
